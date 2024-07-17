@@ -2,12 +2,12 @@ package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1RequestFactory;
+import com.sipgate.li.simulator.exceptions.WrongResponseTypeException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.etsi.uri._03221.x1._2017._10.OK;
 import org.etsi.uri._03221.x1._2017._10.PingRequest;
 import org.etsi.uri._03221.x1._2017._10.PingResponse;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +45,6 @@ public class PingController {
             return ResponseEntity.ok(Response.ok(p.getOK()));
         }
 
-        return ResponseEntity.internalServerError().body(Response.error("PingRequest did not respond with PingResponse, received " + resp.getClass().getSimpleName()));
+        throw new WrongResponseTypeException(PingRequest.class, PingResponse.class, resp);
     }
 }

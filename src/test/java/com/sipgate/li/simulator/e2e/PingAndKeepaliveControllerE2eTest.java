@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PingControllerE2eTest extends E2eTestCase {
+public class PingAndKeepaliveControllerE2eTest extends E2eTestCase {
 
     @ParameterizedTest
     @ValueSource(strings = {"/ping", "/keepalive"})

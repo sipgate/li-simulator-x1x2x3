@@ -2,6 +2,7 @@ package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1RequestFactory;
+import com.sipgate.li.simulator.exceptions.WrongResponseTypeException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -49,6 +50,6 @@ public class KeepaliveController {
             return ResponseEntity.ok(Response.ok(k.getOK()));
         }
 
-        return ResponseEntity.internalServerError().body(Response.error("PingRequest did not respond with PingResponse, received " + resp.getClass().getSimpleName()));
+        throw new WrongResponseTypeException(KeepaliveRequest.class, KeepaliveResponse.class, resp);
     }
 }

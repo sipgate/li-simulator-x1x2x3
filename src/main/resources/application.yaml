@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: simulator
+sipgate:
+  li:
+    simulator:
+      neUri: https://ne.example.com/X1/NE
+      admfUri: https://admf.example.com/X1/NE

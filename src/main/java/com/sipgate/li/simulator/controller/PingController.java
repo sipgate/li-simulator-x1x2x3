@@ -1,4 +1,4 @@
-package com.sipgate.li.simulator;
+package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1RequestFactory;
@@ -26,7 +26,7 @@ public class PingController {
         this.x1Client = x1Client;
     }
 
-    @Operation(summary = "PingRequest", description = "Send a ping request to the NE.")
+    @Operation(summary = "PingRequest", description = "Send a ping request to the NE. At any time from the ADMF or NE, to get a response over the X1 interface (does not test X2 or X3 or onward delivery, not a health check).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ping to the NE was returned.", content = @Content(examples = @ExampleObject("""
                     {"ok": "AcknowledgedAndCompleted"}
@@ -46,15 +46,5 @@ public class PingController {
         }
 
         return ResponseEntity.internalServerError().body(Response.error("PingRequest did not respond with PingResponse, received " + resp.getClass().getSimpleName()));
-    }
-
-    record Response(String ok, String error) {
-        static Response ok(OK ok) {
-            return new Response(ok.value(), null);
-        }
-
-        static Response error(String m) {
-            return new Response(null, m);
-        }
     }
 }

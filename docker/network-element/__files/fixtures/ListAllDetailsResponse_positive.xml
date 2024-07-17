@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:X1Response xmlns:ns1="http://uri.etsi.org/03221/X1/2017/10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ns1:x1ResponseMessage xsi:type="ns1:ListAllDetailsResponse">
+        <ns1:admfIdentifier>admfID</ns1:admfIdentifier>
+        <ns1:neIdentifier>neID</ns1:neIdentifier>
+        <ns1:messageTimestamp>2017-10-06T18:46:21.508330Z</ns1:messageTimestamp>
+        <ns1:version>v1.6.1</ns1:version>
+        <ns1:x1TransactionId>09529160-2e44-49c6-bf54-204ca5edcfab</ns1:x1TransactionId>
+        <ns1:ListOfXIDs>
+            <ns1:xId>29f28e1c-f230-486a-a860-f5a784ab9172</ns1:xId>
+            <ns1:xId>4f79fd4a-b237-48c3-b5d3-334ed9191f33</ns1:xId>
+        </ns1:ListOfXIDs>
+        <ns1:ListOfDIDs>
+            <ns1:dId>b0ce308c-aa17-42bd-a27b-287bcb5b3468</ns1:dId>
+            <ns1:dId>6d44e794-707a-4338-8c43-15f4213f508a</ns1:dId>
+        </ns1:ListOfDIDs>
+    </ns1:x1ResponseMessage>
+</ns1:X1Response>

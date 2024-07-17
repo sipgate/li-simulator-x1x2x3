@@ -19,6 +19,16 @@
       "response": {
         "bodyFileName": "fixtures/KeepaliveResponse_positive.xml"
       }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ListAllDetailsRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/ListAllDetailsResponse_positive.xml"
+      }
     }
   ]
 }

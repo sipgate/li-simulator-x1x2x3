@@ -52,6 +52,6 @@ public class ListAllDetailsController {
             return ResponseEntity.ok(new Response(ladr.getListOfXIDs().getXId(), ladr.getListOfDIDs().getDId()));
         }
 
-        throw new WrongResponseTypeException(ListAllDetailsRequest.class, ListAllDetailsResponse.class, resp);
+        throw new WrongResponseTypeException(req, ListAllDetailsResponse.class, resp);
     }
 }

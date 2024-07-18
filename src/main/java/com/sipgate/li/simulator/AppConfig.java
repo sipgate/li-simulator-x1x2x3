@@ -17,20 +17,19 @@ import java.net.http.HttpClient;
 @Configuration
 public class AppConfig {
 
-    private Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
     @Bean
     public X1RequestFactory x1RequestFactory(
-            @Value("${sipgate.li.simulator.neUri}") final URI neUri,
-            @Value("${sipgate.li.simulator.admfIdentifier:admfId}") final String admfIdentifier) throws DatatypeConfigurationException {
+            @Value("${sipgate.li.simulator.ne.uri}") final URI neUri,
+            @Value("${sipgate.li.simulator.admf.id:admfId}") final String admfIdentifier) throws DatatypeConfigurationException {
 
         return new X1RequestFactory(DatatypeFactory.newInstance(), neUri.getHost(), admfIdentifier);
     }
 
     @Bean
-    public X1Client x1Client(@Value("${sipgate.li.simulator.neUri}") final URI neUri) throws JAXBException {
-
-        LOGGER.info("Attempting to create connections to {}.", neUri.toString());
+    public X1Client x1Client(@Value("${sipgate.li.simulator.ne.uri}") final URI neUri) throws JAXBException {
+        LOGGER.info("Attempting to create connections to {}.", neUri);
         return new X1Client(neUri, HttpClient.newHttpClient());
     }
 }

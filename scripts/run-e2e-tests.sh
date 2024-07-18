@@ -9,7 +9,7 @@ set -e
 SERVICE_HOST="${SERVICE_HOST:-host.docker.internal}"
 SERVICE_PORT="${SERVICE_PORT:-8080}"
 
-DOCKER_NETWORK_ARG="--network li-simulator-x1x2x3_default"
+DOCKER_NETWORK_ARG="--network li-network"
 
 docker run ${DOCKER_NETWORK_ARG} \
   --rm \

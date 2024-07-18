@@ -50,6 +50,6 @@ public class KeepaliveController {
             return ResponseEntity.ok(Response.ok(k.getOK()));
         }
 
-        throw new WrongResponseTypeException(KeepaliveRequest.class, KeepaliveResponse.class, resp);
+        throw new WrongResponseTypeException(req, KeepaliveResponse.class, resp);
     }
 }

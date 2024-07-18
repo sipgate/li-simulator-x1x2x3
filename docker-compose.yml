@@ -3,5 +3,11 @@ services:
     image: wiremock/wiremock:3.8.0-alpine@sha256:816c48897435b2fbfccc094b72212bdd5e3c4dec8d1cd24f76f2aa7e2caf206b
     ports:
       - "8050:8080"
+    networks:
+      - li-network
     volumes:
       - "./docker/network-element:/home/wiremock"
+
+networks:
+  li-network:
+    name: li-network

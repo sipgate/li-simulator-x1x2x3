@@ -45,6 +45,6 @@ public class PingController {
             return ResponseEntity.ok(Response.ok(p.getOK()));
         }
 
-        throw new WrongResponseTypeException(PingRequest.class, PingResponse.class, resp);
+        throw new WrongResponseTypeException(req, PingResponse.class, resp);
     }
 }

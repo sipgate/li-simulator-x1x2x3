@@ -47,6 +47,11 @@ abstract class E2eTestCase {
     return client.send(request, HttpResponse.BodyHandlers.ofString());
   }
 
+  HttpResponse<String> postUnauthenticated(final String path)
+    throws IOException, InterruptedException {
+    return postUnauthenticated(path, Map.of());
+  }
+
   HttpResponse<String> postUnauthenticated(
     final String path,
     final Map<String, String> formData

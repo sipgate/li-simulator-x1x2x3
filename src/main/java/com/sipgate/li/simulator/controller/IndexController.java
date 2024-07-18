@@ -8,9 +8,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import org.etsi.uri._03221.x1._2017._10.ListAllDetailsRequest;
 import org.etsi.uri._03221.x1._2017._10.ListAllDetailsResponse;
@@ -21,12 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @ResponseBody
-public class ListAllDetailsController {
+public class IndexController {
 
   private final X1RequestFactory x1RequestFactory;
   private final X1Client x1Client;
 
-  public ListAllDetailsController(
+  public IndexController(
     final X1RequestFactory x1RequestFactory,
     final X1Client x1Client
   ) {
@@ -34,7 +32,7 @@ public class ListAllDetailsController {
     this.x1Client = x1Client;
   }
 
-  public record Response(List<String> tasks, List<String> destinations) {}
+  public record IndexResponse(List<String> tasks, List<String> destinations) {}
 
   @Operation(
     summary = "ListAllDetailsRequest",
@@ -45,7 +43,9 @@ public class ListAllDetailsController {
       @ApiResponse(
         responseCode = "200",
         description = "List of active tasks and destinations.",
-        content = @Content(schema = @Schema(implementation = Response.class))
+        content = @Content(
+          schema = @Schema(implementation = IndexResponse.class)
+        )
       ),
       @ApiResponse(
         responseCode = "500",
@@ -60,13 +60,16 @@ public class ListAllDetailsController {
       ),
     }
   )
-  @GetMapping("/listAllDetails")
-  public ResponseEntity<Response> allDetails()
-    throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, JAXBException, IOException, InterruptedException {
+  @GetMapping("/index")
+  public ResponseEntity<IndexResponse> index()
+    throws IOException, InterruptedException {
     final var req = x1RequestFactory.create(ListAllDetailsRequest.class);
     final var resp = x1Client.request(req, ListAllDetailsResponse.class);
     return ResponseEntity.ok(
-      new Response(resp.getListOfXIDs().getXId(), resp.getListOfDIDs().getDId())
+      new IndexResponse(
+        resp.getListOfXIDs().getXId(),
+        resp.getListOfDIDs().getDId()
+      )
     );
   }
 }

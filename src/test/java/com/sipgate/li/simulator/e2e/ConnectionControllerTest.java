@@ -6,14 +6,14 @@ import java.io.IOException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class PingAndKeepaliveControllerE2eTest extends E2eTestCase {
+public class ConnectionControllerTest extends E2eTestCase {
 
   @ParameterizedTest
-  @ValueSource(strings = { "/ping", "/keepalive" })
+  @ValueSource(strings = { "/connection/ping", "/connection/keepalive" })
   void itReturns200ToRequests(final String path)
     throws IOException, InterruptedException {
     // WHEN
-    final var response = getUnauthenticated(path);
+    final var response = postUnauthenticated(path);
 
     // THEN
     assertThat(response.statusCode()).isEqualTo(200);

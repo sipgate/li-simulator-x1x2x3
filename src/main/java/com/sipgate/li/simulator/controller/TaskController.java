@@ -2,31 +2,28 @@ package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1RequestFactory;
-import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 import org.etsi.uri._03221.x1._2017._10.ActivateTaskRequest;
 import org.etsi.uri._03221.x1._2017._10.ActivateTaskResponse;
 import org.etsi.uri._03221.x1._2017._10.DeliveryType;
 import org.etsi.uri._03221.x1._2017._10.ListOfDids;
 import org.etsi.uri._03221.x1._2017._10.ListOfTargetIdentifiers;
+import org.etsi.uri._03221.x1._2017._10.OK;
 import org.etsi.uri._03221.x1._2017._10.TargetIdentifier;
 import org.etsi.uri._03221.x1._2017._10.TaskDetails;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@ResponseBody
-public class ActivateTaskController {
+@RestController
+public class TaskController {
 
   private final X1RequestFactory x1RequestFactory;
   private final X1Client x1Client;
 
-  public ActivateTaskController(
+  public TaskController(
     final X1RequestFactory x1RequestFactory,
     final X1Client x1Client
   ) {
@@ -34,12 +31,13 @@ public class ActivateTaskController {
     this.x1Client = x1Client;
   }
 
+  public record ActiveTaskResponse(OK ok, String xId) {}
+
   @PostMapping("/task")
-  public ResponseEntity<Response> activateTask(
+  public ResponseEntity<ActiveTaskResponse> activateTask(
     @RequestParam final String e164number,
     @RequestParam final String destinationId
-  )
-    throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, JAXBException, IOException, InterruptedException {
+  ) throws IOException, InterruptedException {
     final var xId = UUID.randomUUID().toString();
 
     final var targetIdentifier = new TargetIdentifier();
@@ -63,6 +61,6 @@ public class ActivateTaskController {
 
     final var resp = x1Client.request(req, ActivateTaskResponse.class);
 
-    return ResponseEntity.ok(Response.ok(resp.getOK()));
+    return ResponseEntity.ok(new ActiveTaskResponse(resp.getOK(), xId));
   }
 }

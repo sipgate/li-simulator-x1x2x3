@@ -5,12 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
-public class ListAllDetailsControllerE2eTest extends E2eTestCase {
+public class IndexControllerE2ETest extends E2eTestCase {
 
   @Test
   void itReturns200ToRequests() throws IOException, InterruptedException {
     // WHEN
-    final var response = getUnauthenticated("/listAllDetails");
+    final var response = getUnauthenticated("/index");
 
     // THEN
     assertThat(response.statusCode()).isEqualTo(200);

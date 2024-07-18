@@ -4,8 +4,8 @@ import org.etsi.uri._03221.x1._2017._10.X1RequestMessage;
 import org.etsi.uri._03221.x1._2017._10.X1ResponseMessage;
 
 public class WrongResponseTypeException extends RuntimeException {
-    public <R extends X1RequestMessage, E extends X1ResponseMessage, A extends X1ResponseMessage>
-        WrongResponseTypeException(Class<R> request, Class<E> expected, A actual) {
-        super(String.format("{} did not respond with {}, received {}", request.getSimpleName(), expected.getSimpleName(), actual.getClass().getSimpleName()));
+    public
+        WrongResponseTypeException(final X1RequestMessage request, final Class<? extends X1ResponseMessage> expected, final X1ResponseMessage actual) {
+        super(String.format("%s did not respond with %s, received %s", request.getClass().getSimpleName(), expected.getSimpleName(), actual.getClass().getSimpleName()));
     }
 }

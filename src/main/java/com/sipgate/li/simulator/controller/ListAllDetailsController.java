@@ -32,7 +32,7 @@ public class ListAllDetailsController {
         this.x1Client = x1Client;
     }
 
-    record Response(List<String> tasks, List<String> destinations) {}
+    public record Response(List<String> tasks, List<String> destinations) {}
 
     @Operation(summary = "ListAllDetailsRequest", description = "Used by the ADMF to retrieve the list of all XIDs and DIDs (i.e. a list of identifiers) but no details.")
     @ApiResponses(value = {

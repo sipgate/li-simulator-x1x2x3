@@ -24,6 +24,16 @@
       "request": {
         "method": "POST",
         "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ActivateTaskRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/ActivateTaskResponse_positive.xml"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
         "bodyPatterns": [{ "contains": "ListAllDetailsRequest" }]
       },
       "response": {

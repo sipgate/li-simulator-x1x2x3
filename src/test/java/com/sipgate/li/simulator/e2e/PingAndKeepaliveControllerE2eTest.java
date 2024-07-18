@@ -13,7 +13,7 @@ public class PingAndKeepaliveControllerE2eTest extends E2eTestCase {
     @ValueSource(strings = {"/ping", "/keepalive"})
     void itReturns200ToRequests(final String path) throws IOException, InterruptedException {
         // WHEN
-        final var response = sendUnauthenticated(path);
+        final var response = getUnauthenticated(path);
 
         // THEN
         assertThat(response.statusCode()).isEqualTo(200);

@@ -12,7 +12,7 @@ public class ListAllDetailsControllerE2eTest extends E2eTestCase {
     @Test
     void itReturns200ToRequests() throws IOException, InterruptedException {
         // WHEN
-        final var response = sendUnauthenticated("/listAllDetails");
+        final var response = getUnauthenticated("/listAllDetails");
 
         // THEN
         assertThat(response.statusCode()).isEqualTo(200);

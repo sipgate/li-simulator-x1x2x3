@@ -5,9 +5,12 @@ import org.junit.jupiter.api.Tag;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 @Tag("E2E")
 abstract class E2eTestCase {
@@ -28,7 +31,7 @@ abstract class E2eTestCase {
         objectMapper = new ObjectMapper();
     }
 
-    HttpResponse<String> sendUnauthenticated(final String path) throws IOException, InterruptedException {
+    HttpResponse<String> getUnauthenticated(final String path) throws IOException, InterruptedException {
         final var request =
                 HttpRequest.newBuilder()
                         .method("GET", HttpRequest.BodyPublishers.noBody())
@@ -36,5 +39,31 @@ abstract class E2eTestCase {
                         .build();
 
         return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    HttpResponse<String> postUnauthenticated(final String path, final Map<String, String> formData) throws IOException, InterruptedException {
+        final var request =
+                HttpRequest.newBuilder()
+                        .header("Content-Type", "application/x-www-form-urlencoded")
+                        .method("POST", HttpRequest.BodyPublishers.ofString(mapFormDataToString(formData)))
+                        .uri(baseUri.resolve(path))
+                        .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    private static String mapFormDataToString(final Map<String, String> formData) {
+        final var formBodyBuilder = new StringBuilder();
+        for (final var singleEntry : formData.entrySet()) {
+            if (!formBodyBuilder.isEmpty()) {
+                formBodyBuilder.append("&");
+            }
+
+            formBodyBuilder.append(URLEncoder.encode(singleEntry.getKey(), StandardCharsets.UTF_8));
+            formBodyBuilder.append("=");
+            formBodyBuilder.append(URLEncoder.encode(singleEntry.getValue(), StandardCharsets.UTF_8));
+        }
+
+        return formBodyBuilder.toString();
     }
 }

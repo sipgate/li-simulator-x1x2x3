@@ -2,7 +2,6 @@ package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1RequestFactory;
-import com.sipgate.li.simulator.exceptions.WrongResponseTypeException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -12,7 +11,8 @@ import org.etsi.uri._03221.x1._2017._10.PingRequest;
 import org.etsi.uri._03221.x1._2017._10.PingResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @ResponseBody
@@ -37,14 +37,8 @@ public class PingController {
     })
     @GetMapping("/ping")
     public ResponseEntity<Response> ping() throws Exception {
-
         final var req = x1RequestFactory.create(PingRequest.class);
-        final var resp = x1Client.request(req);
-
-        if (resp instanceof PingResponse p) {
-            return ResponseEntity.ok(Response.ok(p.getOK()));
-        }
-
-        throw new WrongResponseTypeException(req, PingResponse.class, resp);
+        final var resp = x1Client.request(req, PingResponse.class);
+        return ResponseEntity.ok(Response.ok(resp.getOK()));
     }
 }

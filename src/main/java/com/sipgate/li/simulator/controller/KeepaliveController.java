@@ -2,7 +2,6 @@ package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1RequestFactory;
-import com.sipgate.li.simulator.exceptions.WrongResponseTypeException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -44,12 +43,7 @@ public class KeepaliveController {
     @GetMapping("/keepalive")
     public ResponseEntity<Response> keepalive() throws Exception {
         final var req = x1RequestFactory.create(KeepaliveRequest.class);
-        final var resp = x1Client.request(req);
-
-        if (resp instanceof KeepaliveResponse k) {
-            return ResponseEntity.ok(Response.ok(k.getOK()));
-        }
-
-        throw new WrongResponseTypeException(req, KeepaliveResponse.class, resp);
+        final var resp = x1Client.request(req, KeepaliveResponse.class);
+        return ResponseEntity.ok(Response.ok(resp.getOK()));
     }
 }

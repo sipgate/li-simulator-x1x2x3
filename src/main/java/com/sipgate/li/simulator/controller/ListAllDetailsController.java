@@ -2,7 +2,6 @@ package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1RequestFactory;
-import com.sipgate.li.simulator.exceptions.WrongResponseTypeException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -35,7 +34,6 @@ public class ListAllDetailsController {
 
     record Response(List<String> tasks, List<String> destinations) {}
 
-
     @Operation(summary = "ListAllDetailsRequest", description = "Used by the ADMF to retrieve the list of all XIDs and DIDs (i.e. a list of identifiers) but no details.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of active tasks and destinations.", content = @Content(schema = @Schema(implementation = Response.class))),
@@ -46,12 +44,7 @@ public class ListAllDetailsController {
     @GetMapping("/listAllDetails")
     public ResponseEntity<Response> allDetails() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, JAXBException, IOException, InterruptedException {
         final var req = x1RequestFactory.create(ListAllDetailsRequest.class);
-        final var resp = x1Client.request(req);
-
-        if (resp instanceof ListAllDetailsResponse ladr) {
-            return ResponseEntity.ok(new Response(ladr.getListOfXIDs().getXId(), ladr.getListOfDIDs().getDId()));
-        }
-
-        throw new WrongResponseTypeException(req, ListAllDetailsResponse.class, resp);
+        final var resp = x1Client.request(req, ListAllDetailsResponse.class);
+        return ResponseEntity.ok(new Response(resp.getListOfXIDs().getXId(), resp.getListOfDIDs().getDId()));
     }
 }

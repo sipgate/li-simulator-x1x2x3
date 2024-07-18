@@ -26,15 +26,14 @@ import java.util.List;
 public class ListAllDetailsController {
 
     private final X1RequestFactory x1RequestFactory;
-    private final X1Client x1Client;
+    private final RequestWrapper requestWrapper;
 
-    public ListAllDetailsController(final X1RequestFactory x1RequestFactory, final X1Client x1Client) {
+    public ListAllDetailsController(final X1RequestFactory x1RequestFactory, final RequestWrapper requestWrapper) {
         this.x1RequestFactory = x1RequestFactory;
-        this.x1Client = x1Client;
+        this.requestWrapper = requestWrapper;
     }
 
     record Response(List<String> tasks, List<String> destinations) {}
-
 
     @Operation(summary = "ListAllDetailsRequest", description = "Used by the ADMF to retrieve the list of all XIDs and DIDs (i.e. a list of identifiers) but no details.")
     @ApiResponses(value = {
@@ -46,12 +45,8 @@ public class ListAllDetailsController {
     @GetMapping("/listAllDetails")
     public ResponseEntity<Response> allDetails() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, JAXBException, IOException, InterruptedException {
         final var req = x1RequestFactory.create(ListAllDetailsRequest.class);
-        final var resp = x1Client.request(req);
 
-        if (resp instanceof ListAllDetailsResponse ladr) {
-            return ResponseEntity.ok(new Response(ladr.getListOfXIDs().getXId(), ladr.getListOfDIDs().getDId()));
-        }
-
-        throw new WrongResponseTypeException(req, ListAllDetailsResponse.class, resp);
+        return requestWrapper.request(req, (final ListAllDetailsResponse ladr) ->
+                ResponseEntity.ok(new Response(ladr.getListOfXIDs().getXId(), ladr.getListOfDIDs().getDId())));
     }
 }

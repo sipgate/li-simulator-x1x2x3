@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.*;
 public class PingController {
 
     private final X1RequestFactory x1RequestFactory;
-    private final X1Client x1Client;
+    private final RequestWrapper requestWrapper;
 
-    public PingController(final X1RequestFactory x1RequestFactory, final X1Client x1Client) {
+    public PingController(final X1RequestFactory x1RequestFactory, final RequestWrapper requestWrapper) {
         this.x1RequestFactory = x1RequestFactory;
-        this.x1Client = x1Client;
+        this.requestWrapper = requestWrapper;
     }
 
     @Operation(summary = "PingRequest", description = "Send a ping request to the NE. At any time from the ADMF or NE, to get a response over the X1 interface (does not test X2 or X3 or onward delivery, not a health check).")
@@ -37,14 +37,8 @@ public class PingController {
     })
     @GetMapping("/ping")
     public ResponseEntity<Response> ping() throws Exception {
-
         final var req = x1RequestFactory.create(PingRequest.class);
-        final var resp = x1Client.request(req);
 
-        if (resp instanceof PingResponse p) {
-            return ResponseEntity.ok(Response.ok(p.getOK()));
-        }
-
-        throw new WrongResponseTypeException(req, PingResponse.class, resp);
+        return requestWrapper.request(req, (final PingResponse p) -> ResponseEntity.ok(Response.ok(p.getOK())));
     }
 }

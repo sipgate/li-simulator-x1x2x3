@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.etsi.uri._03221.x1._2017._10.KeepaliveRequest;
 import org.etsi.uri._03221.x1._2017._10.KeepaliveResponse;
+import org.etsi.uri._03221.x1._2017._10.PingRequest;
+import org.etsi.uri._03221.x1._2017._10.PingResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,11 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class KeepaliveController {
 
     private final X1RequestFactory x1RequestFactory;
-    private final X1Client x1Client;
+    private final RequestWrapper requestWrapper;
 
-    public KeepaliveController(final X1RequestFactory x1RequestFactory, final X1Client x1Client) {
+    public KeepaliveController(final X1RequestFactory x1RequestFactory, final RequestWrapper requestWrapper) {
         this.x1RequestFactory = x1RequestFactory;
-        this.x1Client = x1Client;
+        this.requestWrapper = requestWrapper;
     }
 
     @Operation(summary = "Keepalive", description = """
@@ -44,12 +46,7 @@ public class KeepaliveController {
     @GetMapping("/keepalive")
     public ResponseEntity<Response> keepalive() throws Exception {
         final var req = x1RequestFactory.create(KeepaliveRequest.class);
-        final var resp = x1Client.request(req);
 
-        if (resp instanceof KeepaliveResponse k) {
-            return ResponseEntity.ok(Response.ok(k.getOK()));
-        }
-
-        throw new WrongResponseTypeException(req, KeepaliveResponse.class, resp);
+        return requestWrapper.request(req, (final KeepaliveResponse p) -> ResponseEntity.ok(Response.ok(p.getOK())));
     }
 }

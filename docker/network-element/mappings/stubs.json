@@ -34,6 +34,16 @@
       "request": {
         "method": "POST",
         "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ActivateTaskRequest" }, { "contains": "112" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
         "bodyPatterns": [{ "contains": "ListAllDetailsRequest" }]
       },
       "response": {

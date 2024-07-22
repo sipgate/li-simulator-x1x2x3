@@ -1,25 +1,22 @@
 package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x1.X1Client;
+import com.sipgate.li.lib.x1.X1ClientException;
 import com.sipgate.li.lib.x1.X1RequestFactory;
+import com.sipgate.li.simulator.controller.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.io.IOException;
 import org.etsi.uri._03221.x1._2017._10.KeepaliveRequest;
 import org.etsi.uri._03221.x1._2017._10.KeepaliveResponse;
 import org.etsi.uri._03221.x1._2017._10.PingRequest;
 import org.etsi.uri._03221.x1._2017._10.PingResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@ResponseBody
+@RestController
 public class ConnectionController {
 
   private final X1RequestFactory x1RequestFactory;
@@ -41,34 +38,21 @@ public class ConnectionController {
     value = {
       @ApiResponse(
         responseCode = "200",
-        description = "Ping to the NE was returned.",
-        content = @Content(
-          examples = @ExampleObject(
-            """
-            {"ok": "AcknowledgedAndCompleted"}
-            """
-          )
-        )
+        description = "Ping to the NE was returned."
       ),
       @ApiResponse(
         responseCode = "500",
         description = "The PingRequest was not returned properly.",
         content = @Content(
-          examples = @ExampleObject(
-            """
-            {"error": "PingRequest did not respond with PingResponse, received ActivateTaskResponse"}
-            """
-          )
+          schema = @Schema(implementation = ErrorResponse.class)
         )
       ),
     }
   )
   @PostMapping("/connection/ping")
-  public ResponseEntity<Response> ping()
-    throws IOException, InterruptedException {
+  public PingResponse ping() throws X1ClientException, InterruptedException {
     final var req = x1RequestFactory.create(PingRequest.class);
-    final var resp = x1Client.request(req, PingResponse.class);
-    return ResponseEntity.ok(Response.ok(resp.getOK()));
+    return x1Client.request(req, PingResponse.class);
   }
 
   @Operation(
@@ -84,35 +68,21 @@ public class ConnectionController {
     value = {
       @ApiResponse(
         responseCode = "200",
-        description = "Keepalive to the NE was returned.",
-        content = @Content(
-          schema = @Schema(implementation = Response.class),
-          examples = @ExampleObject(
-            """
-            {"ok": "AcknowledgedAndCompleted"}
-            """
-          )
-        )
+        description = "Keepalive to the NE was returned."
       ),
       @ApiResponse(
         responseCode = "500",
         description = "The KeepaliveRequest was not returned properly.",
         content = @Content(
-          schema = @Schema(implementation = Response.class),
-          examples = @ExampleObject(
-            """
-            {"error": "KeepaliveRequest did not respond with KeepaliveResponse, received ActivateTaskResponse"}
-            """
-          )
+          schema = @Schema(implementation = ErrorResponse.class)
         )
       ),
     }
   )
   @PostMapping("/connection/keepalive")
-  public ResponseEntity<Response> keepalive()
-    throws IOException, InterruptedException {
+  public KeepaliveResponse keepalive()
+    throws X1ClientException, InterruptedException {
     final var req = x1RequestFactory.create(KeepaliveRequest.class);
-    final var resp = x1Client.request(req, KeepaliveResponse.class);
-    return ResponseEntity.ok(Response.ok(resp.getOK()));
+    return x1Client.request(req, KeepaliveResponse.class);
   }
 }

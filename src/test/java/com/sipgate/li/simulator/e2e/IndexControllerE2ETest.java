@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
-public class IndexControllerE2ETest extends E2eTestCase {
+class IndexControllerE2ETest extends E2eTestCase {
 
   @Test
   void itReturns200ToRequests() throws IOException, InterruptedException {

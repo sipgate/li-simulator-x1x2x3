@@ -1,8 +1,21 @@
 services:
   network-element:
     image: wiremock/wiremock:3.8.0-alpine@sha256:816c48897435b2fbfccc094b72212bdd5e3c4dec8d1cd24f76f2aa7e2caf206b
+    environment:
+      WIREMOCK_OPTIONS: |
+        --https-port 443
+
+        --keystore-type PKCS12
+        --https-keystore /home/wiremock/server.pfx
+        --keystore-password password
+
+        --truststore-type PKCS12
+        --https-truststore /home/wiremock/ca.pfx
+        --truststore-password password
+
+        --https-require-client-cert
     ports:
-      - "8050:8080"
+      - "443:443"
     networks:
       - li-network
     volumes:

@@ -3,6 +3,8 @@ services:
     container_name: "simulator"
     image: registry.sipgate.net/docker/sipgate/service/li-simulator-x1x2x3:development
     env_file: ./docker/simulator/.env
+    volumes:
+      - "./docker/network-element:/app/docker/network-element"
     build:
       context: .
       args:

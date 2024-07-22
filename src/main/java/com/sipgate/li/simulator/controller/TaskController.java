@@ -1,21 +1,21 @@
 package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x1.X1Client;
+import com.sipgate.li.lib.x1.X1ClientException;
 import com.sipgate.li.lib.x1.X1RequestFactory;
-import java.io.IOException;
-import java.util.UUID;
-import org.etsi.uri._03221.x1._2017._10.ActivateTaskRequest;
-import org.etsi.uri._03221.x1._2017._10.ActivateTaskResponse;
-import org.etsi.uri._03221.x1._2017._10.DeliveryType;
-import org.etsi.uri._03221.x1._2017._10.ListOfDids;
-import org.etsi.uri._03221.x1._2017._10.ListOfTargetIdentifiers;
-import org.etsi.uri._03221.x1._2017._10.OK;
-import org.etsi.uri._03221.x1._2017._10.TargetIdentifier;
-import org.etsi.uri._03221.x1._2017._10.TaskDetails;
-import org.springframework.http.ResponseEntity;
+import com.sipgate.li.simulator.controller.response.TaskActivatedResponse;
+import com.sipgate.li.simulator.controller.response.ErrorResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.etsi.uri._03221.x1._2017._10.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 public class TaskController {
@@ -31,13 +31,32 @@ public class TaskController {
     this.x1Client = x1Client;
   }
 
-  public record ActiveTaskResponse(OK ok, String xId) {}
-
+  @Operation(
+    summary = "Activate Task",
+    description = """
+      Used by the ADMF to add a new Task to an NE
+    """
+  )
+  @ApiResponses(
+    value = {
+      @ApiResponse(
+        responseCode = "200",
+        description = "Task was created."
+      ),
+      @ApiResponse(
+        responseCode = "500",
+        description = "The KeepaliveRequest was not returned properly.",
+        content = @Content(
+          schema = @Schema(implementation = ErrorResponse.class)
+        )
+      ),
+    }
+  )
   @PostMapping("/task")
-  public ResponseEntity<ActiveTaskResponse> activateTask(
+  public TaskActivatedResponse activateTask(
     @RequestParam final String e164number,
     @RequestParam final String destinationId
-  ) throws IOException, InterruptedException {
+  ) throws X1ClientException, InterruptedException {
     final var xId = UUID.randomUUID().toString();
 
     final var targetIdentifier = new TargetIdentifier();
@@ -60,7 +79,6 @@ public class TaskController {
     req.setTaskDetails(taskDetails);
 
     final var resp = x1Client.request(req, ActivateTaskResponse.class);
-
-    return ResponseEntity.ok(new ActiveTaskResponse(resp.getOK(), xId));
+    return new TaskActivatedResponse(resp, xId);
   }
 }

@@ -4,7 +4,11 @@ spring:
 sipgate:
   li:
     simulator:
-      ne:
-        uri: http://localhost:8050/X1/NE
-      admf:
-        id: admf-id
+      targetUri: https://localhost/X1/NE
+      admfIdentifier: admf-id
+      clientCertKeyStore:
+        path: "docker/network-element/client1.pfx"
+        password: password
+      serverCertTrustStore:
+        path: "docker/network-element/server.pfx"
+        password: password

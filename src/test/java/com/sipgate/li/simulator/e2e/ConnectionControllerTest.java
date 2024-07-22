@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class ConnectionControllerTest extends E2eTestCase {
+class ConnectionControllerTest extends E2eTestCase {
 
   @ParameterizedTest
   @ValueSource(strings = { "/connection/ping", "/connection/keepalive" })
@@ -19,7 +19,7 @@ public class ConnectionControllerTest extends E2eTestCase {
     assertThat(response.statusCode()).isEqualTo(200);
 
     final var responseBody = objectMapper.readTree(response.body());
-    assertThat(responseBody.get("ok").asText()).isEqualTo(
+    assertThat(responseBody.asText()).isEqualTo(
       "ACKNOWLEDGED_AND_COMPLETED"
     );
   }

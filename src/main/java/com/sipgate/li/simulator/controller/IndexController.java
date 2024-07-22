@@ -1,24 +1,22 @@
 package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x1.X1Client;
+import com.sipgate.li.lib.x1.X1ClientException;
 import com.sipgate.li.lib.x1.X1RequestFactory;
+import com.sipgate.li.simulator.controller.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.io.IOException;
-import java.util.List;
 import org.etsi.uri._03221.x1._2017._10.ListAllDetailsRequest;
 import org.etsi.uri._03221.x1._2017._10.ListAllDetailsResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@ResponseBody
+import java.util.List;
+
+@RestController
 public class IndexController {
 
   private final X1RequestFactory x1RequestFactory;
@@ -42,34 +40,22 @@ public class IndexController {
     value = {
       @ApiResponse(
         responseCode = "200",
-        description = "List of active tasks and destinations.",
-        content = @Content(
-          schema = @Schema(implementation = IndexResponse.class)
-        )
+        description = "List of active tasks and destinations."
       ),
       @ApiResponse(
         responseCode = "500",
         description = "The list was not returned properly.",
         content = @Content(
-          examples = @ExampleObject(
-            """
-            {"error": "ListAllDetailsRequest did not respond with ListAllDetailsResponse, received something else."}
-            """
-          )
+          schema = @Schema(implementation = ErrorResponse.class)
         )
       ),
     }
   )
   @GetMapping("/index")
-  public ResponseEntity<IndexResponse> index()
-    throws IOException, InterruptedException {
+  public IndexResponse index()
+    throws X1ClientException, InterruptedException {
     final var req = x1RequestFactory.create(ListAllDetailsRequest.class);
     final var resp = x1Client.request(req, ListAllDetailsResponse.class);
-    return ResponseEntity.ok(
-      new IndexResponse(
-        resp.getListOfXIDs().getXId(),
-        resp.getListOfDIDs().getDId()
-      )
-    );
+    return new IndexResponse(resp.getListOfXIDs().getXId(), resp.getListOfDIDs().getDId());
   }
 }

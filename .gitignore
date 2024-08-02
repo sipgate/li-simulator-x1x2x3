@@ -6,6 +6,9 @@ target/
 
 node_modules
 
+.venv/
+__pycache__/
+
 ### STS ###
 .apt_generated
 .classpath

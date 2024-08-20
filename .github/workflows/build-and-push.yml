@@ -15,4 +15,5 @@ jobs:
     with:
       docker_image: ${{ github.event.repository.name }}
       skip_analysis: true
+      test_image: sipgate/buildjava_21:bullseye
     secrets: inherit

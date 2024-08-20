@@ -4,7 +4,7 @@
       <!--This sends everything else to /public -->
       <id>nexus</id>
       <mirrorOf>*</mirrorOf>
-      <url>https://registry.sipgate.net/maven</url>
+      <url>https://registry.sipgate.net/artifactory/maven</url>
     </mirror>
   </mirrors>
   <profiles>

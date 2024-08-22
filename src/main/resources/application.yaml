@@ -12,3 +12,8 @@ sipgate:
       serverCertTrustStore:
         path: "docker/network-element/server.pfx"
         password: password
+
+management:
+  endpoints:
+    web:
+      base-path: /

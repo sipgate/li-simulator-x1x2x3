@@ -3,24 +3,52 @@ package com.sipgate.li.simulator.e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.util.stream.Stream;
+import org.etsi.uri._03221.x1._2017._10.KeepaliveResponse;
+import org.etsi.uri._03221.x1._2017._10.OK;
+import org.etsi.uri._03221.x1._2017._10.PingResponse;
+import org.etsi.uri._03221.x1._2017._10.X1ResponseMessage;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-class ConnectionControllerTest extends E2eTestCase {
+@ExtendWith(SimulatorClientExtension.class)
+class ConnectionControllerTest {
+
+  public static Stream<Arguments> providePathsAndResponseTypes() {
+    return Stream.of(
+      Arguments.of("connection/ping", PingResponse.class),
+      Arguments.of("connection/keepalive", KeepaliveResponse.class)
+    );
+  }
 
   @ParameterizedTest
-  @ValueSource(strings = { "/connection/ping", "/connection/keepalive" })
-  void itReturns200ToRequests(final String path)
-    throws IOException, InterruptedException {
+  @MethodSource("providePathsAndResponseTypes")
+  void itReturns200ToRequests(
+    final String path,
+    final Class<X1ResponseMessage> responseType,
+    final SimulatorClient client
+  ) throws IOException, InterruptedException {
     // WHEN
-    final var response = postUnauthenticated(path);
+    final var response = client.post(path, responseType);
 
     // THEN
-    assertThat(response.statusCode()).isEqualTo(200);
-
-    final var responseBody = objectMapper.readTree(response.body());
-    assertThat(responseBody.asText()).isEqualTo(
-      "ACKNOWLEDGED_AND_COMPLETED"
-    );
+    switch (response) {
+      case final KeepaliveResponse keepaliveResponse:
+        assertThat(keepaliveResponse.getOK()).isEqualTo(
+          OK.ACKNOWLEDGED_AND_COMPLETED
+        );
+        break;
+      case final PingResponse pingResponse:
+        assertThat(pingResponse.getOK()).isEqualTo(
+          OK.ACKNOWLEDGED_AND_COMPLETED
+        );
+        break;
+      default:
+        throw new RuntimeException(
+          "Unexpected response type: " + response.getClass()
+        );
+    }
   }
 }

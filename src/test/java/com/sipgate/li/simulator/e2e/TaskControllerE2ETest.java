@@ -7,10 +7,12 @@ import com.sipgate.li.simulator.controller.response.TaskActivatedResponse;
 import java.io.IOException;
 import java.util.Map;
 import org.etsi.uri._03221.x1._2017._10.OK;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(SimulatorClientExtension.class)
+@Tag("E2E")
 class TaskControllerE2ETest {
 
   @Test

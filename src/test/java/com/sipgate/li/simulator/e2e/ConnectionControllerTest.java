@@ -8,12 +8,14 @@ import org.etsi.uri._03221.x1._2017._10.KeepaliveResponse;
 import org.etsi.uri._03221.x1._2017._10.OK;
 import org.etsi.uri._03221.x1._2017._10.PingResponse;
 import org.etsi.uri._03221.x1._2017._10.X1ResponseMessage;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @ExtendWith(SimulatorClientExtension.class)
+@Tag("E2E")
 class ConnectionControllerTest {
 
   public static Stream<Arguments> providePathsAndResponseTypes() {

@@ -12,10 +12,5 @@ COPY src /usr/src/build/src
 ARG MVN_ADDITIONAL_ARGS
 RUN --mount=type=cache,target=/root/.m2 mvn -B -s maven_settings.xml clean package $MVN_ADDITIONAL_ARGS
 
-FROM registry.sipgate.net/docker/sipgate/runtime/zre-21:debian-bookworm
-RUN mkdir /app
-COPY --from=build /usr/src/build/target/simulator.jar /app
-WORKDIR /app
-
-EXPOSE 3469
-CMD ["java", "-jar", "/app/simulator.jar"]
+EXPOSE 8080
+CMD ["java", "-jar", "/usr/src/build/target/simulator.jar"]

@@ -6,16 +6,15 @@ import com.sipgate.li.lib.x1.X1RequestFactory;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import jakarta.xml.bind.JAXBException;
+import java.net.URI;
+import java.nio.file.Path;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import java.net.URI;
-import java.nio.file.Path;
 
 @Configuration
 @ConfigurationProperties(prefix = "sipgate.li.simulator")
@@ -69,7 +68,9 @@ public class AppConfig {
     LOGGER.info("Attempting to create connections to {}.", targetUri);
     return X1ClientBuilder.newBuilder()
       .withTarget(targetUri)
+      .withKeyStoreProvider("BC")
       .withKeyStore(clientCertKeyStore.path(), clientCertKeyStore.password())
+      .withTrustStoreProvider("BC")
       .withTrustStore(
         serverCertTrustStore.path(),
         serverCertTrustStore.password()

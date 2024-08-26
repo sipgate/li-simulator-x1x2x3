@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>com.sipgate.li</groupId>
 			<artifactId>lib</artifactId>
-			<version>0.1.0</version>
+			<version>0.1.1</version>
 		</dependency>
 
 		<dependency>
@@ -63,6 +63,12 @@
 			<groupId>io.swagger.core.v3</groupId>
 			<artifactId>swagger-annotations</artifactId>
 			<version>2.2.22</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-lts8on</artifactId>
+			<version>2.73.6</version>
 		</dependency>
 	</dependencies>
 

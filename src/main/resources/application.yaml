@@ -7,11 +7,11 @@ sipgate:
       targetUri: https://localhost/X1/NE
       admfIdentifier: admf-id
       clientCertKeyStore:
-        path: "docker/network-element/client1.pfx"
-        password: password
+        path: "/app/keystore.p12"
+        password: changeit
       serverCertTrustStore:
-        path: "docker/network-element/server.pfx"
-        password: password
+        path: "/app/truststore.jks"
+        password: changeit
 
 management:
   endpoints:

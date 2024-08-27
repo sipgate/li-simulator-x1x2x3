@@ -4,7 +4,7 @@ services:
     image: registry.sipgate.net/docker/sipgate/service/li-simulator-x1x2x3:development
     env_file: ./docker/simulator/.env
     volumes:
-      - "./docker/network-element:/app/docker/network-element"
+      - "mutual-tls-stores:/mutual-tls-stores"
     build:
       context: .
       args:
@@ -13,3 +13,8 @@ services:
       - "127.0.0.1:8080:8080"
     networks:
       - li-network
+    depends_on:
+      init-admf-x1-stores:
+        condition: service_completed_successfully
+      init-ne-x1-stores:
+        condition: service_completed_successfully

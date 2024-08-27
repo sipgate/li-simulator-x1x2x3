@@ -6,12 +6,13 @@ services:
         --https-port 443
 
         --keystore-type PKCS12
-        --https-keystore /home/wiremock/server.pfx
-        --keystore-password password
+        --https-keystore /mutual-tls-stores/network-element-keystore.p12
+        --keystore-password changeit
+        --key-manager-password changeit
 
-        --truststore-type PKCS12
-        --https-truststore /home/wiremock/ca.pfx
-        --truststore-password password
+        --truststore-type JKS
+        --https-truststore /mutual-tls-stores/network-element-truststore.jks
+        --truststore-password changeit
 
         --https-require-client-cert
     ports:
@@ -20,6 +21,48 @@ services:
       - li-network
     volumes:
       - "./docker/network-element:/home/wiremock"
+      - "mutual-tls-stores:/mutual-tls-stores"
+    depends_on:
+      init-wiremock-certs:
+        condition: service_completed_successfully
+
+  init-wiremock-certs:
+    image: registry.sipgate.net/docker/sipgate/runtime/zre-21:debian-bookworm
+    volumes:
+      - "./docker/init-mutual-tls:/init-mtls"
+      - "mutual-tls-stores:/mutual-tls-stores"
+    command:
+      - "/init-mtls/create-wiremock-stores.sh"
+    depends_on:
+      init-admf-x1-stores:
+        condition: service_completed_successfully
+      init-ne-x1-stores:
+        condition: service_completed_successfully
+
+  init-admf-x1-stores:
+    image: registry.sipgate.net/docker/sipgate/runtime/zre-21:debian-bookworm
+    volumes:
+      - "./docker/init-mutual-tls:/init-mtls"
+      - "mutual-tls-stores:/mutual-tls-stores"
+    environment:
+      ROLE: "simulator"
+      COMMON_NAME: "simulator"
+    command:
+      - "/init-mtls/create-certificates.sh"
+
+  init-ne-x1-stores:
+    image: registry.sipgate.net/docker/sipgate/runtime/zre-21:debian-bookworm
+    volumes:
+      - "./docker/init-mutual-tls:/init-mtls"
+      - "mutual-tls-stores:/mutual-tls-stores"
+    environment:
+      ROLE: "network-element"
+      COMMON_NAME: "network-element"
+    command:
+      - "/init-mtls/create-certificates.sh"
+
+volumes:
+  mutual-tls-stores:
 
 networks:
   li-network:

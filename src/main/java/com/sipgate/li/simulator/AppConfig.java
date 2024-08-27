@@ -64,13 +64,11 @@ public class AppConfig {
   }
 
   @Bean
-  public X1Client x1Client() throws JAXBException {
+  public X1Client x1Client() {
     LOGGER.info("Attempting to create connections to {}.", targetUri);
     return X1ClientBuilder.newBuilder()
       .withTarget(targetUri)
-      .withKeyStoreProvider("BC")
       .withKeyStore(clientCertKeyStore.path(), clientCertKeyStore.password())
-      .withTrustStoreProvider("BC")
       .withTrustStore(
         serverCertTrustStore.path(),
         serverCertTrustStore.password()

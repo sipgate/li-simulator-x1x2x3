@@ -65,11 +65,6 @@
 			<version>2.2.22</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-lts8on</artifactId>
-			<version>2.73.6</version>
-		</dependency>
 	</dependencies>
 
 	<build>

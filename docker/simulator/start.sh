@@ -12,6 +12,9 @@ if [ -f /app/keystore.p12 ]; then
   rm /app/keystore.p12
 fi
 
+NETWORK_ELEMENT_CA_PATH="${NETWORK_ELEMENT_CA_PATH:-/mutual-tls-stores/ca-certs/network-element-ca.crt}"
+NETWORK_ELEMENT_CERT_PATH="${NETWORK_ELEMENT_CERT_PATH:-/mutual-tls-stores/certs/network-element.crt}"
+
 echo "Importing CA certificate file..."
 keytool \
   -import \
@@ -19,7 +22,7 @@ keytool \
   -noprompt \
   -trustcacerts \
   -alias network-element-ca.crt \
-  -file /mutual-tls-stores/ca-certs/network-element-ca.crt \
+  -file "${NETWORK_ELEMENT_CA_PATH}" \
   -keystore /app/truststore.jks \
   -storepass changeit
 
@@ -29,7 +32,7 @@ echo "Importing client certificate file..."
     -storetype jks \
     -noprompt \
     -alias network-element.crt \
-    -file "/mutual-tls-stores/certs/network-element.crt" \
+    -file "${NETWORK_ELEMENT_CERT_PATH}" \
     -keystore /app/truststore.jks \
     -storepass changeit
 

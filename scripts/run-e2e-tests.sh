@@ -13,6 +13,9 @@ SERVICE_PORT="${SERVICE_PORT:-8080}"
 
 DOCKER_NETWORK_ARG="--network li-network"
 
+# don't exit on error to be able to shutdown the running docker containers
+set +e
+
 docker run ${DOCKER_NETWORK_ARG} \
   --rm \
   -t \
@@ -26,3 +29,11 @@ docker run ${DOCKER_NETWORK_ARG} \
   -DserviceHost="${SERVICE_HOST}" \
   -DservicePort="${SERVICE_PORT}" \
   -Djdk.httpclient.HttpClient.log=requests
+
+# remember the result for the exit code of this script
+TEST_RESULT=$?
+set -e
+
+docker compose down
+
+exit $TEST_RESULT

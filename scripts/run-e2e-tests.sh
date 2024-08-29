@@ -6,7 +6,9 @@
 
 set -e
 
-SERVICE_HOST="${SERVICE_HOST:-host.docker.internal}"
+docker compose up -d --build
+
+SERVICE_HOST="${SERVICE_HOST:-simulator}"
 SERVICE_PORT="${SERVICE_PORT:-8080}"
 
 DOCKER_NETWORK_ARG="--network li-network"

@@ -6,6 +6,7 @@ import com.sipgate.li.simulator.controller.response.ErrorResponse;
 import com.sipgate.li.simulator.controller.response.TaskActivatedResponse;
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 import org.etsi.uri._03221.x1._2017._10.OK;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,14 @@ class TaskControllerE2ETest {
     // WHEN
     final var response = client.post(
       "/task",
-      Map.of("e164number", "4915799912345", "destinationId", "pre-shared-did"),
+      Map.of(
+        "e164number",
+        "4915799912345",
+        "destinationId",
+        "pre-shared-did",
+        "xId",
+        UUID.randomUUID().toString()
+      ),
       TaskActivatedResponse.class
     );
 
@@ -41,7 +49,14 @@ class TaskControllerE2ETest {
     // WHEN
     final var response = client.post(
       "/task",
-      Map.of("e164number", "112", "destinationId", "my-destination-id-123"),
+      Map.of(
+        "e164number",
+        "112",
+        "destinationId",
+        "my-destination-id-123",
+        "xId",
+        UUID.randomUUID().toString()
+      ),
       ErrorResponse.class,
       500
     );

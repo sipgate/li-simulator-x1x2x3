@@ -20,7 +20,14 @@ class IndexControllerE2ETest {
     // GIVEN
     final var taskActivatedResponse = client.post(
       "/task",
-      Map.of("e164number", "4915799912345", "destinationId", "pre-shared-did"),
+      Map.of(
+        "e164number",
+        "4915799912345",
+        "destinationId",
+        "pre-shared-did",
+        "xId",
+        "29f28e1c-f230-486a-a860-f5a784ab9172"
+      ),
       TaskActivatedResponse.class
     );
 

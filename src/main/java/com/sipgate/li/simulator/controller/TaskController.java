@@ -3,19 +3,18 @@ package com.sipgate.li.simulator.controller;
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1ClientException;
 import com.sipgate.li.lib.x1.X1RequestFactory;
-import com.sipgate.li.simulator.controller.response.TaskActivatedResponse;
 import com.sipgate.li.simulator.controller.response.ErrorResponse;
+import com.sipgate.li.simulator.controller.response.TaskActivatedResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.UUID;
 import org.etsi.uri._03221.x1._2017._10.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
 
 @RestController
 public class TaskController {
@@ -39,10 +38,7 @@ public class TaskController {
   )
   @ApiResponses(
     value = {
-      @ApiResponse(
-        responseCode = "200",
-        description = "Task was created."
-      ),
+      @ApiResponse(responseCode = "200", description = "Task was created."),
       @ApiResponse(
         responseCode = "500",
         description = "The KeepaliveRequest was not returned properly.",
@@ -55,10 +51,9 @@ public class TaskController {
   @PostMapping("/task")
   public TaskActivatedResponse activateTask(
     @RequestParam final String e164number,
-    @RequestParam final String destinationId
+    @RequestParam final String destinationId,
+    @RequestParam final String xId
   ) throws X1ClientException, InterruptedException {
-    final var xId = UUID.randomUUID().toString();
-
     final var targetIdentifier = new TargetIdentifier();
     targetIdentifier.setE164Number(e164number);
 

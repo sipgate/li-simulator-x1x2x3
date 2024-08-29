@@ -8,10 +8,12 @@ Human-friendlier interface to interact with a X1/X2/X3 node. Intended to test th
 
 1. `git clone` the repository
 2. Run `npm install` for git hooks and prettier (code formatting)
-3. Start the local environment: `docker compose up --build -d`
-4. Run e2e-tests via `./scripts/run-e2e-tests.sh`
 
 The API documentation is available at `http://localhost:8080/swagger-ui.html`.
+
+## Run end-to-tend tests
+
+Run e2e-tests via `./scripts/run-e2e-tests.sh`
 
 ## Further information
 

@@ -7,10 +7,10 @@ sipgate:
       targetUri: https://localhost/X1/NE
       admfIdentifier: admf-id
       clientCertKeyStore:
-        path: "/app/keystore.p12"
+        path: "/tmp/keystore.p12"
         password: changeit
       serverCertTrustStore:
-        path: "/app/truststore.jks"
+        path: "/tmp/truststore.jks"
         password: changeit
 
 management:

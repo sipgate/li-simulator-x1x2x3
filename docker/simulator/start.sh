@@ -2,14 +2,16 @@
 
 set -eu
 
+STORES_PATH=/tmp
+
 echo "Cleaning up old truststore..."
-if [ -f /app/truststore.jks ]; then
-  rm /app/truststore.jks
+if [ -f $STORES_PATH/truststore.jks ]; then
+  rm $STORES_PATH/truststore.jks
 fi
 
 echo "Cleaning up old keystore..."
-if [ -f /app/keystore.p12 ]; then
-  rm /app/keystore.p12
+if [ -f $STORES_PATH/keystore.p12 ]; then
+  rm $STORES_PATH/keystore.p12
 fi
 
 NETWORK_ELEMENT_CA_PATH="${NETWORK_ELEMENT_CA_PATH:-/mutual-tls-stores/ca-certs/network-element-ca.crt}"
@@ -23,7 +25,7 @@ keytool \
   -trustcacerts \
   -alias network-element-ca.crt \
   -file "${NETWORK_ELEMENT_CA_PATH}" \
-  -keystore /app/truststore.jks \
+  -keystore $STORES_PATH/truststore.jks \
   -storepass changeit
 
 echo "Importing client certificate file..."
@@ -33,7 +35,7 @@ echo "Importing client certificate file..."
     -noprompt \
     -alias network-element.crt \
     -file "${NETWORK_ELEMENT_CERT_PATH}" \
-    -keystore /app/truststore.jks \
+    -keystore $STORES_PATH/truststore.jks \
     -storepass changeit
 
 echo "Creating PKCS12 keystore..."
@@ -42,7 +44,7 @@ openssl pkcs12 \
   -export \
   -in "/mutual-tls-stores/certs/simulator.crt" \
   -inkey "/mutual-tls-stores/keys/simulator.key" \
-  -out /app/keystore.p12 \
+  -out $STORES_PATH/keystore.p12 \
   -name simulator \
   -passout pass:changeit
 

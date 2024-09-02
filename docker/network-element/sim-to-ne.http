@@ -1,0 +1,36 @@
+#####
+# reset wiremock state
+POST localhost:8082/__admin/scenarios/reset
+Content-Type: application/json
+Accept: application/json
+
+#####
+# Activate Task
+POST localhost:8082/X1/NE
+Content-Type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:X1Request xmlns:ns1="http://uri.etsi.org/03221/X1/2017/10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ns1:x1RequestMessage xsi:type="ns1:ActivateTaskRequest">
+    <ns1:admfIdentifier>admfID</ns1:admfIdentifier>
+    <ns1:neIdentifier>neID</ns1:neIdentifier>
+    <ns1:messageTimestamp>2017-10-06T18:46:21.247432Z</ns1:messageTimestamp>
+    <ns1:version>v1.6.1</ns1:version>
+    <ns1:x1TransactionId>3741800e-971b-4aa9-85f4-466d2b1adc7f</ns1:x1TransactionId>
+    <ns1:taskDetails>
+      <ns1:xId>50b93d1e-1b53-4d63-aacb-e4d99811bc0b</ns1:xId>
+      <ns1:targetIdentifiers>
+        <ns1:targetIdentifier>
+          <ns1:e164Number>4915799912345</ns1:e164Number>
+        </ns1:targetIdentifier>
+      </ns1:targetIdentifiers>
+      <ns1:deliveryType>X2andX3</ns1:deliveryType>
+      <ns1:listOfDIDs>
+        <ns1:dId>pre-shared-did</ns1:dId>
+      </ns1:listOfDIDs>
+    </ns1:taskDetails>
+  </ns1:x1RequestMessage>
+</ns1:X1Request>
+
+###
+

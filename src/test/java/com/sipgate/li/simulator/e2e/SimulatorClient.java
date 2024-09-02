@@ -17,44 +17,36 @@ class SimulatorClient {
   private final URI baseUri;
   private final ObjectMapper objectMapper;
 
-  SimulatorClient(
-    final HttpClient httpClient,
-    final URI baseUri,
-    final ObjectMapper objectMapper
-  ) {
+  SimulatorClient(final HttpClient httpClient, final URI baseUri, final ObjectMapper objectMapper) {
     this.httpClient = httpClient;
     this.baseUri = baseUri;
     this.objectMapper = objectMapper;
   }
 
-  public <T> T get(final String path, final Class<T> responseType)
+  public <T> T get(final String path, final Class<T> responseType) throws IOException, InterruptedException {
+    return get(path, responseType, 200);
+  }
+
+  public <T> T get(final String path, final Class<T> responseType, final int expectedStatusCode)
     throws IOException, InterruptedException {
-    final var request = HttpRequest.newBuilder()
-      .uri(baseUri.resolve(path))
-      .GET()
-      .build();
+    final var request = HttpRequest.newBuilder().uri(baseUri.resolve(path)).GET().build();
 
     final var response = httpClient.send(request, BodyHandlers.ofString());
-    if (response.statusCode() != 200) {
-      throw new IOException(
-        "Unexpected response code: " + response.statusCode()
-      );
+    if (response.statusCode() != expectedStatusCode) {
+      throw new IOException("Unexpected response code: " + response.statusCode());
     }
 
     final var responseBody = response.body();
+
     return objectMapper.readValue(responseBody, responseType);
   }
 
-  <T> T post(final String path, final Class<T> responseType)
-    throws IOException, InterruptedException {
+  <T> T post(final String path, final Class<T> responseType) throws IOException, InterruptedException {
     return post(path, Map.of(), responseType, 200);
   }
 
-  <T> T post(
-    final String path,
-    final Map<String, String> arguments,
-    final Class<T> responseType
-  ) throws IOException, InterruptedException {
+  <T> T post(final String path, final Map<String, String> arguments, final Class<T> responseType)
+    throws IOException, InterruptedException {
     return post(path, arguments, responseType, 200);
   }
 
@@ -64,49 +56,36 @@ class SimulatorClient {
     final Class<T> responseType,
     final int expectedStatusCode
   ) throws IOException, InterruptedException {
-    final var requestBuilder = HttpRequest.newBuilder()
-      .uri(baseUri.resolve(path))
-      .POST(BodyPublishers.noBody());
+    final var requestBuilder = HttpRequest.newBuilder().uri(baseUri.resolve(path)).POST(BodyPublishers.noBody());
 
     if (!arguments.isEmpty()) {
-      requestBuilder.header(
-        "Content-Type",
-        "application/x-www-form-urlencoded"
-      );
-      requestBuilder.POST(
-        BodyPublishers.ofString(mapFormDataToString(arguments))
-      );
+      requestBuilder.header("Content-Type", "application/x-www-form-urlencoded");
+      requestBuilder.POST(BodyPublishers.ofString(mapFormDataToString(arguments)));
     }
 
     final var request = requestBuilder.build();
 
     final var response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() != expectedStatusCode) {
-      throw new IOException(
-        "Unexpected response code: " + response.statusCode()
-      );
+      throw new IOException("Unexpected response code: " + response.statusCode());
     }
 
     final var responseBody = response.body();
-    return objectMapper.readValue(responseBody, responseType);
+    final var responseBody1 = response.body();
+
+    return objectMapper.readValue(responseBody1, responseType);
   }
 
-  private static String mapFormDataToString(
-    final Map<String, String> formData
-  ) {
+  private static String mapFormDataToString(final Map<String, String> formData) {
     final var formBodyBuilder = new StringBuilder();
     for (final var singleEntry : formData.entrySet()) {
       if (!formBodyBuilder.isEmpty()) {
         formBodyBuilder.append("&");
       }
 
-      formBodyBuilder.append(
-        URLEncoder.encode(singleEntry.getKey(), StandardCharsets.UTF_8)
-      );
+      formBodyBuilder.append(URLEncoder.encode(singleEntry.getKey(), StandardCharsets.UTF_8));
       formBodyBuilder.append("=");
-      formBodyBuilder.append(
-        URLEncoder.encode(singleEntry.getValue(), StandardCharsets.UTF_8)
-      );
+      formBodyBuilder.append(URLEncoder.encode(singleEntry.getValue(), StandardCharsets.UTF_8));
     }
 
     return formBodyBuilder.toString();

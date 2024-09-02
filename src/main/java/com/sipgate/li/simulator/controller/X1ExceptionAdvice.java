@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class X1ExceptionAdvice {
-  private static final Logger LOGGER = LoggerFactory.getLogger(X1ExceptionAdvice.class);
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(X1ExceptionAdvice.class);
 
   @ExceptionHandler(X1ClientException.class)
   public ResponseEntity<ErrorResponse> handleX1ClientException(final X1ClientException e) {
     LOGGER.error("X1ClientException", e);
     if (e.getTopLevelErrorResponse() == null) {
-      return ResponseEntity.internalServerError().build();
+      return ResponseEntity.status(502).build();
     }
 
-    return ResponseEntity.internalServerError().body(new ErrorResponse(e.getTopLevelErrorResponse()));
+    return ResponseEntity.status(502).body(new ErrorResponse(e.getTopLevelErrorResponse()));
   }
 }

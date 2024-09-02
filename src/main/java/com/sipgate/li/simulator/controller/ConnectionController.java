@@ -22,10 +22,7 @@ public class ConnectionController {
   private final X1RequestFactory x1RequestFactory;
   private final X1Client x1Client;
 
-  public ConnectionController(
-    final X1RequestFactory x1RequestFactory,
-    final X1Client x1Client
-  ) {
+  public ConnectionController(final X1RequestFactory x1RequestFactory, final X1Client x1Client) {
     this.x1RequestFactory = x1RequestFactory;
     this.x1Client = x1Client;
   }
@@ -36,16 +33,11 @@ public class ConnectionController {
   )
   @ApiResponses(
     value = {
+      @ApiResponse(responseCode = "200", description = "Ping to the NE was returned."),
       @ApiResponse(
-        responseCode = "200",
-        description = "Ping to the NE was returned."
-      ),
-      @ApiResponse(
-        responseCode = "500",
+        responseCode = "502",
         description = "The PingRequest was not returned properly.",
-        content = @Content(
-          schema = @Schema(implementation = ErrorResponse.class)
-        )
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
   )
@@ -66,22 +58,16 @@ public class ConnectionController {
   )
   @ApiResponses(
     value = {
+      @ApiResponse(responseCode = "200", description = "Keepalive to the NE was returned."),
       @ApiResponse(
-        responseCode = "200",
-        description = "Keepalive to the NE was returned."
-      ),
-      @ApiResponse(
-        responseCode = "500",
+        responseCode = "502",
         description = "The KeepaliveRequest was not returned properly.",
-        content = @Content(
-          schema = @Schema(implementation = ErrorResponse.class)
-        )
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
   )
   @PostMapping("/connection/keepalive")
-  public KeepaliveResponse keepalive()
-    throws X1ClientException, InterruptedException {
+  public KeepaliveResponse keepalive() throws X1ClientException, InterruptedException {
     final var req = x1RequestFactory.create(KeepaliveRequest.class);
     return x1Client.request(req, KeepaliveResponse.class);
   }

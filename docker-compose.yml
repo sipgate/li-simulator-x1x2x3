@@ -17,6 +17,7 @@ services:
         --https-require-client-cert
     ports:
       - "443:443"
+      - "8082:8080"
     networks:
       - li-network
     volumes:

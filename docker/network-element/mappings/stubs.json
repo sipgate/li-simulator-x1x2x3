@@ -7,7 +7,7 @@
         "bodyPatterns": [{ "contains": "PingRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/PingResponse_positive.xml"
+        "bodyFileName": "fixtures/Control/PingResponse_positive.xml"
       }
     },
     {
@@ -17,17 +17,181 @@
         "bodyPatterns": [{ "contains": "KeepaliveRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/KeepaliveResponse_positive.xml"
+        "bodyFileName": "fixtures/Control/KeepaliveResponse_positive.xml"
       }
     },
     {
+      "scenarioName": "Remove Added Task (IndexControllerE2ETest.it_does_not_return_deactivated_tasks)",
+      "requiredScenarioState": "Started",
       "request": {
         "method": "POST",
         "url": "/X1/NE",
-        "bodyPatterns": [{ "contains": "ActivateTaskRequest" }]
+        "bodyPatterns": [{ "contains": "ListAllDetailsRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/ActivateTaskResponse_positive.xml"
+        "bodyFileName": "fixtures/RemoveAddedTask/ListAllDetailsResponse_positive.xml"
+      }
+    },
+    {
+      "scenarioName": "Remove Added Task (IndexControllerE2ETest.it_does_not_return_deactivated_tasks)",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Removable Task was added",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ActivateTaskRequest" }, { "contains": "50b93d1e-1b53-4d63-aacb-e4d99811bc0b" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/RemoveAddedTask/ActivateTaskResponse_positive.xml"
+      }
+    },
+    {
+      "scenarioName": "Remove Added Task (IndexControllerE2ETest.it_does_not_return_deactivated_tasks)",
+      "requiredScenarioState": "Removable Task was added",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ListAllDetailsRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/RemoveAddedTask/ListAllDetailsResponse_positive_with_removable_entry.xml"
+      }
+    },
+    {
+      "scenarioName": "Remove Added Task (IndexControllerE2ETest.it_does_not_return_deactivated_tasks)",
+      "requiredScenarioState": "Removable Task was added",
+      "newScenarioState": "Started",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [
+          { "contains": "DeactivateTaskRequest" },
+          { "contains": "50b93d1e-1b53-4d63-aacb-e4d99811bc0b" }
+        ]
+      },
+      "response": {
+        "bodyFileName": "fixtures/RemoveAddedTask/DeactivateTaskResponse_positive.xml"
+      }
+    },
+
+    {
+      "scenarioName": "CheckTaskDetails",
+      "requiredScenarioState": "Started",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "GetTaskDetailsRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+      }
+    },
+    {
+      "scenarioName": "CheckTaskDetails",
+      "requiredScenarioState": "Started",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ModifyTaskRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+      }
+    },
+    {
+      "scenarioName": "CheckTaskDetails",
+      "requiredScenarioState": "Started",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "DeactivateTaskRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+      }
+    },
+    {
+      "scenarioName": "CheckTaskDetails",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Added",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ActivateTaskRequest" }, { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/CheckTaskDetails/Started/ActivateTaskResponse_positive.xml"
+      }
+    },
+    {
+      "scenarioName": "CheckTaskDetails",
+      "requiredScenarioState": "Added",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [
+          { "contains": "GetTaskDetailsRequest" },
+          { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }
+        ]
+      },
+      "response": {
+        "bodyFileName": "fixtures/CheckTaskDetails/Added/GetTaskDetailsResponse_positive.xml"
+      }
+    },
+    {
+      "scenarioName": "CheckTaskDetails",
+      "requiredScenarioState": "Added",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ActivateTaskRequest" }, { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+      }
+    },
+    {
+      "scenarioName": "CheckTaskDetails",
+      "requiredScenarioState": "Added",
+      "newScenarioState": "Started",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [
+          { "contains": "DeactivateTaskRequest" },
+          { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }
+        ]
+      },
+      "response": {
+        "bodyFileName": "fixtures/CheckTaskDetails/Added/DeactivateTaskResponse_positive.xml"
+      }
+    },
+    {
+      "scenarioName": "CheckTaskDetails",
+      "requiredScenarioState": "Added",
+      "newScenarioState": "Modified",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ModifyTaskRequest" }, { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/CheckTaskDetails/Added/ModifyTaskResponse_positive.xml"
+      }
+    },
+    {
+      "scenarioName": "CheckTaskDetails",
+      "requiredScenarioState": "Modified",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [
+          { "contains": "GetTaskDetailsRequest" },
+          { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }
+        ]
+      },
+      "response": {
+        "bodyFileName": "fixtures/CheckTaskDetails/Modified/GetTaskDetailsResponse_positive.xml"
       }
     },
     {
@@ -38,16 +202,6 @@
       },
       "response": {
         "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
-      }
-    },
-    {
-      "request": {
-        "method": "POST",
-        "url": "/X1/NE",
-        "bodyPatterns": [{ "contains": "ListAllDetailsRequest" }]
-      },
-      "response": {
-        "bodyFileName": "fixtures/ListAllDetailsResponse_positive.xml"
       }
     }
   ]

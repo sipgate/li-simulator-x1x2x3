@@ -19,10 +19,7 @@ public class TaskController {
   private final X1RequestFactory x1RequestFactory;
   private final X1Client x1Client;
 
-  public TaskController(
-    final X1RequestFactory x1RequestFactory,
-    final X1Client x1Client
-  ) {
+  public TaskController(final X1RequestFactory x1RequestFactory, final X1Client x1Client) {
     this.x1RequestFactory = x1RequestFactory;
     this.x1Client = x1Client;
   }
@@ -52,11 +49,9 @@ public class TaskController {
     value = {
       @ApiResponse(responseCode = "200", description = "Task was created."),
       @ApiResponse(
-        responseCode = "500",
+        responseCode = "502",
         description = "The TaskActivateRequest was not returned properly.",
-        content = @Content(
-          schema = @Schema(implementation = ErrorResponse.class)
-        )
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
   )
@@ -66,7 +61,7 @@ public class TaskController {
     @RequestParam final String destinationId,
     @RequestParam final String xId
   ) throws X1ClientException, InterruptedException {
-    final var taskDetails = getTaskDetails(e164number, destinationId, xId);
+    final var taskDetails = makeTaskDetails(e164number, destinationId, xId);
 
     final var req = x1RequestFactory.create(ActivateTaskRequest.class);
     req.setTaskDetails(taskDetails);
@@ -75,11 +70,7 @@ public class TaskController {
     return new TaskActivatedResponse(resp, xId);
   }
 
-  private static TaskDetails getTaskDetails(
-    final String e164number,
-    final String destinationId,
-    final String xId
-  ) {
+  private static TaskDetails makeTaskDetails(final String e164number, final String destinationId, final String xId) {
     final var targetIdentifier = new TargetIdentifier();
     targetIdentifier.setE164Number(e164number);
 
@@ -108,22 +99,19 @@ public class TaskController {
     value = {
       @ApiResponse(responseCode = "200", description = "Task was updated."),
       @ApiResponse(
-        responseCode = "500",
+        responseCode = "502",
         description = "The TaskModifyRequest was not returned properly.",
-        content = @Content(
-          schema = @Schema(implementation = ErrorResponse.class)
-        )
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
   )
   @PostMapping("/updateTask")
-  // TODO: Check if implementing PatchMapping is worth it
   public ModifyTaskResponse updateTask(
     @RequestParam final String e164number,
     @RequestParam final String destinationId,
     @RequestParam final String xId
   ) throws X1ClientException, InterruptedException {
-    final var taskDetails = getTaskDetails(e164number, destinationId, xId);
+    final var taskDetails = makeTaskDetails(e164number, destinationId, xId);
     final var req = x1RequestFactory.create(ModifyTaskRequest.class);
     req.setTaskDetails(taskDetails);
 
@@ -140,11 +128,9 @@ public class TaskController {
     value = {
       @ApiResponse(responseCode = "200", description = "Task was removed."),
       @ApiResponse(
-        responseCode = "500",
+        responseCode = "502",
         description = "The TaskDeactivateRequest was not returned properly.",
-        content = @Content(
-          schema = @Schema(implementation = ErrorResponse.class)
-        )
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
   )

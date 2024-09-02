@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:X1Response xmlns:ns1="http://uri.etsi.org/03221/X1/2017/10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<ns1:x1ResponseMessage xsi:type="ns1:GetTaskDetailsResponse">
+		<ns1:admfIdentifier>admfID</ns1:admfIdentifier>
+		<ns1:neIdentifier>neID</ns1:neIdentifier>
+		<ns1:messageTimestamp>2017-10-06T18:46:21.420587Z</ns1:messageTimestamp>
+		<ns1:version>v1.6.1</ns1:version>
+		<ns1:x1TransactionId>609dcabd-5ab1-4c95-9681-a24681f105ac</ns1:x1TransactionId>
+		<ns1:taskResponseDetails>
+			<ns1:taskDetails>
+				<ns1:xId>55b848ea-b4c2-4d80-a4c9-46592792e5b7</ns1:xId>
+				<ns1:targetIdentifiers>
+					<ns1:targetIdentifier>
+						<ns1:e164Number>416701234</ns1:e164Number>
+					</ns1:targetIdentifier>
+				</ns1:targetIdentifiers>
+				<ns1:deliveryType>X2andX3</ns1:deliveryType>
+				<ns1:listOfDIDs>
+					<ns1:dId>pre-shared-did</ns1:dId>
+				</ns1:listOfDIDs>
+			</ns1:taskDetails>
+			<ns1:taskStatus>
+				<ns1:provisioningStatus>complete</ns1:provisioningStatus>
+				<ns1:listOfFaults/>
+			</ns1:taskStatus>
+		</ns1:taskResponseDetails>
+	</ns1:x1ResponseMessage>
+</ns1:X1Response>

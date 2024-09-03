@@ -15,7 +15,6 @@ if [ -f $STORES_PATH/keystore.p12 ]; then
 fi
 
 NETWORK_ELEMENT_CA_PATH="${NETWORK_ELEMENT_CA_PATH:-/mutual-tls-stores/ca-certs/network-element-ca.crt}"
-NETWORK_ELEMENT_CERT_PATH="${NETWORK_ELEMENT_CERT_PATH:-/mutual-tls-stores/certs/network-element.crt}"
 
 echo "Importing CA certificate file..."
 keytool \
@@ -27,16 +26,6 @@ keytool \
   -file "${NETWORK_ELEMENT_CA_PATH}" \
   -keystore $STORES_PATH/truststore.jks \
   -storepass changeit
-
-echo "Importing client certificate file..."
-  keytool \
-    -import \
-    -storetype jks \
-    -noprompt \
-    -alias network-element.crt \
-    -file "${NETWORK_ELEMENT_CERT_PATH}" \
-    -keystore $STORES_PATH/truststore.jks \
-    -storepass changeit
 
 echo "Creating PKCS12 keystore..."
 

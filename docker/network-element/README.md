@@ -1,63 +1,33 @@
 # State Machines for Scenarios
 
-To restart a scenario, send an empty PUT to /\_\_admin/scenarios/my_scenario/state.
+To restart a scenario, send an empty POST to /\_\_admin/scenarios/reset.
 
-## Remove Added Task
-
-```mermaid
-flowchart LR
-  started["Started"] --ActivateTaskRequest--> added["Task was added"]
-
-  started --"ListAllDetailsResponse positive"--> started
-
-  added --"ListAllDetailsResponse positive with removable entry" --> added
-
-  added --"DeactivateTaskRequest"--> started
-```
-
-## Check Task Details
+## Check Destination Details and Task
 
 ```mermaid
 flowchart LR
+  started["Started"] --ActivateDestinationRequest--> destination_added["Destination Added"]
+  started --"GetDestinationDetails fails" --> started
+  started --"ModifyDestinationRequest fails" --> started
+  started --"DeactivateDestinationRequest fails" --> started
+  started --"ActivateTaskRequest with unknown dID fails"--> started
+  destination_added --"GetDestinationDetails positive" --> destination_added
+  destination_added --ModifyDestinationRequest--> destination_modified["Destination Modified"]
+  destination_modified --"GetDestinationDetails with other data!" --> destination_modified
+  destination_added --"ActivateDestinationRequest fails" --> destination_added
+  destination_added --"DeactivateDestinationRequest positive" --> started
+  destination_added --"ActivateTaskRequest with existing dID positive"-->task_added["Task Added"]
+  task_added --"GetDestinationDetails with task data" --> task_added
+  task_added --"DeactivateDestinationRequest fails (depending task)"--> task_added
+  task_added --"DeactivateTaskRequest"--> destination_added
+  destination_added --"GetTaskDetails fails" --> destination_added
+  destination_added --"ModifyTaskRequest fails" --> destination_added
+  destination_added --"DeactivateTaskRequest fails" --> destination_added
+  destination_added --"ListAllDetailsRequest is empty" --> destination_added
+  task_added --"GetTaskDetails positive" --> task_added
+  task_added --"ListAllDetailsRequest contains entry" --> task_added
+  task_added --ModifyTaskRequest--> task_modified["Task Modified"]
+  task_modified --"GetTaskDetails with other data!" --> task_modified
+  task_added --"ActivateTaskRequest fails" --> task_added
 
-  subgraph Test0: Unknown
-    started
-  end
-
-  subgraph Test1: Just create
-    added
-  end
-
-  subgraph Test2: with modify
-    added1["Added"]
-    modified
-  end
-
-  subgraph Test3: Duplicate xId
-    added2["Added"]
-  end
-
-  subgraph Test4: Delete
-    added3["Added"]
-    empty>"Started"]
-  end
-
-
-  started["Started"] --ActivateTaskRequest--> added["Added"]
-
-  started --"GetTaskDetails 404" --> started
-  started --"ModifyTaskRequest 404" --> started
-  started --"DeactivateTaskRequest 404" --> started
-
-  added --"GetTaskDetails positive" --> added
-
-  added === added1
-  added1 --ModifyTaskRequest--> modified["Modified"]
-  modified --"GetTaskDetails with other data!" --> modified
-
-  added === added2
-  added2 --"ActivateTaskRequest 409" --> added2
-
-  added === added3
-  added3 --"DeactivateTaskRequest 200" --> empty
 ```

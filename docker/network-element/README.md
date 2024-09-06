@@ -4,9 +4,11 @@ To restart a scenario, send an empty POST to /\_\_admin/scenarios/reset.
 
 ## Check Destination Details and Task
 
+✅
+
 ```mermaid
 flowchart LR
-  started["Started"] --ActivateDestinationRequest--> destination_added["Destination Added"]
+  started["Started"] --"CreateDestinationRequest ✅"--> destination_added["Destination Added"]
   started --"GetDestinationDetails fails" --> started
   started --"ModifyDestinationRequest fails" --> started
   started --"DeactivateDestinationRequest fails" --> started
@@ -14,7 +16,7 @@ flowchart LR
   destination_added --"GetDestinationDetails positive" --> destination_added
   destination_added --ModifyDestinationRequest--> destination_modified["Destination Modified"]
   destination_modified --"GetDestinationDetails with other data!" --> destination_modified
-  destination_added --"ActivateDestinationRequest fails" --> destination_added
+  destination_added --"CreateDestinationRequest fails  ✅" --> destination_added
   destination_added --"DeactivateDestinationRequest positive" --> started
   destination_added --"ActivateTaskRequest with existing dID positive"-->task_added["Task Added"]
   task_added --"GetDestinationDetails with task data" --> task_added

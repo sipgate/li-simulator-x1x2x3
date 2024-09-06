@@ -1,26 +1,6 @@
 {
   "mappings": [
     {
-      "request": {
-        "method": "POST",
-        "url": "/X1/NE",
-        "bodyPatterns": [{ "contains": "PingRequest" }]
-      },
-      "response": {
-        "bodyFileName": "fixtures/Control/PingResponse_positive.xml"
-      }
-    },
-    {
-      "request": {
-        "method": "POST",
-        "url": "/X1/NE",
-        "bodyPatterns": [{ "contains": "KeepaliveRequest" }]
-      },
-      "response": {
-        "bodyFileName": "fixtures/Control/KeepaliveResponse_positive.xml"
-      }
-    },
-    {
       "scenarioName": "Remove Added Task (IndexControllerE2ETest.it_does_not_return_deactivated_tasks)",
       "requiredScenarioState": "Started",
       "request": {

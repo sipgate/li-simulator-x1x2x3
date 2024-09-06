@@ -1,0 +1,17 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "DestinationAdded",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "CreateDestinationRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/Started/CreateDestinationResponse_positive.xml"
+      }
+    }
+  ]
+}

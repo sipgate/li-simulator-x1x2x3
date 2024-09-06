@@ -71,9 +71,8 @@ class SimulatorClient {
     }
 
     final var responseBody = response.body();
-    final var responseBody1 = response.body();
 
-    return objectMapper.readValue(responseBody1, responseType);
+    return objectMapper.readValue(responseBody, responseType);
   }
 
   private static String mapFormDataToString(final Map<String, String> formData) {

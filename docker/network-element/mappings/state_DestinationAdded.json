@@ -1,0 +1,16 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "DestinationAdded",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "CreateDestinationRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+      }
+    }
+  ]
+}

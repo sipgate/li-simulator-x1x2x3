@@ -9,11 +9,11 @@ To restart a scenario, send an empty POST to /\_\_admin/scenarios/reset.
 ```mermaid
 flowchart LR
   started["Started"] --"CreateDestinationRequest ✅"--> destination_added["Destination Added"]
-  started --"GetDestinationDetails fails" --> started
+  started --"GetDestinationDetails fails ✅" --> started
   started --"ModifyDestinationRequest fails" --> started
   started --"DeactivateDestinationRequest fails" --> started
   started --"ActivateTaskRequest with unknown dID fails"--> started
-  destination_added --"GetDestinationDetails positive" --> destination_added
+  destination_added --"GetDestinationDetails positive  ✅" --> destination_added
   destination_added --ModifyDestinationRequest--> destination_modified["Destination Modified"]
   destination_modified --"GetDestinationDetails with other data!" --> destination_modified
   destination_added --"CreateDestinationRequest fails  ✅" --> destination_added

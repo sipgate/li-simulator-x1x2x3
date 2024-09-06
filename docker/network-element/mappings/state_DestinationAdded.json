@@ -11,6 +11,18 @@
       "response": {
         "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
       }
+    },
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "DestinationAdded",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "GetDestinationDetailsRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/DestinationAdded/GetDestinationDetailsResponse_positive.xml"
+      }
     }
   ]
 }

@@ -15,6 +15,7 @@ import org.etsi.uri._03221.x1._2017._10.*;
 import org.etsi.uri._03280.common._2017._07.IPAddress;
 import org.etsi.uri._03280.common._2017._07.IPAddressPort;
 import org.etsi.uri._03280.common._2017._07.Port;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,6 +69,31 @@ public class DestinationController {
     createDestinationRequest.setDestinationDetails(destinationDetails);
 
     return x1Client.request(createDestinationRequest, CreateDestinationResponse.class);
+  }
+
+  @Operation(
+    summary = "Get destination",
+    description = """
+      Used by the ADMF to get information of a destination
+    """
+  )
+  @ApiResponses(
+    value = {
+      @ApiResponse(responseCode = "200", description = "Destination was found."),
+      @ApiResponse(
+        responseCode = "502",
+        description = "The GetDestinationDetails operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+      ),
+    }
+  )
+  @GetMapping("/destination")
+  public GetDestinationDetailsResponse getDestination(@RequestParam final UUID dId)
+    throws X1ClientException, InterruptedException {
+    final var req = x1RequestFactory.create(GetDestinationDetailsRequest.class);
+    req.setDId(dId.toString());
+
+    return x1Client.request(req, GetDestinationDetailsResponse.class);
   }
 
   private DestinationDetails makeDestinationDetails(

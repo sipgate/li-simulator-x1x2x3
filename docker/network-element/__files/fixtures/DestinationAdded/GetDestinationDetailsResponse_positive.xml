@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:X1Response xmlns:ns1="http://uri.etsi.org/03221/X1/2017/10" xmlns:ns2="http://uri.etsi.org/03280/common/2017/07" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<ns1:x1ResponseMessage xsi:type="ns1:GetDestinationDetailsResponse">
+		<ns1:admfIdentifier>admfID</ns1:admfIdentifier>
+		<ns1:neIdentifier>neID</ns1:neIdentifier>
+		<ns1:messageTimestamp>2017-10-06T18:46:21.462616Z</ns1:messageTimestamp>
+		<ns1:version>v1.6.1</ns1:version>
+		<ns1:x1TransactionId>7de5709c-8269-417f-a123-7087d3971f8c</ns1:x1TransactionId>
+		<ns1:destinationResponseDetails>
+			<ns1:destinationDetails>
+				<ns1:dId>4faa0058-25ec-42c9-a945-4c3c8e0c7f8d</ns1:dId>
+				<ns1:deliveryType>X2Only</ns1:deliveryType>
+				<ns1:friendlyName>we-are-friendly.example.com</ns1:friendlyName>
+				<ns1:deliveryAddress>
+					<ns1:ipAddressAndPort>
+						<ns2:address>
+							<ns2:IPv4Address>192.0.2.23</ns2:IPv4Address>
+						</ns2:address>
+						<ns2:port>
+							<ns2:TCPPort>12345</ns2:TCPPort>
+						</ns2:port>
+					</ns1:ipAddressAndPort>
+				</ns1:deliveryAddress>
+			</ns1:destinationDetails>
+			<ns1:destinationStatus>
+				<ns1:destinationDeliveryStatus>activeAndWorking</ns1:destinationDeliveryStatus>
+				<ns1:listOfFaults/>
+			</ns1:destinationStatus>
+		</ns1:destinationResponseDetails>
+	</ns1:x1ResponseMessage>
+</ns1:X1Response>

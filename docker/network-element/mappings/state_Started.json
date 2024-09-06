@@ -12,6 +12,18 @@
       "response": {
         "bodyFileName": "fixtures/Started/CreateDestinationResponse_positive.xml"
       }
+    },
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "Started",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "GetDestinationDetailsRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+      }
     }
   ]
 }

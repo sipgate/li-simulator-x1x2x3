@@ -30,6 +30,16 @@ public class TaskController {
     Used by the ADMF to check the details of a running task. The details can include more information like the number of extracted bytes, the state of the interception, etc.
     """
   )
+  @ApiResponses(
+    value = {
+      @ApiResponse(responseCode = "200", description = "Task is returned."),
+      @ApiResponse(
+        responseCode = "502",
+        description = "The GetTaskDetails operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+      ),
+    }
+  )
   @GetMapping("/task")
   public GetTaskDetailsResponse getTaskDetails(@RequestParam final String xId)
     throws X1ClientException, InterruptedException {
@@ -50,7 +60,7 @@ public class TaskController {
       @ApiResponse(responseCode = "200", description = "Task was created."),
       @ApiResponse(
         responseCode = "502",
-        description = "The TaskActivateRequest was not returned properly.",
+        description = "The TaskActivate operation was not handled properly.",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
@@ -100,7 +110,7 @@ public class TaskController {
       @ApiResponse(responseCode = "200", description = "Task was updated."),
       @ApiResponse(
         responseCode = "502",
-        description = "The TaskModifyRequest was not returned properly.",
+        description = "The TaskModify operation was not handled properly.",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
@@ -129,7 +139,7 @@ public class TaskController {
       @ApiResponse(responseCode = "200", description = "Task was removed."),
       @ApiResponse(
         responseCode = "502",
-        description = "The TaskDeactivateRequest was not returned properly.",
+        description = "The TaskDeactivate operation was not handled properly.",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }

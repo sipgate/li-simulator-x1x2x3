@@ -23,6 +23,19 @@
       "response": {
         "bodyFileName": "fixtures/DestinationAdded/GetDestinationDetailsResponse_positive.xml"
       }
+    },
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "DestinationAdded",
+      "newScenarioState": "DestinationModified",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ModifyDestinationRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/DestinationAdded/ModifyDestinationResponse_positive.xml"
+      }
     }
   ]
 }

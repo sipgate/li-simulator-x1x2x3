@@ -11,11 +11,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.UUID;
-import org.etsi.uri._03221.x1._2017._10.*;
+import org.etsi.uri._03221.x1._2017._10.CreateDestinationRequest;
+import org.etsi.uri._03221.x1._2017._10.CreateDestinationResponse;
+import org.etsi.uri._03221.x1._2017._10.DeliveryAddress;
+import org.etsi.uri._03221.x1._2017._10.DeliveryType;
+import org.etsi.uri._03221.x1._2017._10.DestinationDetails;
+import org.etsi.uri._03221.x1._2017._10.GetDestinationDetailsRequest;
+import org.etsi.uri._03221.x1._2017._10.GetDestinationDetailsResponse;
+import org.etsi.uri._03221.x1._2017._10.ModifyDestinationRequest;
+import org.etsi.uri._03221.x1._2017._10.ModifyDestinationResponse;
 import org.etsi.uri._03280.common._2017._07.IPAddress;
 import org.etsi.uri._03280.common._2017._07.IPAddressPort;
 import org.etsi.uri._03280.common._2017._07.Port;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,8 +70,8 @@ public class DestinationController {
       dId,
       friendlyName,
       deliveryType,
-      tcpPort,
-      ipAddress
+      ipAddress,
+      tcpPort
     );
 
     final var createDestinationRequest = x1RequestFactory.create(CreateDestinationRequest.class);
@@ -96,12 +105,45 @@ public class DestinationController {
     return x1Client.request(req, GetDestinationDetailsResponse.class);
   }
 
+  @Operation(
+    summary = "Update Destination",
+    description = """
+    Used by the ADMF to update an existing Destination.
+    """
+  )
+  @ApiResponses(
+    value = {
+      @ApiResponse(responseCode = "200", description = "Destination was updated."),
+      @ApiResponse(
+        responseCode = "502",
+        description = "The DestinationModify operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+      ),
+    }
+  )
+  @PostMapping("/destination/{dId}")
+  public ModifyDestinationResponse updateDestination(
+    @PathVariable final UUID dId,
+    @RequestParam final String friendlyName,
+    @RequestParam final DeliveryType deliveryType,
+    @Parameter(
+      description = "will be treated as ipv6 if there is a colon (:) in the ip address"
+    ) @RequestParam final String ipAddress,
+    @RequestParam final Integer tcpPort
+  ) throws X1ClientException, InterruptedException {
+    final var destinationDetails = makeDestinationDetails(dId, friendlyName, deliveryType, ipAddress, tcpPort);
+    final var req = x1RequestFactory.create(ModifyDestinationRequest.class);
+    req.setDestinationDetails(destinationDetails);
+
+    return x1Client.request(req, ModifyDestinationResponse.class);
+  }
+
   private DestinationDetails makeDestinationDetails(
     final UUID dId,
     final String friendlyName,
     final DeliveryType deliveryType,
-    final Integer tcpPort,
-    final String ip
+    final String ip,
+    final Integer tcpPort
   ) {
     final var destinationDetails = new DestinationDetails();
     destinationDetails.setFriendlyName(friendlyName);
@@ -110,7 +152,7 @@ public class DestinationController {
 
     final var port = new Port();
     port.setTCPPort(tcpPort);
-    final IPAddress ipAddress = new IPAddress();
+    final var ipAddress = new IPAddress();
 
     if (ip.contains(":")) {
       ipAddress.setIPv6Address(ip);

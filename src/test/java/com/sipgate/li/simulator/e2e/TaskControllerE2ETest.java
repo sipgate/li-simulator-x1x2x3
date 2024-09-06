@@ -24,14 +24,7 @@ class TaskControllerE2ETest {
     throws IOException, InterruptedException {
     return client.post(
       "/task",
-      Map.of(
-        "e164number",
-        E164NUMBER,
-        "destinationId",
-        "pre-shared-did",
-        "xId",
-        "55b848ea-b4c2-4d80-a4c9-46592792e5b7"
-      ),
+      Map.of("e164number", E164NUMBER, "destinationId", "any-did", "xId", "55b848ea-b4c2-4d80-a4c9-46592792e5b7"),
       TaskActivatedResponse.class
     );
   }

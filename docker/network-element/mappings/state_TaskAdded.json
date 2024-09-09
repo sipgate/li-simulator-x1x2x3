@@ -2,56 +2,19 @@
   "mappings": [
     {
       "scenarioName": "all",
-      "requiredScenarioState": "Started",
-      "newScenarioState": "DestinationAdded",
+      "requiredScenarioState": "TaskAdded",
       "request": {
         "method": "POST",
         "url": "/X1/NE",
-        "bodyPatterns": [{ "contains": "CreateDestinationRequest" }]
+        "bodyPatterns": [{ "contains": "GetTaskDetailsRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/Started/CreateDestinationResponse_positive.xml"
+        "bodyFileName": "fixtures/TaskAdded/GetTaskDetailsResponse_positive.xml"
       }
     },
     {
       "scenarioName": "all",
-      "requiredScenarioState": "Started",
-      "request": {
-        "method": "POST",
-        "url": "/X1/NE",
-        "bodyPatterns": [{ "contains": "GetDestinationDetailsRequest" }]
-      },
-      "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
-      }
-    },
-    {
-      "scenarioName": "all",
-      "requiredScenarioState": "Started",
-      "request": {
-        "method": "POST",
-        "url": "/X1/NE",
-        "bodyPatterns": [{ "contains": "ModifyDestinationRequest" }]
-      },
-      "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
-      }
-    },
-    {
-      "scenarioName": "all",
-      "requiredScenarioState": "Started",
-      "request": {
-        "method": "POST",
-        "url": "/X1/NE",
-        "bodyPatterns": [{ "contains": "RemoveDestinationRequest" }]
-      },
-      "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
-      }
-    },
-    {
-      "scenarioName": "all",
-      "requiredScenarioState": "Started",
+      "requiredScenarioState": "TaskAdded",
       "request": {
         "method": "POST",
         "url": "/X1/NE",
@@ -63,14 +26,52 @@
     },
     {
       "scenarioName": "all",
-      "requiredScenarioState": "Started",
+      "requiredScenarioState": "TaskAdded",
+      "newScenarioState": "DestinationAdded",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "DeactivateTaskRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TaskAdded/DeactivateTaskResponse_positive.xml"
+      }
+    },
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "TaskAdded",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "RemoveDestinationRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+      }
+    },
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "TaskAdded",
+      "newScenarioState": "TaskModified",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ModifyTaskRequest" }, { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TaskAdded/ModifyTaskResponse_positive.xml"
+      }
+    },
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "TaskAdded",
       "request": {
         "method": "POST",
         "url": "/X1/NE",
         "bodyPatterns": [{ "contains": "ListAllDetailsRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/Started/ListAllDetailsResponse_positive.xml"
+        "bodyFileName": "fixtures/TaskAdded/ListAllDetailsResponse_positive.xml"
       }
     }
   ]

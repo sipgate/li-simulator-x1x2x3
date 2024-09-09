@@ -38,19 +38,13 @@ class ConnectionControllerTest {
     // THEN
     switch (response) {
       case final KeepaliveResponse keepaliveResponse:
-        assertThat(keepaliveResponse.getOK()).isEqualTo(
-          OK.ACKNOWLEDGED_AND_COMPLETED
-        );
+        assertThat(keepaliveResponse.getOK()).isEqualTo(OK.ACKNOWLEDGED_AND_COMPLETED);
         break;
       case final PingResponse pingResponse:
-        assertThat(pingResponse.getOK()).isEqualTo(
-          OK.ACKNOWLEDGED_AND_COMPLETED
-        );
+        assertThat(pingResponse.getOK()).isEqualTo(OK.ACKNOWLEDGED_AND_COMPLETED);
         break;
       default:
-        throw new RuntimeException(
-          "Unexpected response type: " + response.getClass()
-        );
+        throw new RuntimeException("Unexpected response type: " + response.getClass());
     }
   }
 }

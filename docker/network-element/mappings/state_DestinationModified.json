@@ -1,0 +1,16 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "DestinationModified",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "GetDestinationDetailsRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/DestinationModified/GetDestinationDetailsResponse_positive.xml"
+      }
+    }
+  ]
+}

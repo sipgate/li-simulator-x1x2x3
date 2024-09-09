@@ -1,0 +1,19 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "TaskModified",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [
+          { "contains": "GetTaskDetailsRequest" },
+          { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }
+        ]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TaskModified/GetTaskDetailsResponse_positive.xml"
+      }
+    }
+  ]
+}

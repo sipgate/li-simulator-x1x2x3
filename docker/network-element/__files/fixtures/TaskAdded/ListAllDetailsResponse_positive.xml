@@ -7,13 +7,10 @@
         <ns1:version>v1.6.1</ns1:version>
         <ns1:x1TransactionId>09529160-2e44-49c6-bf54-204ca5edcfab</ns1:x1TransactionId>
         <ns1:ListOfXIDs>
-            <ns1:xId>29f28e1c-f230-486a-a860-f5a784ab9172</ns1:xId>
-            <ns1:xId>4f79fd4a-b237-48c3-b5d3-334ed9191f33</ns1:xId>
-						<ns1:xId>50b93d1e-1b53-4d63-aacb-e4d99811bc0b</ns1:xId>
+					<ns1:xId>55b848ea-b4c2-4d80-a4c9-46592792e5b7</ns1:xId>
         </ns1:ListOfXIDs>
         <ns1:ListOfDIDs>
-            <ns1:dId>b0ce308c-aa17-42bd-a27b-287bcb5b3468</ns1:dId>
-            <ns1:dId>6d44e794-707a-4338-8c43-15f4213f508a</ns1:dId>
+            <ns1:dId>4faa0058-25ec-42c9-a945-4c3c8e0c7f8d</ns1:dId>
         </ns1:ListOfDIDs>
     </ns1:x1ResponseMessage>
 </ns1:X1Response>

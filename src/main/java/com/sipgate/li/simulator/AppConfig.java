@@ -54,13 +54,8 @@ public class AppConfig {
   }
 
   @Bean
-  public X1RequestFactory x1RequestFactory()
-    throws DatatypeConfigurationException {
-    return new X1RequestFactory(
-      DatatypeFactory.newInstance(),
-      targetUri.getHost(),
-      admfIdentifier
-    );
+  public X1RequestFactory x1RequestFactory() throws DatatypeConfigurationException {
+    return new X1RequestFactory(DatatypeFactory.newInstance(), targetUri.getHost(), admfIdentifier);
   }
 
   @Bean
@@ -69,10 +64,7 @@ public class AppConfig {
     return X1ClientBuilder.newBuilder()
       .withTarget(targetUri)
       .withKeyStore(clientCertKeyStore.path(), clientCertKeyStore.password())
-      .withTrustStore(
-        serverCertTrustStore.path(),
-        serverCertTrustStore.password()
-      )
+      .withTrustStore(serverCertTrustStore.path(), serverCertTrustStore.password())
       .build();
   }
 }

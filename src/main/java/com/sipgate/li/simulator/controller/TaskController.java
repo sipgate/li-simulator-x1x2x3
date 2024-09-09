@@ -69,9 +69,10 @@ public class TaskController {
   public TaskActivatedResponse activateTask(
     @RequestParam final String e164number,
     @RequestParam final String destinationId,
-    @RequestParam final String xId
+    @RequestParam final String xId,
+    @RequestParam final DeliveryType deliveryType
   ) throws X1ClientException, InterruptedException {
-    final var taskDetails = makeTaskDetails(e164number, destinationId, xId);
+    final var taskDetails = makeTaskDetails(e164number, destinationId, xId, deliveryType);
 
     final var req = x1RequestFactory.create(ActivateTaskRequest.class);
     req.setTaskDetails(taskDetails);
@@ -80,7 +81,12 @@ public class TaskController {
     return new TaskActivatedResponse(resp, xId);
   }
 
-  private static TaskDetails makeTaskDetails(final String e164number, final String destinationId, final String xId) {
+  private static TaskDetails makeTaskDetails(
+    final String e164number,
+    final String destinationId,
+    final String xId,
+    final DeliveryType deliveryType
+  ) {
     final var targetIdentifier = new TargetIdentifier();
     targetIdentifier.setE164Number(e164number);
 
@@ -94,7 +100,7 @@ public class TaskController {
     taskDetails.setXId(xId);
     taskDetails.setTargetIdentifiers(targetIdentifiers);
 
-    taskDetails.setDeliveryType(DeliveryType.X_2_AND_X_3);
+    taskDetails.setDeliveryType(deliveryType);
     taskDetails.setListOfDIDs(dids);
     return taskDetails;
   }
@@ -117,11 +123,12 @@ public class TaskController {
   )
   @PostMapping("/task/{xId}")
   public ModifyTaskResponse updateTask(
+    @PathVariable final String xId,
     @RequestParam final String e164number,
     @RequestParam final String destinationId,
-    @PathVariable final String xId
+    @RequestParam final DeliveryType deliveryType
   ) throws X1ClientException, InterruptedException {
-    final var taskDetails = makeTaskDetails(e164number, destinationId, xId);
+    final var taskDetails = makeTaskDetails(e164number, destinationId, xId, deliveryType);
     final var req = x1RequestFactory.create(ModifyTaskRequest.class);
     req.setTaskDetails(taskDetails);
 

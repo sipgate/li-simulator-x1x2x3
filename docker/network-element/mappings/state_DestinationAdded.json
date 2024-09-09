@@ -94,10 +94,30 @@
       "request": {
         "method": "POST",
         "url": "/X1/NE",
-        "bodyPatterns": [{ "contains": "ActivateTaskRequest" }, { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }]
+        "bodyPatterns": [
+          { "contains": "ActivateTaskRequest" },
+          { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" },
+          { "contains": "X2Only" }
+        ]
       },
       "response": {
         "bodyFileName": "fixtures/DestinationAdded/ActivateTaskResponse_positive.xml"
+      }
+    },
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "DestinationAdded",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [
+          { "contains": "ActivateTaskRequest" },
+          { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" },
+          { "contains": "X3Only" }
+        ]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
       }
     },
     {

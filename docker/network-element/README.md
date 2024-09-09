@@ -21,6 +21,7 @@ flowchart LR
   destination_added --"CreateDestinationRequest fails ✅" --> destination_added
   destination_added --"RemoveDestinationRequest positive ✅" --> started
   destination_added --"ActivateTaskRequest with existing dID positive ✅"-->task_added["Task Added"]
+  destination_added --"ActivateTaskRequest fails because of DeliveryType mismatch ✅" --> destination_added
   task_added --"RemoveDestinationRequest fails (depending task) ✅"--> task_added
   task_added --"DeactivateTaskRequest ✅"--> destination_added
   destination_added --"GetTaskDetails fails ✅" --> destination_added
@@ -31,6 +32,7 @@ flowchart LR
   task_added --"ListAllDetailsRequest has task and destination ✅" --> task_added
   task_added --ModifyTaskRequest ✅--> task_modified["Task Modified"]
   task_modified --"GetTaskDetails with other data ✅" --> task_modified
+  task_added --"ModifyTaskRequest fails because of DeliveryType mismatch ✅" --> task_added
   task_added --"ActivateTaskRequest fails ✅" --> task_added
 
 ```

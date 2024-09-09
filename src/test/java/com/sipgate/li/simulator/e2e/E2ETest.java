@@ -1,7 +1,7 @@
 package com.sipgate.li.simulator.e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.etsi.uri._03221.x1._2017._10.DeliveryType.X_2_ONLY;
+import static org.etsi.uri._03221.x1._2017._10.DeliveryType.*;
 
 import com.sipgate.li.simulator.controller.IndexController;
 import com.sipgate.li.simulator.controller.response.ErrorResponse;
@@ -10,14 +10,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import org.etsi.uri._03221.x1._2017._10.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+@Tag("E2E")
 @ExtendWith(SimulatorClientExtension.class)
 public class E2ETest {
 
@@ -175,7 +175,7 @@ public class E2ETest {
     void it_fails_to_modify_unknown_task(final SimulatorClient client) throws IOException, InterruptedException {
       client.post(
         "/task/" + UUID.randomUUID(),
-        Map.of("destinationId", "some-destination-id", "e164number", "some-e164"),
+        Map.of("destinationId", "some-destination-id", "e164number", "some-e164", "deliveryType", X_2_ONLY.name()),
         ErrorResponse.class,
         502
       );
@@ -190,13 +190,36 @@ public class E2ETest {
     void it_creates_task(final SimulatorClient client) throws IOException, InterruptedException {
       final var response = client.post(
         "/task",
-        Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.value()),
+        Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.name()),
         TaskActivatedResponse.class,
         200
       );
 
       assertThat(response.activateTaskResponse().getOK()).isEqualTo(OK.ACKNOWLEDGED_AND_COMPLETED);
       assertThat(response.xId()).isEqualTo(X_ID);
+    }
+
+    @Test
+    void it_fails_to_activate_task_with_mismatching_delivery_type(final SimulatorClient client)
+      throws IOException, InterruptedException {
+      final var mismatchingDeliveryType = X_3_ONLY;
+      assertThat(DESTINATION_DETAILS.get("deliveryType")).isNotIn(X_2_AND_X_3, mismatchingDeliveryType);
+
+      client.post(
+        "/task",
+        Map.of(
+          "e164number",
+          E164NUMBER,
+          "destinationId",
+          D_ID,
+          "xId",
+          X_ID,
+          "deliveryType",
+          mismatchingDeliveryType.name()
+        ),
+        ErrorResponse.class,
+        502
+      );
     }
   }
 
@@ -268,9 +291,32 @@ public class E2ETest {
     void it_modifies_a_task(final SimulatorClient client) throws IOException, InterruptedException {
       client.post(
         "/task/" + X_ID,
-        Map.of("e164number", E164NUMBER_MODIFIED, "destinationId", D_ID),
+        Map.of("e164number", E164NUMBER_MODIFIED, "destinationId", D_ID, "deliveryType", X_2_ONLY.name()),
         ModifyTaskResponse.class,
         200
+      );
+    }
+
+    @Test
+    void it_fails_to_modify_task_with_mismatching_delivery_type(final SimulatorClient client)
+      throws IOException, InterruptedException {
+      final var mismatchingDeliveryType = X_3_ONLY;
+      assertThat(DESTINATION_DETAILS.get("deliveryType")).isNotIn(X_2_AND_X_3, mismatchingDeliveryType);
+
+      client.post(
+        "/task/" + X_ID,
+        Map.of(
+          "e164number",
+          E164NUMBER,
+          "destinationId",
+          D_ID,
+          "xId",
+          X_ID,
+          "deliveryType",
+          mismatchingDeliveryType.name()
+        ),
+        ErrorResponse.class,
+        502
       );
     }
   }

@@ -36,6 +36,18 @@
       "response": {
         "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
       }
+    },
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "Started",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "RemoveDestinationRequest" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+      }
     }
   ]
 }

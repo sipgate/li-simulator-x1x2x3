@@ -11,23 +11,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.UUID;
-import org.etsi.uri._03221.x1._2017._10.CreateDestinationRequest;
-import org.etsi.uri._03221.x1._2017._10.CreateDestinationResponse;
-import org.etsi.uri._03221.x1._2017._10.DeliveryAddress;
-import org.etsi.uri._03221.x1._2017._10.DeliveryType;
-import org.etsi.uri._03221.x1._2017._10.DestinationDetails;
-import org.etsi.uri._03221.x1._2017._10.GetDestinationDetailsRequest;
-import org.etsi.uri._03221.x1._2017._10.GetDestinationDetailsResponse;
-import org.etsi.uri._03221.x1._2017._10.ModifyDestinationRequest;
-import org.etsi.uri._03221.x1._2017._10.ModifyDestinationResponse;
+import org.etsi.uri._03221.x1._2017._10.*;
 import org.etsi.uri._03280.common._2017._07.IPAddress;
 import org.etsi.uri._03280.common._2017._07.IPAddressPort;
 import org.etsi.uri._03280.common._2017._07.Port;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class DestinationController {
@@ -136,6 +124,31 @@ public class DestinationController {
     req.setDestinationDetails(destinationDetails);
 
     return x1Client.request(req, ModifyDestinationResponse.class);
+  }
+
+  @Operation(
+    summary = "Remove Destination",
+    description = """
+    Used by the ADMF to remove an existing Destination.
+    """
+  )
+  @ApiResponses(
+    value = {
+      @ApiResponse(responseCode = "200", description = "Destination was removed."),
+      @ApiResponse(
+        responseCode = "502",
+        description = "The RemoveDestination operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+      ),
+    }
+  )
+  @PostMapping("/destination/remove/{did}")
+  public RemoveDestinationResponse removeDestination(@PathVariable final UUID did)
+    throws X1ClientException, InterruptedException {
+    final var req = x1RequestFactory.create(RemoveDestinationRequest.class);
+    req.setDId(did.toString());
+
+    return x1Client.request(req, RemoveDestinationResponse.class);
   }
 
   private DestinationDetails makeDestinationDetails(

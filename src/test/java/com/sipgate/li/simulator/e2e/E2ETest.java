@@ -55,6 +55,11 @@ public class E2ETest {
     void it_cant_update_unknown_destination(final SimulatorClient client) throws IOException, InterruptedException {
       client.post("/destination/" + UUID.randomUUID(), DESTINATION_DETAILS, ErrorResponse.class, 502);
     }
+
+    @Test
+    void it_cant_delete_unknown_destination(final SimulatorClient client) throws IOException, InterruptedException {
+      client.post("/destination/remove/" + UUID.randomUUID(), DESTINATION_DETAILS, ErrorResponse.class, 502);
+    }
   }
 
   @Nested
@@ -77,6 +82,17 @@ public class E2ETest {
         "/destination/" + D_ID,
         DESTINATION_DETAILS,
         ModifyDestinationResponse.class,
+        200
+      );
+      assertThat(response.getOK()).isEqualTo(OK.ACKNOWLEDGED_AND_COMPLETED);
+    }
+
+    @Test
+    void it_deletes_destination(final SimulatorClient client) throws IOException, InterruptedException {
+      final var response = client.post(
+        "/destination/remove/" + UUID.randomUUID(),
+        DESTINATION_DETAILS,
+        RemoveDestinationResponse.class,
         200
       );
       assertThat(response.getOK()).isEqualTo(OK.ACKNOWLEDGED_AND_COMPLETED);

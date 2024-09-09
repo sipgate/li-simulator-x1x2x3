@@ -9,6 +9,9 @@ import com.sipgate.li.simulator.controller.response.TaskActivatedResponse;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import org.etsi.uri._03221.x1._2017._10.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -51,9 +54,17 @@ public class E2ETest {
   public static final String E164NUMBER = "4915799912345";
   public static final String E164NUMBER_MODIFIED = "4915799912346";
 
+  private static void runAndIgnoreExceptions(Callable<Object> f) {
+    try {
+      f.call();
+    } catch (Exception ignored) {}
+  }
+
   @BeforeEach
-  void setupState() {
-    // TODO: Implement preventive delete of destination and task
+  void cleanState(final SimulatorClient client) {
+    runAndIgnoreExceptions(() -> client.post("/destination/remove/" + D_ID, RemoveDestinationResponse.class));
+
+    runAndIgnoreExceptions(() -> client.post("/task/remove/" + X_ID, DeactivateTaskResponse.class));
   }
 
   @Nested
@@ -147,7 +158,7 @@ public class E2ETest {
     @Test
     void it_deletes_destination(final SimulatorClient client) throws IOException, InterruptedException {
       final var response = client.post(
-        "/destination/remove/" + UUID.randomUUID(),
+        "/destination/remove/" + D_ID,
         DESTINATION_DETAILS,
         RemoveDestinationResponse.class,
         200
@@ -248,8 +259,9 @@ public class E2ETest {
     }
 
     @Test
-    void it_fails_to_remove_destination(final SimulatorClient client) throws IOException, InterruptedException {
-      client.post("/destination/remove/" + UUID.randomUUID(), DESTINATION_DETAILS, ErrorResponse.class, 502);
+    void it_fails_to_remove_destination_with_depending_task(final SimulatorClient client)
+      throws IOException, InterruptedException {
+      client.post("/destination/remove/" + D_ID, Map.of(), ErrorResponse.class, 502);
     }
 
     @Test

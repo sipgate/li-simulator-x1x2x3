@@ -7,6 +7,10 @@ import com.sipgate.li.simulator.controller.IndexController;
 import com.sipgate.li.simulator.controller.response.ErrorResponse;
 import com.sipgate.li.simulator.controller.response.TaskActivatedResponse;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -65,6 +69,18 @@ public class E2ETest {
     runAndIgnoreExceptions(() -> client.post("/destination/remove/" + D_ID, RemoveDestinationResponse.class));
 
     runAndIgnoreExceptions(() -> client.post("/task/remove/" + X_ID, DeactivateTaskResponse.class));
+
+    runAndIgnoreExceptions(() -> {
+      try (final var wireMock = HttpClient.newHttpClient()) {
+        return wireMock.send(
+          HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8082/__admin/scenarios/reset"))
+            .POST(HttpRequest.BodyPublishers.noBody())
+            .build(),
+          HttpResponse.BodyHandlers.discarding()
+        );
+      }
+    });
   }
 
   @Nested

@@ -12,9 +12,7 @@ import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class SimulatorClientExtension extends TypeBasedParameterResolver<SimulatorClient> implements BeforeEachCallback {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(SimulatorClientExtension.class);
+class SimulatorClientExtension extends TypeBasedParameterResolver<SimulatorClient> {
 
   private SimulatorClient simulatorClient;
   private String serviceHost;
@@ -35,20 +33,5 @@ class SimulatorClientExtension extends TypeBasedParameterResolver<SimulatorClien
     final var baseUri = URI.create(String.format("http://%s:%d", serviceHost, servicePort));
 
     return (simulatorClient = new SimulatorClient(HttpClient.newHttpClient(), baseUri, new ObjectMapper()));
-  }
-
-  @Override
-  public void beforeEach(final ExtensionContext extensionContext) throws Exception {
-    try (final var wireMock = HttpClient.newHttpClient()) {
-      wireMock.send(
-        HttpRequest.newBuilder()
-          .uri(URI.create("http://localhost:8082/__admin/scenarios/reset"))
-          .POST(HttpRequest.BodyPublishers.noBody())
-          .build(),
-        HttpResponse.BodyHandlers.discarding()
-      );
-    } catch (final InterruptedException e) {
-      LOGGER.debug("Could not reset scenarios", e);
-    }
   }
 }

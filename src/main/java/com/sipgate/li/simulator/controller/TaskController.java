@@ -40,8 +40,8 @@ public class TaskController {
       ),
     }
   )
-  @GetMapping("/task")
-  public GetTaskDetailsResponse getTaskDetails(@RequestParam final String xId)
+  @GetMapping("/task/{xId}")
+  public GetTaskDetailsResponse getTaskDetails(@PathVariable final String xId)
     throws X1ClientException, InterruptedException {
     final var req = x1RequestFactory.create(GetTaskDetailsRequest.class);
     req.setXId(xId);
@@ -115,11 +115,11 @@ public class TaskController {
       ),
     }
   )
-  @PostMapping("/updateTask")
+  @PostMapping("/task/{xId}")
   public ModifyTaskResponse updateTask(
     @RequestParam final String e164number,
     @RequestParam final String destinationId,
-    @RequestParam final String xId
+    @PathVariable final String xId
   ) throws X1ClientException, InterruptedException {
     final var taskDetails = makeTaskDetails(e164number, destinationId, xId);
     final var req = x1RequestFactory.create(ModifyTaskRequest.class);
@@ -144,8 +144,8 @@ public class TaskController {
       ),
     }
   )
-  @PostMapping("/deleteTask")
-  public DeactivateTaskResponse deactivateTask(@RequestParam final String xId)
+  @PostMapping("/task/remove/{xId}")
+  public DeactivateTaskResponse deactivateTask(@PathVariable final String xId)
     throws X1ClientException, InterruptedException {
     final var req = x1RequestFactory.create(DeactivateTaskRequest.class);
     req.setXId(xId);

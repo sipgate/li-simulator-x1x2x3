@@ -84,8 +84,8 @@ public class DestinationController {
       ),
     }
   )
-  @GetMapping("/destination")
-  public GetDestinationDetailsResponse getDestination(@RequestParam final UUID dId)
+  @GetMapping("/destination/{dId}")
+  public GetDestinationDetailsResponse getDestination(@PathVariable final UUID dId)
     throws X1ClientException, InterruptedException {
     final var req = x1RequestFactory.create(GetDestinationDetailsRequest.class);
     req.setDId(dId.toString());

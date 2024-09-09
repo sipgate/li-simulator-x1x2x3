@@ -68,7 +68,7 @@ public class E2ETest {
 
     @Test
     void it_cant_find_unknown_destination(final SimulatorClient client) throws IOException, InterruptedException {
-      client.get("/destination?dId=" + UUID.randomUUID(), ErrorResponse.class, 502);
+      client.get("/destination/" + UUID.randomUUID(), ErrorResponse.class, 502);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class E2ETest {
 
     @Test
     void it_contains_destination_details(final SimulatorClient client) throws IOException, InterruptedException {
-      final var resp = client.get("/destination?dId=" + D_ID, GetDestinationDetailsResponse.class, 200);
+      final var resp = client.get("/destination/" + D_ID, GetDestinationDetailsResponse.class, 200);
 
       final var details = resp.getDestinationResponseDetails().getDestinationDetails();
 
@@ -157,14 +157,14 @@ public class E2ETest {
 
     @Test
     void it_fails_to_get_unknown_task(final SimulatorClient client) throws IOException, InterruptedException {
-      client.get("/task?xId=" + UUID.randomUUID().toString(), ErrorResponse.class, 502);
+      client.get("/task/" + UUID.randomUUID(), ErrorResponse.class, 502);
     }
 
     @Test
     void it_fails_to_modify_unknown_task(final SimulatorClient client) throws IOException, InterruptedException {
       client.post(
-        "/updateTask",
-        Map.of("xId", UUID.randomUUID().toString(), "destinationId", "some-destination-id", "e164number", "some-e164"),
+        "/task/" + UUID.randomUUID(),
+        Map.of("destinationId", "some-destination-id", "e164number", "some-e164"),
         ErrorResponse.class,
         502
       );
@@ -172,7 +172,7 @@ public class E2ETest {
 
     @Test
     void it_fails_to_deactivate_unknown_task(final SimulatorClient client) throws IOException, InterruptedException {
-      client.post("/deleteTask", Map.of("xId", UUID.randomUUID().toString()), ErrorResponse.class, 502);
+      client.post("/task/remove/" + UUID.randomUUID(), Map.of(), ErrorResponse.class, 502);
     }
 
     @Test
@@ -201,7 +201,7 @@ public class E2ETest {
     @Test
     void it_gets_task_details(final SimulatorClient client) throws IOException, InterruptedException {
       // WHEN
-      final var getResponse = client.get("/task?xId=" + X_ID, GetTaskDetailsResponse.class, 200);
+      final var getResponse = client.get("/task/" + X_ID, GetTaskDetailsResponse.class, 200);
 
       // THEN
       assertThat(
@@ -241,7 +241,7 @@ public class E2ETest {
     @Test
     void it_deletes_task(final SimulatorClient client) throws IOException, InterruptedException {
       // WHEN
-      client.post("/deleteTask", Map.of("xId", X_ID), DeactivateTaskResponse.class, 200);
+      client.post("/task/remove/" + X_ID, Map.of(), DeactivateTaskResponse.class, 200);
 
       // THEN
       new DestinationAdded().it_fails_to_get_unknown_task(client);
@@ -255,8 +255,8 @@ public class E2ETest {
     @Test
     void it_modifies_a_task(final SimulatorClient client) throws IOException, InterruptedException {
       client.post(
-        "/updateTask",
-        Map.of("xId", X_ID, "e164number", E164NUMBER_MODIFIED, "destinationId", D_ID),
+        "/task/" + X_ID,
+        Map.of("e164number", E164NUMBER_MODIFIED, "destinationId", D_ID),
         ModifyTaskResponse.class,
         200
       );
@@ -274,7 +274,7 @@ public class E2ETest {
 
     @Test
     void it_gets_modified_data(final SimulatorClient client) throws IOException, InterruptedException {
-      final var resp = client.get("/destination?dId=" + D_ID, GetDestinationDetailsResponse.class, 200);
+      final var resp = client.get("/destination/" + D_ID, GetDestinationDetailsResponse.class, 200);
 
       final var details = resp.getDestinationResponseDetails().getDestinationDetails();
 
@@ -294,7 +294,7 @@ public class E2ETest {
 
     @Test
     void it_gets_modified_data(final SimulatorClient client) throws IOException, InterruptedException {
-      final var getResponse = client.get("/task?xId=" + X_ID, GetTaskDetailsResponse.class, 200);
+      final var getResponse = client.get("/task/" + X_ID, GetTaskDetailsResponse.class, 200);
       assertThat(
         getResponse
           .getTaskResponseDetails()

@@ -75,10 +75,12 @@ public class E2ETest {
     );
 
     runAndIgnoreExceptions("reset wiremock", () -> {
+      final var wiremockHost = System.getProperty("wiremockHost", "localhost");
+      final var wiremockPort = Integer.parseInt(System.getProperty("wiremockPort", "8082"));
       try (final var wireMock = HttpClient.newHttpClient()) {
         return wireMock.send(
           HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:8082/__admin/scenarios/reset"))
+            .uri(URI.create(String.format("http://%s:%d/__admin/scenarios/reset", wiremockHost, wiremockPort)))
             .POST(HttpRequest.BodyPublishers.noBody())
             .build(),
           HttpResponse.BodyHandlers.discarding()

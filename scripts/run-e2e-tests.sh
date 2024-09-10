@@ -10,6 +10,8 @@ docker compose up -d --build
 
 SERVICE_HOST="${SERVICE_HOST:-simulator}"
 SERVICE_PORT="${SERVICE_PORT:-8080}"
+WIREMOCK_HOST="${WIREMOCK_HOST:-network-element}"
+WIREMOCK_PORT="${WIREMOCK_PORT:-8080}"
 
 DOCKER_NETWORK_ARG="--network li-network"
 
@@ -28,6 +30,8 @@ docker run ${DOCKER_NETWORK_ARG} \
   -Duser.home=/tmp/maven \
   -DserviceHost="${SERVICE_HOST}" \
   -DservicePort="${SERVICE_PORT}" \
+  -DwiremockHost="${WIREMOCK_HOST}" \
+  -DwiremockPort="${WIREMOCK_PORT}" \
   -Djdk.httpclient.HttpClient.log=requests
 
 # remember the result for the exit code of this script

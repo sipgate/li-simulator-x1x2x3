@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 class SimulatorClientExtension extends TypeBasedParameterResolver<SimulatorClient> {
 
   private SimulatorClient simulatorClient;
-  private String serviceHost;
-  private int servicePort;
 
   @Override
   public SimulatorClient resolveParameter(
@@ -27,8 +25,8 @@ class SimulatorClientExtension extends TypeBasedParameterResolver<SimulatorClien
       return simulatorClient;
     }
 
-    serviceHost = System.getProperty("serviceHost", "localhost");
-    servicePort = Integer.parseInt(System.getProperty("servicePort", "8080"));
+    final var serviceHost = System.getProperty("serviceHost", "localhost");
+    final var servicePort = Integer.parseInt(System.getProperty("servicePort", "8080"));
 
     final var baseUri = URI.create(String.format("http://%s:%d", serviceHost, servicePort));
 

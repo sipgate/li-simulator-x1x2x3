@@ -15,11 +15,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import org.etsi.uri._03221.x1._2017._10.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Tag("E2E")
 @ExtendWith(SimulatorClientExtension.class)
@@ -57,20 +56,25 @@ public class E2ETest {
 
   public static final String E164NUMBER = "4915799912345";
   public static final String E164NUMBER_MODIFIED = "4915799912346";
+  public static final Logger LOGGER = LoggerFactory.getLogger(E2ETest.class);
 
-  private static void runAndIgnoreExceptions(Callable<Object> f) {
+  private static void runAndIgnoreExceptions(final String prefix, final Callable<Object> f) {
     try {
       f.call();
-    } catch (Exception ignored) {}
+    } catch (final Exception e) {
+      LOGGER.error("{}, ignoring", prefix, e);
+    }
   }
 
   @BeforeEach
   void cleanState(final SimulatorClient client) {
-    runAndIgnoreExceptions(() -> client.post("/destination/remove/" + D_ID, RemoveDestinationResponse.class));
+    runAndIgnoreExceptions("remove task", () -> client.post("/task/remove/" + X_ID, DeactivateTaskResponse.class));
 
-    runAndIgnoreExceptions(() -> client.post("/task/remove/" + X_ID, DeactivateTaskResponse.class));
+    runAndIgnoreExceptions("remove destination", () ->
+      client.post("/destination/remove/" + D_ID, RemoveDestinationResponse.class)
+    );
 
-    runAndIgnoreExceptions(() -> {
+    runAndIgnoreExceptions("reset wiremock", () -> {
       try (final var wireMock = HttpClient.newHttpClient()) {
         return wireMock.send(
           HttpRequest.newBuilder()
@@ -113,7 +117,7 @@ public class E2ETest {
       throws IOException, InterruptedException {
       client.post(
         "/task",
-        Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.value()),
+        Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.name()),
         ErrorResponse.class,
         502
       );
@@ -282,7 +286,7 @@ public class E2ETest {
       throws IOException, InterruptedException {
       client.post(
         "/task",
-        Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.value()),
+        Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.name()),
         ErrorResponse.class,
         502
       );

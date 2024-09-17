@@ -66,31 +66,31 @@ public class E2ETest {
     }
   }
 
-  @BeforeEach
-  void cleanState(final SimulatorClient client) {
-    runAndIgnoreExceptions("remove task", () -> client.post("/task/remove/" + X_ID, DeactivateTaskResponse.class));
-
-    runAndIgnoreExceptions("remove destination", () ->
-      client.post("/destination/remove/" + D_ID, RemoveDestinationResponse.class)
-    );
-
-    runAndIgnoreExceptions("reset wiremock", () -> {
-      final var wiremockHost = System.getProperty("wiremockHost", "localhost");
-      final var wiremockPort = Integer.parseInt(System.getProperty("wiremockPort", "8082"));
-      try (final var wireMock = HttpClient.newHttpClient()) {
-        return wireMock.send(
-          HttpRequest.newBuilder()
-            .uri(URI.create(String.format("http://%s:%d/__admin/scenarios/reset", wiremockHost, wiremockPort)))
-            .POST(HttpRequest.BodyPublishers.noBody())
-            .build(),
-          HttpResponse.BodyHandlers.discarding()
-        );
-      }
-    });
-  }
-
   @Nested
   class Started {
+
+    @BeforeEach
+    void setupState(final SimulatorClient client) {
+      runAndIgnoreExceptions("remove task", () -> client.post("/task/remove/" + X_ID, DeactivateTaskResponse.class));
+
+      runAndIgnoreExceptions("remove destination", () ->
+        client.post("/destination/remove/" + D_ID, RemoveDestinationResponse.class)
+      );
+
+      runAndIgnoreExceptions("reset wiremock", () -> {
+        final var wiremockHost = System.getProperty("wiremockHost", "localhost");
+        final var wiremockPort = Integer.parseInt(System.getProperty("wiremockPort", "8082"));
+        try (final var wireMock = HttpClient.newHttpClient()) {
+          return wireMock.send(
+            HttpRequest.newBuilder()
+              .uri(URI.create(String.format("http://%s:%d/__admin/scenarios/reset", wiremockHost, wiremockPort)))
+              .POST(HttpRequest.BodyPublishers.noBody())
+              .build(),
+            HttpResponse.BodyHandlers.discarding()
+          );
+        }
+      });
+    }
 
     @Test
     void it_creates_destination(final SimulatorClient client) throws IOException, InterruptedException {
@@ -139,6 +139,7 @@ public class E2ETest {
 
     @BeforeEach
     void setupState(final SimulatorClient client) throws IOException, InterruptedException {
+      new Started().setupState(client);
       new Started().it_creates_destination(client);
     }
 

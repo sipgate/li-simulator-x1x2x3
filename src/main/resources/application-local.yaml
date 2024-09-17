@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: simulator
+sipgate:
+  li:
+    simulator:
+      targetUri: http://localhost/X1/NE
+      admfIdentifier: admf-id
+      clientCertKeyStore:
+        path: ""
+        password: ""
+      serverCertTrustStore:
+        path: ""
+        password: ""
+
+management:
+  endpoints:
+    web:
+      base-path: /

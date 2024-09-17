@@ -4,7 +4,7 @@ spring:
 sipgate:
   li:
     simulator:
-      targetUri: http://localhost/X1/NE
+      targetUri: http://localhost:8443/X1/NE
       admfIdentifier: admf-id
       clientCertKeyStore:
         path: ""

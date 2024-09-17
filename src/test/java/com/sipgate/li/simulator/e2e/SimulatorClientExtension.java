@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class SimulatorClientExtension extends TypeBasedParameterResolver<SimulatorClient> {
+public class SimulatorClientExtension extends TypeBasedParameterResolver<SimulatorClient> {
 
   private SimulatorClient simulatorClient;
 

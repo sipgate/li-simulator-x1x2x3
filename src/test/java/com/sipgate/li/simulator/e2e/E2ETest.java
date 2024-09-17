@@ -246,10 +246,10 @@ public class E2ETest {
   }
 
   @Nested
-  class TaskAdded {
+  public class TaskAdded {
 
     @BeforeEach
-    void setupState(final SimulatorClient client) throws IOException, InterruptedException {
+    public void setupState(final SimulatorClient client) throws IOException, InterruptedException {
       new DestinationAdded().setupState(client);
       new DestinationAdded().it_creates_task(client);
     }

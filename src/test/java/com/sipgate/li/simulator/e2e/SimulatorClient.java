@@ -11,7 +11,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-class SimulatorClient {
+public class SimulatorClient {
 
   private final HttpClient httpClient;
   private final URI baseUri;

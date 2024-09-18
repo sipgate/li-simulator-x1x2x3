@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class E2ETest {
 
   private static final String D_ID = "4faa0058-25ec-42c9-a945-4c3c8e0c7f8d";
-  private static final String X_ID = "55b848ea-b4c2-4d80-a4c9-46592792e5b7";
+  public static final String X_ID = "55b848ea-b4c2-4d80-a4c9-46592792e5b7";
   private static final String FRIENDLY_NAME = "we-are-friendly.example.com";
   private static final String FRIENDLY_NAME_MODIFIED = "they-are-unfriendly.example.com";
   private static final Map<String, String> DESTINATION_DETAILS = Map.of(

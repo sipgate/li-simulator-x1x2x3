@@ -50,7 +50,7 @@ public class SimulatorClient {
     return post(path, arguments, responseType, 200);
   }
 
-  <T> T post(
+  public <T> T post(
     final String path,
     final Map<String, String> arguments,
     final Class<T> responseType,

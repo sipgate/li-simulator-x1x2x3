@@ -64,7 +64,7 @@ public class E2ETest {
     try {
       f.call();
     } catch (final Exception e) {
-      LOGGER.error("{}, ignoring", prefix, e);
+      LOGGER.trace("{}, ignoring", prefix, e);
     }
   }
 

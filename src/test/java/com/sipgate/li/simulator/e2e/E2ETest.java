@@ -58,6 +58,8 @@ public class E2ETest {
   public static final String E164NUMBER_MODIFIED = "4915799912346";
   public static final Logger LOGGER = LoggerFactory.getLogger(E2ETest.class);
 
+  final SimulatorClient client;
+
   private static void runAndIgnoreExceptions(final String prefix, final Callable<Object> f) {
     try {
       f.call();
@@ -66,11 +68,15 @@ public class E2ETest {
     }
   }
 
-  @Nested
-  class Started {
+  public E2ETest(final SimulatorClient client) {
+    this.client = client;
+  }
 
-    @BeforeEach
-    void setupState(final SimulatorClient client) {
+  @Nested
+  class Started implements StatefulTest {
+
+    @Override
+    public void cleanup() {
       runAndIgnoreExceptions("remove task", () -> client.post("/task/remove/" + X_ID, DeactivateTaskResponse.class));
 
       runAndIgnoreExceptions("remove destination", () ->
@@ -92,31 +98,33 @@ public class E2ETest {
       });
     }
 
+    @Override
+    public void init() {}
+
     @Test
-    void it_creates_destination(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_creates_destination() throws IOException, InterruptedException {
       final var resp = client.post("/destination", DESTINATION_DETAILS, CreateDestinationResponse.class, 200);
 
       assertThat(resp.getOK()).isEqualTo(OK.ACKNOWLEDGED_AND_COMPLETED);
     }
 
     @Test
-    void it_cant_find_unknown_destination(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_cant_find_unknown_destination() throws IOException, InterruptedException {
       client.get("/destination/" + UUID.randomUUID(), ErrorResponse.class, 502);
     }
 
     @Test
-    void it_cant_update_unknown_destination(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_cant_update_unknown_destination() throws IOException, InterruptedException {
       client.post("/destination/" + UUID.randomUUID(), DESTINATION_DETAILS, ErrorResponse.class, 502);
     }
 
     @Test
-    void it_cant_delete_unknown_destination(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_cant_delete_unknown_destination() throws IOException, InterruptedException {
       client.post("/destination/remove/" + UUID.randomUUID(), DESTINATION_DETAILS, ErrorResponse.class, 502);
     }
 
     @Test
-    void it_cant_create_task_with_unknown_destination(final SimulatorClient client)
-      throws IOException, InterruptedException {
+    void it_cant_create_task_with_unknown_destination() throws IOException, InterruptedException {
       client.post(
         "/task",
         Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.name()),
@@ -126,7 +134,7 @@ public class E2ETest {
     }
 
     @Test
-    void list_all_details_is_empty(final SimulatorClient client) throws IOException, InterruptedException {
+    void list_all_details_is_empty() throws IOException, InterruptedException {
       final var resp = client.get("/index", IndexController.IndexResponse.class, 200);
 
       assertThat(resp.destinations()).doesNotContain(D_ID);
@@ -135,22 +143,28 @@ public class E2ETest {
   }
 
   @Nested
-  class DestinationAdded {
+  class DestinationAdded implements StatefulTest {
 
-    @BeforeEach
-    void setupState(final SimulatorClient client) throws IOException, InterruptedException {
-      new Started().setupState(client);
-      new Started().it_creates_destination(client);
+    private final Started started = new Started();
+
+    @Override
+    public void cleanup() throws Exception {
+      started.cleanup();
+    }
+
+    @Override
+    public void init() throws Exception {
+      started.init();
+      started.it_creates_destination();
     }
 
     @Test
-    void it_fails_when_destination_already_exists(final SimulatorClient client)
-      throws IOException, InterruptedException {
+    void it_fails_when_destination_already_exists() throws IOException, InterruptedException {
       client.post("/destination", DESTINATION_DETAILS, ErrorResponse.class, 502);
     }
 
     @Test
-    void it_contains_destination_details(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_contains_destination_details() throws IOException, InterruptedException {
       final var resp = client.get("/destination/" + D_ID, GetDestinationDetailsResponse.class, 200);
 
       final var details = resp.getDestinationResponseDetails().getDestinationDetails();
@@ -160,7 +174,7 @@ public class E2ETest {
     }
 
     @Test
-    void list_all_details_contains_did(final SimulatorClient client) throws IOException, InterruptedException {
+    void list_all_details_contains_did() throws IOException, InterruptedException {
       final var resp = client.get("/index", IndexController.IndexResponse.class, 200);
 
       assertThat(resp.destinations()).contains(D_ID);
@@ -168,7 +182,7 @@ public class E2ETest {
     }
 
     @Test
-    void it_modifies_destination(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_modifies_destination() throws IOException, InterruptedException {
       final var response = client.post(
         "/destination/" + D_ID,
         MODIFIED_DESTINATION_DETAILS,
@@ -179,7 +193,7 @@ public class E2ETest {
     }
 
     @Test
-    void it_deletes_destination(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_deletes_destination() throws IOException, InterruptedException {
       final var response = client.post(
         "/destination/remove/" + D_ID,
         DESTINATION_DETAILS,
@@ -190,12 +204,12 @@ public class E2ETest {
     }
 
     @Test
-    void it_fails_to_get_unknown_task(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_fails_to_get_unknown_task() throws IOException, InterruptedException {
       client.get("/task/" + UUID.randomUUID(), ErrorResponse.class, 502);
     }
 
     @Test
-    void it_fails_to_modify_unknown_task(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_fails_to_modify_unknown_task() throws IOException, InterruptedException {
       client.post(
         "/task/" + UUID.randomUUID(),
         Map.of("destinationId", "some-destination-id", "e164number", "some-e164", "deliveryType", X_2_ONLY.name()),
@@ -205,12 +219,12 @@ public class E2ETest {
     }
 
     @Test
-    void it_fails_to_deactivate_unknown_task(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_fails_to_deactivate_unknown_task() throws IOException, InterruptedException {
       client.post("/task/remove/" + UUID.randomUUID(), Map.of(), ErrorResponse.class, 502);
     }
 
     @Test
-    void it_creates_task(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_creates_task() throws IOException, InterruptedException {
       final var response = client.post(
         "/task",
         Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.name()),
@@ -223,8 +237,7 @@ public class E2ETest {
     }
 
     @Test
-    void it_fails_to_activate_task_with_mismatching_delivery_type(final SimulatorClient client)
-      throws IOException, InterruptedException {
+    void it_fails_to_activate_task_with_mismatching_delivery_type() throws IOException, InterruptedException {
       final var mismatchingDeliveryType = X_3_ONLY;
       assertThat(DESTINATION_DETAILS.get("deliveryType")).isNotIn(X_2_AND_X_3, mismatchingDeliveryType);
 
@@ -247,16 +260,23 @@ public class E2ETest {
   }
 
   @Nested
-  public class TaskAdded {
+  public class TaskAdded implements StatefulTest {
 
-    @BeforeEach
-    public void setupState(final SimulatorClient client) throws IOException, InterruptedException {
-      new DestinationAdded().setupState(client);
-      new DestinationAdded().it_creates_task(client);
+    private final DestinationAdded destinationAdded = new DestinationAdded();
+
+    @Override
+    public void cleanup() throws Exception {
+      destinationAdded.cleanup();
+    }
+
+    @Override
+    public void init() throws Exception {
+      destinationAdded.init();
+      destinationAdded.it_creates_task();
     }
 
     @Test
-    void it_gets_task_details(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_gets_task_details() throws IOException, InterruptedException {
       // WHEN
       final var getResponse = client.get("/task/" + X_ID, GetTaskDetailsResponse.class, 200);
 
@@ -277,7 +297,7 @@ public class E2ETest {
     }
 
     @Test
-    void list_all_details_contains_xid_and_did(final SimulatorClient client) throws IOException, InterruptedException {
+    void list_all_details_contains_xid_and_did() throws IOException, InterruptedException {
       final var resp = client.get("/index", IndexController.IndexResponse.class, 200);
 
       assertThat(resp.destinations()).contains(D_ID);
@@ -285,8 +305,7 @@ public class E2ETest {
     }
 
     @Test
-    void it_fails_to_create_task_with_duplicate_xId(final SimulatorClient client)
-      throws IOException, InterruptedException {
+    void it_fails_to_create_task_with_duplicate_xId() throws IOException, InterruptedException {
       client.post(
         "/task",
         Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.name()),
@@ -296,22 +315,21 @@ public class E2ETest {
     }
 
     @Test
-    void it_deletes_task(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_deletes_task() throws IOException, InterruptedException {
       // WHEN
       client.post("/task/remove/" + X_ID, Map.of(), DeactivateTaskResponse.class, 200);
 
       // THEN
-      new DestinationAdded().it_fails_to_get_unknown_task(client);
+      destinationAdded.it_fails_to_get_unknown_task();
     }
 
     @Test
-    void it_fails_to_remove_destination_with_depending_task(final SimulatorClient client)
-      throws IOException, InterruptedException {
+    void it_fails_to_remove_destination_with_depending_task() throws IOException, InterruptedException {
       client.post("/destination/remove/" + D_ID, Map.of(), ErrorResponse.class, 502);
     }
 
     @Test
-    void it_modifies_a_task(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_modifies_a_task() throws IOException, InterruptedException {
       client.post(
         "/task/" + X_ID,
         Map.of("e164number", E164NUMBER_MODIFIED, "destinationId", D_ID, "deliveryType", X_2_ONLY.name()),
@@ -321,8 +339,7 @@ public class E2ETest {
     }
 
     @Test
-    void it_fails_to_modify_task_with_mismatching_delivery_type(final SimulatorClient client)
-      throws IOException, InterruptedException {
+    void it_fails_to_modify_task_with_mismatching_delivery_type() throws IOException, InterruptedException {
       final var mismatchingDeliveryType = X_3_ONLY;
       assertThat(DESTINATION_DETAILS.get("deliveryType")).isNotIn(X_2_AND_X_3, mismatchingDeliveryType);
 
@@ -345,16 +362,23 @@ public class E2ETest {
   }
 
   @Nested
-  class DestinationModified {
+  class DestinationModified implements StatefulTest {
 
-    @BeforeEach
-    void setupState(final SimulatorClient client) throws IOException, InterruptedException {
-      new DestinationAdded().setupState(client);
-      new DestinationAdded().it_modifies_destination(client);
+    private final DestinationAdded destinationAdded = new DestinationAdded();
+
+    @Override
+    public void cleanup() throws Exception {
+      destinationAdded.cleanup();
+    }
+
+    @Override
+    public void init() throws Exception {
+      destinationAdded.init();
+      destinationAdded.it_modifies_destination();
     }
 
     @Test
-    void it_gets_modified_data(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_gets_modified_data() throws IOException, InterruptedException {
       final var resp = client.get("/destination/" + D_ID, GetDestinationDetailsResponse.class, 200);
 
       final var details = resp.getDestinationResponseDetails().getDestinationDetails();
@@ -365,16 +389,23 @@ public class E2ETest {
   }
 
   @Nested
-  class TaskModified {
+  class TaskModified implements StatefulTest {
 
-    @BeforeEach
-    void setupState(final SimulatorClient client) throws IOException, InterruptedException {
-      new TaskAdded().setupState(client);
-      new TaskAdded().it_modifies_a_task(client);
+    private final TaskAdded taskAdded = new TaskAdded();
+
+    @Override
+    public void cleanup() throws Exception {
+      taskAdded.cleanup();
+    }
+
+    @Override
+    public void init() throws Exception {
+      taskAdded.init();
+      taskAdded.it_modifies_a_task();
     }
 
     @Test
-    void it_gets_modified_data(final SimulatorClient client) throws IOException, InterruptedException {
+    void it_gets_modified_data() throws IOException, InterruptedException {
       final var getResponse = client.get("/task/" + X_ID, GetTaskDetailsResponse.class, 200);
       assertThat(
         getResponse

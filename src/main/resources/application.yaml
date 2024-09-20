@@ -12,8 +12,14 @@ sipgate:
       serverCertTrustStore:
         path: "/tmp/truststore.jks"
         password: changeit
+      maxHeaderLength: 320 # currently quite arbitrary
+      maxPayloadLength: 8192 # currently quite arbitrary
 
 management:
   endpoints:
     web:
       base-path: /
+
+logging:
+  level:
+    com.sipgate: DEBUG

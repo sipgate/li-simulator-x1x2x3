@@ -44,7 +44,12 @@
 		<dependency>
 			<groupId>com.sipgate.li</groupId>
 			<artifactId>lib</artifactId>
-			<version>0.1.1</version>
+			<version>0.1.2-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
 		</dependency>
 
 		<dependency>

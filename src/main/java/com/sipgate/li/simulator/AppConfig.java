@@ -3,6 +3,7 @@ package com.sipgate.li.simulator;
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1ClientBuilder;
 import com.sipgate.li.lib.x1.X1RequestFactory;
+import com.sipgate.li.lib.x2x3.X2X3Decoder;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import jakarta.xml.bind.JAXBException;
@@ -35,6 +36,9 @@ public class AppConfig {
   private SslStore clientCertKeyStore;
   private SslStore serverCertTrustStore;
 
+  private int maxHeaderLength;
+  private int maxPayloadLength;
+
   public record SslStore(Path path, String password) {}
 
   public void setTargetUri(final URI targetUri) {
@@ -53,6 +57,14 @@ public class AppConfig {
     this.serverCertTrustStore = serverCertTrustStore;
   }
 
+  public void setMaxHeaderLength(final int maxHeaderLength) {
+    this.maxHeaderLength = maxHeaderLength;
+  }
+
+  public void setMaxPayloadLength(final int maxPayloadLength) {
+    this.maxPayloadLength = maxPayloadLength;
+  }
+
   @Bean
   public X1RequestFactory x1RequestFactory() throws DatatypeConfigurationException {
     return new X1RequestFactory(DatatypeFactory.newInstance(), targetUri.getHost(), admfIdentifier);
@@ -66,5 +78,10 @@ public class AppConfig {
       .withKeyStore(clientCertKeyStore.path(), clientCertKeyStore.password())
       .withTrustStore(serverCertTrustStore.path(), serverCertTrustStore.password())
       .build();
+  }
+
+  @Bean
+  public X2X3Decoder x2X3Decoder() {
+    return new X2X3Decoder(maxHeaderLength, maxPayloadLength);
   }
 }

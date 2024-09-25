@@ -4,11 +4,15 @@ import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1ClientBuilder;
 import com.sipgate.li.lib.x1.X1RequestFactory;
 import com.sipgate.li.lib.x2x3.X2X3Decoder;
+import com.sipgate.util.SSLContextBuilder;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
-import jakarta.xml.bind.JAXBException;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
+import java.security.*;
+import java.security.cert.CertificateException;
+import javax.net.ssl.SSLContext;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import org.slf4j.Logger;
@@ -71,10 +75,15 @@ public class AppConfig {
   }
 
   @Bean
-  public X1Client x1Client() {
+  public X1Client x1Client(final SSLContext x1x2x3SslContext) {
     LOGGER.info("Attempting to create connections to {}.", targetUri);
-    return X1ClientBuilder.newBuilder()
-      .withTarget(targetUri)
+    return X1ClientBuilder.newBuilder().withTarget(targetUri).withContext(x1x2x3SslContext).build();
+  }
+
+  @Bean
+  SSLContext getX1X2X3SslContext()
+    throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, NoSuchProviderException, KeyManagementException {
+    return SSLContextBuilder.newBuilder()
       .withKeyStore(clientCertKeyStore.path(), clientCertKeyStore.password())
       .withTrustStore(serverCertTrustStore.path(), serverCertTrustStore.password())
       .build();

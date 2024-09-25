@@ -1,5 +1,6 @@
 package com.sipgate.li.simulator.x2x3;
 
+import com.sipgate.li.lib.x2x3.X2X3Decoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -8,6 +9,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.ssl.SslHandler;
+import javax.net.ssl.SSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -22,14 +25,17 @@ public class X2X3Server {
   final int port = 42069;
 
   private final X2X3InboundHandlerAdapter x2x3inboundHandlerAdapter;
-  private final X2X3NettyDecoder x2x3nettyDecoder;
+  private final SSLContext x1x2X3SslContext;
+  private final X2X3Decoder x2X3Decoder;
 
   public X2X3Server(
     final X2X3InboundHandlerAdapter x2x3InboundHandlerAdapter,
-    final X2X3NettyDecoder x2X3NettyDecoder
+    final X2X3Decoder x2X3Decoder,
+    final SSLContext x1X2X3SslContext
   ) {
     this.x2x3inboundHandlerAdapter = x2x3InboundHandlerAdapter;
-    this.x2x3nettyDecoder = x2X3NettyDecoder;
+    this.x1x2X3SslContext = x1X2X3SslContext;
+    this.x2X3Decoder = x2X3Decoder;
   }
 
   @EventListener(ApplicationStartedEvent.class)
@@ -45,7 +51,11 @@ public class X2X3Server {
           new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(final SocketChannel ch) throws Exception {
-              ch.pipeline().addLast(x2x3nettyDecoder).addLast(x2x3inboundHandlerAdapter);
+              ch
+                .pipeline()
+                .addLast(getSslHandler())
+                .addLast(new X2X3NettyDecoder(x2X3Decoder))
+                .addLast(x2x3inboundHandlerAdapter);
             }
           }
         )
@@ -64,5 +74,13 @@ public class X2X3Server {
       workerGroup.shutdownGracefully();
       bossGroup.shutdownGracefully();
     }
+  }
+
+  private SslHandler getSslHandler() {
+    final var sslEngine = x1x2X3SslContext.createSSLEngine();
+    sslEngine.setUseClientMode(false);
+    LOGGER.info("Listening socket using mutual TLS");
+    sslEngine.setNeedClientAuth(true);
+    return new SslHandler(sslEngine);
   }
 }

@@ -7,12 +7,10 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-@Component
 public class X2X3NettyDecoder extends ByteToMessageDecoder {
 
-  private static Logger LOGGER = LoggerFactory.getLogger(X2X3NettyDecoder.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(X2X3NettyDecoder.class);
 
   private final X2X3Decoder x2x3Decoder;
 
@@ -26,7 +24,7 @@ public class X2X3NettyDecoder extends ByteToMessageDecoder {
     final ByteBuf byteBuf,
     final List<Object> out
   ) throws Exception {
-    LOGGER.debug("Decoding message: {}", byteBuf);
+    LOGGER.debug("Child handler decoding message: {}", byteBuf);
     x2x3Decoder.decode(byteBuf, out);
   }
 }

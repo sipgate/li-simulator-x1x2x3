@@ -2,6 +2,7 @@ package com.sipgate.li.simulator.x2x3;
 
 import com.sipgate.li.lib.x2x3.PduObject;
 import com.sipgate.li.simulator.event.X2X3ReceivedEvent;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
@@ -11,6 +12,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
+@ChannelHandler.Sharable
 public class X2X3InboundHandlerAdapter extends ChannelInboundHandlerAdapter {
 
   private static Logger LOGGER = LoggerFactory.getLogger(X2X3InboundHandlerAdapter.class);

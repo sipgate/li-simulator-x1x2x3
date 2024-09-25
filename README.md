@@ -17,6 +17,20 @@ Run e2e-tests via `./scripts/run-e2e-tests.sh`
 
 For details about test scenarios within wiremock, see [Network Element README](./docker/network-element/README.md)
 
+## Send x2/x3 packet to simulator
+
+Start the simulator environment using docker. There is a binary x2 file in `src/test/misc/x2-demo-01.bin` that you can copy into the container and then send to the server:
+
+```shell
+docker compose cp src/test/misc/x2-demo-01.bin simulator:/tmp/x2-demo-01.bin
+
+docker compose exec -i simulator \
+  /bin/bash -c "cat /tmp/x2-demo-01.bin | openssl s_client \
+    -connect 127.0.0.1:42069 \
+    -cert /mutual-tls-stores/certs/network-element.crt \
+    -key /mutual-tls-stores/keys/network-element.key"
+```
+
 ## Further information
 
 - EVE Explains: ETSI TS 103 221 - X1/X2/X3 https://www.lawfulinterception.com/explains/etsi-ts-103-221/

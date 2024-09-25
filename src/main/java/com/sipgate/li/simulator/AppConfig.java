@@ -81,7 +81,7 @@ public class AppConfig {
   }
 
   @Bean
-  SSLContext getX1X2X3SslContext()
+  SSLContext x1X2X3SslContext()
     throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, NoSuchProviderException, KeyManagementException {
     return SSLContextBuilder.newBuilder()
       .withKeyStore(clientCertKeyStore.path(), clientCertKeyStore.password())

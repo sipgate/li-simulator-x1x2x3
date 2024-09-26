@@ -1,0 +1,14 @@
+sipgate:
+  li:
+    simulator:
+      admfIdentifier: admf-id
+      clientCertKeyStore:
+        path: "classpath:keystore-test.p12"
+        password: changeit
+      serverCertTrustStore:
+        path: "classpath:truststore-test.jks"
+        password: changeit
+
+logging:
+  level:
+    com.sipgate: DEBUG

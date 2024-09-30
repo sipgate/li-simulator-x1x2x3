@@ -39,6 +39,7 @@ public class SipController {
 
   @PostMapping("/sip")
   public ResponseEntity<String> interceptSip(@RequestBody final String sip) throws Exception {
+    LOGGER.debug("interceptSip: {}", sip);
     try (final var x2X3Client = makeX2X3Client()) {
       final byte[] bytes = sip.getBytes();
       final var request = new PduObject(

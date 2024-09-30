@@ -38,6 +38,10 @@ public class X2X3Server {
     this.x2X3Decoder = x2X3Decoder;
   }
 
+  public int getPort() {
+    return port;
+  }
+
   @EventListener(ApplicationStartedEvent.class)
   public void run() throws Exception {
     final EventLoopGroup bossGroup = new NioEventLoopGroup();

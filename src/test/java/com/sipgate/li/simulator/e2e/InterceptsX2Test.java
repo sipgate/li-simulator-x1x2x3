@@ -11,11 +11,15 @@ class InterceptsX2Test {
 
   @Test
   void simulator_receives_x2(final SimulatorClient simulatorClient) throws Exception {
+    // GIVEN
+    final String body = "INVITE sip:someone@example.org\n";
+
     // WHEN
-    simulatorClient.post("/sip", "INVITE sip:someone@example.org", Void.class);
+    simulatorClient.post("/sip", body, Void.class);
 
     // THEN
     final PduObject result = simulatorClient.get("/x2/last", PduObject.class);
     assertThat(result).isNotNull();
+    assertThat(result.payload()).isEqualTo(body.getBytes());
   }
 }

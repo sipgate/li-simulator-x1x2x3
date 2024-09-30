@@ -3,7 +3,9 @@ package com.sipgate.li.simulator;
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1ClientBuilder;
 import com.sipgate.li.lib.x1.X1RequestFactory;
+import com.sipgate.li.lib.x2x3.X2X3Client;
 import com.sipgate.li.lib.x2x3.X2X3Decoder;
+import com.sipgate.li.simulator.x2x3.X2X3Server;
 import com.sipgate.util.SSLContextBuilder;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -12,7 +14,9 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.security.*;
 import java.security.cert.CertificateException;
+import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import org.slf4j.Logger;
@@ -20,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @ConfigurationProperties(prefix = "sipgate.li.simulator")

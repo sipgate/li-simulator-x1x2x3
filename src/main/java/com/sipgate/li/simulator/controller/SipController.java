@@ -37,9 +37,10 @@ public class SipController {
     LOGGER.debug("interceptSip: {}", sip);
     try (final var x2X3Client = makeX2X3Client()) {
       final var request = new PduObjectBuilder()
-        .setPayloadDirection(PayloadDirection.SENT_FROM_TARGET)
-        .setPayload(sip.getBytes())
-        .buildSip();
+        .payloadDirection(PayloadDirection.SENT_FROM_TARGET)
+        .payload(sip.getBytes())
+        .sip()
+        .build();
       x2X3Client.send(request);
       return ResponseEntity.ok("null");
     }

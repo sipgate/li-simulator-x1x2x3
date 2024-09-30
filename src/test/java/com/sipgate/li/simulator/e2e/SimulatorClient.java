@@ -56,11 +56,32 @@ public class SimulatorClient {
     final Class<T> responseType,
     final int expectedStatusCode
   ) throws IOException, InterruptedException {
+    return post(
+      path,
+      "application/x-www-form-urlencoded",
+      mapFormDataToString(arguments),
+      responseType,
+      expectedStatusCode
+    );
+  }
+
+  public <T> T post(final String path, final String body, final Class<T> responseType)
+    throws IOException, InterruptedException {
+    return post(path, "appliation/octet-stream", body, responseType, 200);
+  }
+
+  public <T> T post(
+    final String path,
+    final String contentType,
+    final String content,
+    final Class<T> responseType,
+    final int expectedStatusCode
+  ) throws IOException, InterruptedException {
     final var requestBuilder = HttpRequest.newBuilder().uri(baseUri.resolve(path)).POST(BodyPublishers.noBody());
 
-    if (!arguments.isEmpty()) {
-      requestBuilder.header("Content-Type", "application/x-www-form-urlencoded");
-      requestBuilder.POST(BodyPublishers.ofString(mapFormDataToString(arguments)));
+    if (!content.isEmpty()) {
+      requestBuilder.header("Content-Type", contentType);
+      requestBuilder.POST(BodyPublishers.ofString(content));
     }
 
     final var request = requestBuilder.build();
@@ -76,6 +97,9 @@ public class SimulatorClient {
   }
 
   private static String mapFormDataToString(final Map<String, String> formData) {
+    if (formData.isEmpty()) {
+      return "";
+    }
     final var formBodyBuilder = new StringBuilder();
     for (final var singleEntry : formData.entrySet()) {
       if (!formBodyBuilder.isEmpty()) {

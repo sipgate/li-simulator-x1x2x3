@@ -39,6 +39,7 @@ public class SipController {
       final var request = new PduObjectBuilder()
         .payloadDirection(PayloadDirection.SENT_FROM_TARGET)
         .payload(sip.getBytes())
+        .correlationID(new byte[8])
         .sip()
         .build();
       x2X3Client.send(request);

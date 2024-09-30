@@ -67,7 +67,7 @@ public class SimulatorClient {
 
   public <T> T post(final String path, final String body, final Class<T> responseType)
     throws IOException, InterruptedException {
-    return post(path, "appliation/octet-stream", body, responseType, 200);
+    return post(path, "application/octet-stream", body, responseType, 200);
   }
 
   public <T> T post(

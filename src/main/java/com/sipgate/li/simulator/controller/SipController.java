@@ -1,11 +1,7 @@
 package com.sipgate.li.simulator.controller;
 
-import static com.sipgate.li.lib.x2x3.PduObject.MANDATORY_HEADER_LENGTH;
-
 import com.sipgate.li.lib.x2x3.PayloadDirection;
-import com.sipgate.li.lib.x2x3.PayloadFormat;
-import com.sipgate.li.lib.x2x3.PduObject;
-import com.sipgate.li.lib.x2x3.PduType;
+import com.sipgate.li.lib.x2x3.PduObjectBuilder;
 import com.sipgate.li.lib.x2x3.X2X3Client;
 import com.sipgate.li.simulator.x2x3.X2X3Server;
 import com.sipgate.util.SSLContextBuilder;
@@ -17,7 +13,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.UUID;
 import javax.net.ssl.SSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,20 +36,10 @@ public class SipController {
   public ResponseEntity<String> interceptSip(@RequestBody final String sip) throws Exception {
     LOGGER.debug("interceptSip: {}", sip);
     try (final var x2X3Client = makeX2X3Client()) {
-      final byte[] bytes = sip.getBytes();
-      final var request = new PduObject(
-        (short) 0,
-        (short) 5,
-        PduType.X2_PDU,
-        MANDATORY_HEADER_LENGTH,
-        bytes.length,
-        PayloadFormat.SIP,
-        PayloadDirection.SENT_FROM_TARGET,
-        UUID.randomUUID(),
-        new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 },
-        new byte[] {},
-        bytes
-      );
+      final var request = new PduObjectBuilder()
+        .setPayloadDirection(PayloadDirection.SENT_FROM_TARGET)
+        .setPayload(sip.getBytes())
+        .buildSip();
       x2X3Client.send(request);
       return ResponseEntity.ok("null");
     }

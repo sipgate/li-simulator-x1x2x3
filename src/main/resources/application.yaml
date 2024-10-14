@@ -14,6 +14,13 @@ sipgate:
         password: changeit
       maxHeaderLength: 320 # currently quite arbitrary
       maxPayloadLength: 8192 # currently quite arbitrary
+    networkElement:
+      clientCertKeyStore:
+        path: "/mutual-tls-stores/network-element-keystore.p12"
+        password: changeit
+      serverCertTrustStore:
+        path: "/mutual-tls-stores/network-element-truststore.jks"
+        password: changeit
 
 management:
   endpoints:

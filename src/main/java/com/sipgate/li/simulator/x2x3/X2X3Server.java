@@ -25,16 +25,16 @@ public class X2X3Server {
   final int port = 42069;
 
   private final X2X3InboundHandlerAdapter x2x3inboundHandlerAdapter;
-  private final SSLContext x1x2X3SslContext;
+  private final SSLContext sslContext;
   private final X2X3Decoder x2X3Decoder;
 
   public X2X3Server(
     final X2X3InboundHandlerAdapter x2x3InboundHandlerAdapter,
     final X2X3Decoder x2X3Decoder,
-    final SSLContext x1X2X3SslContext
+    final SSLContext simulatorSslContext
   ) {
     this.x2x3inboundHandlerAdapter = x2x3InboundHandlerAdapter;
-    this.x1x2X3SslContext = x1X2X3SslContext;
+    this.sslContext = simulatorSslContext;
     this.x2X3Decoder = x2X3Decoder;
   }
 
@@ -81,7 +81,7 @@ public class X2X3Server {
   }
 
   private SslHandler getSslHandler() {
-    final var sslEngine = x1x2X3SslContext.createSSLEngine();
+    final var sslEngine = sslContext.createSSLEngine();
     sslEngine.setUseClientMode(false);
     LOGGER.info("Listening socket using mutual TLS");
     sslEngine.setNeedClientAuth(true);

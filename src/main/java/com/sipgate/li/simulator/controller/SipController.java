@@ -4,9 +4,7 @@ import com.sipgate.li.lib.x2x3.PayloadDirection;
 import com.sipgate.li.lib.x2x3.PduObjectBuilder;
 import com.sipgate.li.lib.x2x3.X2X3Client;
 import com.sipgate.li.simulator.x2x3.X2X3Server;
-import com.sipgate.util.SSLContextBuilder;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -27,9 +25,11 @@ public class SipController {
   private static final Logger LOGGER = LoggerFactory.getLogger(SipController.class);
 
   private final X2X3Server localX2X3Server;
+  private final SSLContext sslContext;
 
-  public SipController(final X2X3Server localX2X3Server) {
+  public SipController(final X2X3Server localX2X3Server, final SSLContext networkElementSslContext) {
     this.localX2X3Server = localX2X3Server;
+    this.sslContext = networkElementSslContext;
   }
 
   @PostMapping("/sip")
@@ -43,22 +43,12 @@ public class SipController {
         .sip()
         .build();
       x2X3Client.send(request);
-      return ResponseEntity.ok("null");
+      return ResponseEntity.noContent().build();
     }
   }
 
-  private SSLContext makeFlippedS1X2X3SslContext()
-    throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, NoSuchProviderException, KeyManagementException {
-    return SSLContextBuilder.newBuilder()
-      .withKeyStore(Path.of("/mutual-tls-stores/network-element-keystore.p12"), "changeit")
-      .withTrustStore(Path.of("/mutual-tls-stores/network-element-truststore.jks"), "changeit")
-      .build();
-  }
-
-  private X2X3Client makeX2X3Client()
-    throws IOException, UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, KeyManagementException {
+  private X2X3Client makeX2X3Client() throws IOException {
     LOGGER.info("Attempting to create local connection, port:{}", localX2X3Server.getPort());
-    final SSLContext sslContext = makeFlippedS1X2X3SslContext();
     return new X2X3Client(sslContext.getSocketFactory(), "localhost", localX2X3Server.getPort());
   }
 }

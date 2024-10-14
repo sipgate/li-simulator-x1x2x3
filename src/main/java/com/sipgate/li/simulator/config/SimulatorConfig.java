@@ -1,22 +1,19 @@
-package com.sipgate.li.simulator;
+package com.sipgate.li.simulator.config;
 
 import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1ClientBuilder;
 import com.sipgate.li.lib.x1.X1RequestFactory;
-import com.sipgate.li.lib.x2x3.X2X3Client;
 import com.sipgate.li.lib.x2x3.X2X3Decoder;
-import com.sipgate.li.simulator.x2x3.X2X3Server;
 import com.sipgate.util.SSLContextBuilder;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Path;
-import java.security.*;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import org.slf4j.Logger;
@@ -24,20 +21,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @ConfigurationProperties(prefix = "sipgate.li.simulator")
-@OpenAPIDefinition(
-  info = @Info(
-    title = "LI Simulator",
-    version = "1.0",
-    description = "A simulator for the ADMF part of X1/X2/X3 interfaces."
-  )
-)
-public class AppConfig {
+public class SimulatorConfig {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SimulatorConfig.class);
 
   private URI targetUri;
   private String admfIdentifier;
@@ -47,8 +36,6 @@ public class AppConfig {
 
   private int maxHeaderLength;
   private int maxPayloadLength;
-
-  public record SslStore(Path path, String password) {}
 
   public void setTargetUri(final URI targetUri) {
     this.targetUri = targetUri;
@@ -80,13 +67,13 @@ public class AppConfig {
   }
 
   @Bean
-  public X1Client x1Client(final SSLContext x1x2x3SslContext) {
+  public X1Client x1Client(final SSLContext simulatorSslContext) {
     LOGGER.info("Attempting to create connections to {}.", targetUri);
-    return X1ClientBuilder.newBuilder().withTarget(targetUri).withContext(x1x2x3SslContext).build();
+    return X1ClientBuilder.newBuilder().withTarget(targetUri).withContext(simulatorSslContext).build();
   }
 
   @Bean
-  SSLContext x1X2X3SslContext()
+  SSLContext simulatorSslContext()
     throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, NoSuchProviderException, KeyManagementException {
     return SSLContextBuilder.newBuilder()
       .withKeyStore(clientCertKeyStore.path(), clientCertKeyStore.password())

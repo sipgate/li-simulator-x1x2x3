@@ -10,8 +10,9 @@ services:
       args:
         MVN_ADDITIONAL_ARGS: "-DskipTests"
     ports:
-      - "127.0.0.1:8080:8080"
-      - "127.0.0.1:42069:42069"
+      - "127.0.0.1:8080:8080" # REST API
+      - "127.0.0.1:42069:42069" # X2
+      - "127.0.0.1:5005:5005" # JVM remote debug
     networks:
       - li-network
     depends_on:

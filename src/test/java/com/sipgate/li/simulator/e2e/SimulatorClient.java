@@ -36,6 +36,10 @@ public class SimulatorClient {
       throw new IOException("Unexpected response code: " + response.statusCode());
     }
 
+    if (responseType.equals(String.class)) {
+      return responseType.cast(response.body());
+    }
+
     final var responseBody = response.body();
 
     return objectMapper.readValue(responseBody, responseType);

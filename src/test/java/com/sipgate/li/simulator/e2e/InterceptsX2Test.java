@@ -17,7 +17,7 @@ class InterceptsX2Test {
     final String body = "INVITE sip:someone@example.org\n";
 
     // WHEN
-    simulatorClient.post("/sip", body, Void.class);
+    simulatorClient.post("/sip", "application/octet-stream", body, Void.class, 204);
 
     // THEN
     final PduObject result = simulatorClient.get("/x2/last", PduObject.class);

@@ -96,6 +96,9 @@ public class SimulatorClient {
     }
 
     final var responseBody = response.body();
+    if (responseBody.isEmpty()) {
+      return null;
+    }
 
     return objectMapper.readValue(responseBody, responseType);
   }

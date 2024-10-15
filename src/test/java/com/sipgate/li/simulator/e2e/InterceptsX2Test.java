@@ -3,6 +3,9 @@ package com.sipgate.li.simulator.e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.sipgate.li.lib.x2x3.*;
+import io.netty.buffer.Unpooled;
+import java.util.ArrayList;
+import java.util.Base64;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +23,12 @@ class InterceptsX2Test {
     simulatorClient.post("/sip", "application/octet-stream", body, Void.class, 204);
 
     // THEN
-    final PduObject result = simulatorClient.get("/x2/last", PduObject.class);
+    final var base64edByteStreamOfAPduObject = simulatorClient.get("/x2/last", String.class);
+    final var decoded = Unpooled.wrappedBuffer(Base64.getDecoder().decode(base64edByteStreamOfAPduObject));
+    final var outList = new ArrayList<>();
+    new X2X3Decoder(Integer.MAX_VALUE, Integer.MAX_VALUE).decode(decoded, outList);
+
+    final PduObject result = (PduObject) outList.get(0);
     assertThat(result).isNotNull();
     assertThat(result.pduType()).isEqualTo(PduType.X2_PDU);
     assertThat(result.payloadFormat()).isEqualTo(PayloadFormat.SIP);

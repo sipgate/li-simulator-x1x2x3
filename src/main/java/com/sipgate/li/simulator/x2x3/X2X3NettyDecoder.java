@@ -23,11 +23,11 @@ public class X2X3NettyDecoder extends ByteToMessageDecoder {
     final ChannelHandlerContext channelHandlerContext,
     final ByteBuf byteBuf,
     final List<Object> out
-  ) throws Exception {
+  ) {
     LOGGER.debug("Child handler decoding message: {}", byteBuf);
 
     try {
-      x2x3Decoder.decode(byteBuf, out);
+      x2x3Decoder.decode(byteBuf).map(out::add);
     } catch (final IllegalArgumentException e) {
       LOGGER.error(e.getMessage(), e);
       channelHandlerContext.close();

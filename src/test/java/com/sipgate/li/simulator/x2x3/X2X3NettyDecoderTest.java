@@ -37,9 +37,9 @@ class X2X3NettyDecoderTest {
 
   @ParameterizedTest
   @MethodSource("decoderExceptions")
-  void it_closes_on_pdu_validation_exception(final Exception e) throws Exception {
+  void it_closes_on_pdu_validation_exception(final Exception e) {
     // GIVEN
-    doThrow(e).when(x2X3Decoder).decode(any(), any());
+    doThrow(e).when(x2X3Decoder).decode(any());
 
     // WHEN
     underTest.decode(channelHandlerContext, null, null);

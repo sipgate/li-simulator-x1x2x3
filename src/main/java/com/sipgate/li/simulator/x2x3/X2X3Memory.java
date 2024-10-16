@@ -18,4 +18,8 @@ public class X2X3Memory {
   public void onX2X3Received(final X2X3ReceivedEvent event) {
     lastMessage = event.pduObject();
   }
+
+  public void reset() {
+    lastMessage = null;
+  }
 }

@@ -3,14 +3,8 @@ package com.sipgate.li.simulator.controller;
 import com.sipgate.li.lib.x2x3.PayloadDirection;
 import com.sipgate.li.lib.x2x3.PduObjectBuilder;
 import com.sipgate.li.lib.x2x3.X2X3Client;
-import com.sipgate.li.simulator.x2x3.X2X3Server;
+import com.sipgate.li.simulator.config.SimulatorConfig;
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import javax.net.ssl.SSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +18,12 @@ public class SipController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SipController.class);
 
-  private final X2X3Server localX2X3Server;
   private final SSLContext sslContext;
+  private final int x2x3Port;
 
-  public SipController(final X2X3Server localX2X3Server, final SSLContext networkElementSslContext) {
-    this.localX2X3Server = localX2X3Server;
+  public SipController(final SSLContext networkElementSslContext, final SimulatorConfig simulatorConfig) {
     this.sslContext = networkElementSslContext;
+    this.x2x3Port = simulatorConfig.getX2X3ServerConfig().port();
   }
 
   @PostMapping("/sip")
@@ -48,7 +42,7 @@ public class SipController {
   }
 
   private X2X3Client makeX2X3Client() throws IOException {
-    LOGGER.info("Attempting to create local connection, port:{}", localX2X3Server.getPort());
-    return new X2X3Client(sslContext.getSocketFactory(), "localhost", localX2X3Server.getPort());
+    LOGGER.info("Attempting to create local connection, port:{}", x2x3Port);
+    return new X2X3Client(sslContext.getSocketFactory(), "localhost", x2x3Port);
   }
 }

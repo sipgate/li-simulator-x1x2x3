@@ -1,12 +1,12 @@
 package com.sipgate.li.simulator.x2x3;
 
 import com.sipgate.li.lib.x2x3.PduObject;
-import com.sipgate.li.simulator.event.X2X3ReceivedEvent;
-import org.springframework.context.event.EventListener;
+import java.util.function.Consumer;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
-public class X2X3Memory {
+@Component
+public class X2X3Memory implements Consumer<PduObject> {
 
   private PduObject lastMessage = null;
 
@@ -14,12 +14,12 @@ public class X2X3Memory {
     return lastMessage;
   }
 
-  @EventListener(X2X3ReceivedEvent.class)
-  public void onX2X3Received(final X2X3ReceivedEvent event) {
-    lastMessage = event.pduObject();
-  }
-
   public void reset() {
     lastMessage = null;
+  }
+
+  @Override
+  public void accept(final PduObject pduObject) {
+    this.lastMessage = pduObject;
   }
 }

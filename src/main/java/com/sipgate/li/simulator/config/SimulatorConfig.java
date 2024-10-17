@@ -4,6 +4,8 @@ import com.sipgate.li.lib.x1.X1Client;
 import com.sipgate.li.lib.x1.X1ClientBuilder;
 import com.sipgate.li.lib.x1.X1RequestFactory;
 import com.sipgate.li.lib.x2x3.X2X3Decoder;
+import com.sipgate.li.lib.x2x3.X2X3Server;
+import com.sipgate.li.simulator.x2x3.X2X3Memory;
 import com.sipgate.util.SSLContextBuilder;
 import java.io.IOException;
 import java.net.URI;
@@ -33,9 +35,7 @@ public class SimulatorConfig {
 
   private SslStore clientCertKeyStore;
   private SslStore serverCertTrustStore;
-
-  private int maxHeaderLength;
-  private int maxPayloadLength;
+  private X2X3ServerConfig x2X3ServerConfig;
 
   public void setTargetUri(final URI targetUri) {
     this.targetUri = targetUri;
@@ -53,12 +53,12 @@ public class SimulatorConfig {
     this.serverCertTrustStore = serverCertTrustStore;
   }
 
-  public void setMaxHeaderLength(final int maxHeaderLength) {
-    this.maxHeaderLength = maxHeaderLength;
+  public void setX2X3Server(final X2X3ServerConfig x2X3ServerConfig) {
+    this.x2X3ServerConfig = x2X3ServerConfig;
   }
 
-  public void setMaxPayloadLength(final int maxPayloadLength) {
-    this.maxPayloadLength = maxPayloadLength;
+  public X2X3ServerConfig getX2X3ServerConfig() {
+    return x2X3ServerConfig;
   }
 
   @Bean
@@ -73,6 +73,14 @@ public class SimulatorConfig {
   }
 
   @Bean
+  public X2X3Server x2X3Server(final SSLContext simulatorSslContext, final X2X3Memory x2X3Memory) {
+    return new X2X3Server(
+      new X2X3Decoder(x2X3ServerConfig.maxHeaderLength, x2X3ServerConfig.maxPayloadLength),
+      simulatorSslContext
+    ).addConsumer(x2X3Memory);
+  }
+
+  @Bean
   SSLContext simulatorSslContext()
     throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, NoSuchProviderException, KeyManagementException {
     return SSLContextBuilder.newBuilder()
@@ -81,8 +89,5 @@ public class SimulatorConfig {
       .build();
   }
 
-  @Bean
-  public X2X3Decoder x2X3Decoder() {
-    return new X2X3Decoder(maxHeaderLength, maxPayloadLength);
-  }
+  public record X2X3ServerConfig(int maxHeaderLength, int maxPayloadLength, int port) {}
 }

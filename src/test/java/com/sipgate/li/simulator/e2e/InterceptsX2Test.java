@@ -16,12 +16,14 @@ class InterceptsX2Test {
   @Test
   void simulator_receives_x2(final SimulatorClient simulatorClient) throws Exception {
     // GIVEN
-    final String body = "INVITE sip:someone@example.org\n";
+    final var body = "INVITE sip:someone@example.org\n";
+    simulatorClient.post("/x2/reset", null, "", Void.class, 204);
 
     // WHEN
     simulatorClient.post("/sip", "application/octet-stream", body, Void.class, 204);
 
     // THEN
+    Thread.sleep(1000); // Prevents race condition
     final var base64edByteStreamOfAPduObject = simulatorClient.get("/x2/last", String.class);
     final var decoded = Unpooled.wrappedBuffer(Base64.getDecoder().decode(base64edByteStreamOfAPduObject));
 

@@ -12,8 +12,10 @@ sipgate:
       serverCertTrustStore:
         path: "/tmp/truststore.jks"
         password: changeit
-      maxHeaderLength: 320 # currently quite arbitrary
-      maxPayloadLength: 8192 # currently quite arbitrary
+      x2x3Server:
+        maxHeaderLength: 320 # currently quite arbitrary
+        maxPayloadLength: 8192 # currently quite arbitrary
+        port: 42069
     networkElement:
       clientCertKeyStore:
         path: "/mutual-tls-stores/network-element-keystore.p12"

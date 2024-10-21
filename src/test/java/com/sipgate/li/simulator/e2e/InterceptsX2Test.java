@@ -2,7 +2,11 @@ package com.sipgate.li.simulator.e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.sipgate.li.lib.x2x3.*;
+import com.sipgate.li.lib.x2x3.protocol.PayloadDirection;
+import com.sipgate.li.lib.x2x3.protocol.PayloadFormat;
+import com.sipgate.li.lib.x2x3.protocol.PduObject;
+import com.sipgate.li.lib.x2x3.protocol.PduType;
+import com.sipgate.li.lib.x2x3.server.X2X3Decoder;
 import io.netty.buffer.Unpooled;
 import java.util.Base64;
 import org.junit.jupiter.api.Tag;

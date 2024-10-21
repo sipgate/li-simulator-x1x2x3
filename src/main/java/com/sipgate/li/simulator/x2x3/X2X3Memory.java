@@ -1,9 +1,8 @@
 package com.sipgate.li.simulator.x2x3;
 
-import com.sipgate.li.lib.x2x3.PduObject;
+import com.sipgate.li.lib.x2x3.protocol.PduObject;
 import java.util.function.Consumer;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 public class X2X3Memory implements Consumer<PduObject> {

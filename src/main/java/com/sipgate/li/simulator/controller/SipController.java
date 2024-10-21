@@ -1,8 +1,8 @@
 package com.sipgate.li.simulator.controller;
 
-import com.sipgate.li.lib.x2x3.PayloadDirection;
-import com.sipgate.li.lib.x2x3.PduObjectBuilder;
-import com.sipgate.li.lib.x2x3.X2X3Client;
+import com.sipgate.li.lib.x2x3.client.X2X3Client;
+import com.sipgate.li.lib.x2x3.protocol.PayloadDirection;
+import com.sipgate.li.lib.x2x3.protocol.PduObjectBuilder;
 import com.sipgate.li.simulator.config.SimulatorConfig;
 import java.io.IOException;
 import javax.net.ssl.SSLContext;

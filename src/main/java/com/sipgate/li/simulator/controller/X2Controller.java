@@ -1,6 +1,5 @@
 package com.sipgate.li.simulator.controller;
 
-import com.sipgate.li.lib.x2x3.PduObject;
 import com.sipgate.li.simulator.x2x3.X2X3Memory;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

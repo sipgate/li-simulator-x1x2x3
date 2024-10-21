@@ -1,6 +1,6 @@
 package com.sipgate.li.simulator.controller;
 
-import com.sipgate.li.lib.x1.X1ClientException;
+import com.sipgate.li.lib.x1.client.X1ClientException;
 import com.sipgate.li.simulator.controller.response.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

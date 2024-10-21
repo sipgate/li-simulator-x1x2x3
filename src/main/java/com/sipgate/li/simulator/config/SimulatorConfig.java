@@ -1,10 +1,10 @@
 package com.sipgate.li.simulator.config;
 
-import com.sipgate.li.lib.x1.X1Client;
-import com.sipgate.li.lib.x1.X1ClientBuilder;
-import com.sipgate.li.lib.x1.X1RequestFactory;
-import com.sipgate.li.lib.x2x3.X2X3Decoder;
-import com.sipgate.li.lib.x2x3.X2X3Server;
+import com.sipgate.li.lib.x1.client.X1Client;
+import com.sipgate.li.lib.x1.client.X1ClientBuilder;
+import com.sipgate.li.lib.x1.client.X1RequestFactory;
+import com.sipgate.li.lib.x2x3.server.X2X3Decoder;
+import com.sipgate.li.lib.x2x3.server.X2X3Server;
 import com.sipgate.li.simulator.x2x3.X2X3Memory;
 import com.sipgate.util.SSLContextBuilder;
 import java.io.IOException;
@@ -75,8 +75,8 @@ public class SimulatorConfig {
   @Bean
   public X2X3Server x2X3Server(final SSLContext simulatorSslContext, final X2X3Memory x2X3Memory) {
     return new X2X3Server(
-      new X2X3Decoder(x2X3ServerConfig.maxHeaderLength, x2X3ServerConfig.maxPayloadLength),
-      simulatorSslContext
+      simulatorSslContext,
+      new X2X3Decoder(x2X3ServerConfig.maxHeaderLength, x2X3ServerConfig.maxPayloadLength)
     ).addConsumer(x2X3Memory);
   }
 

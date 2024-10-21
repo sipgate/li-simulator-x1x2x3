@@ -1,8 +1,8 @@
 package com.sipgate.li.simulator.controller;
 
-import com.sipgate.li.lib.x1.X1Client;
-import com.sipgate.li.lib.x1.X1ClientException;
-import com.sipgate.li.lib.x1.X1RequestFactory;
+import com.sipgate.li.lib.x1.client.X1Client;
+import com.sipgate.li.lib.x1.client.X1ClientException;
+import com.sipgate.li.lib.x1.client.X1RequestFactory;
 import com.sipgate.li.simulator.controller.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

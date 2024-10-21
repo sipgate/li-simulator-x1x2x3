@@ -1,6 +1,6 @@
 package com.sipgate.li.simulator.x2x3;
 
-import com.sipgate.li.lib.x2x3.X2X3Server;
+import com.sipgate.li.lib.x2x3.server.X2X3Server;
 import com.sipgate.li.simulator.config.SimulatorConfig;
 import jakarta.annotation.PreDestroy;
 import java.net.InetSocketAddress;

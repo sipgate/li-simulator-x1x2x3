@@ -151,7 +151,7 @@ public class TaskController {
       ),
     }
   )
-  @PostMapping("/task/remove/{xId}")
+  @DeleteMapping("/task/{xId}")
   public DeactivateTaskResponse deactivateTask(@PathVariable final String xId)
     throws X1ClientException, InterruptedException {
     final var req = x1RequestFactory.create(DeactivateTaskRequest.class);

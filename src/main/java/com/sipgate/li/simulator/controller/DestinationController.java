@@ -142,7 +142,7 @@ public class DestinationController {
       ),
     }
   )
-  @PostMapping("/destination/remove/{did}")
+  @DeleteMapping("/destination/{did}")
   public RemoveDestinationResponse removeDestination(@PathVariable final UUID did)
     throws X1ClientException, InterruptedException {
     final var req = x1RequestFactory.create(RemoveDestinationRequest.class);

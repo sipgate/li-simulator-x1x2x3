@@ -77,10 +77,10 @@ public class E2ETest {
 
     @Override
     public void cleanup() {
-      runAndIgnoreExceptions("remove task", () -> client.post("/task/remove/" + X_ID, DeactivateTaskResponse.class));
+      runAndIgnoreExceptions("remove task", () -> client.delete("/task/" + X_ID, DeactivateTaskResponse.class));
 
       runAndIgnoreExceptions("remove destination", () ->
-        client.post("/destination/remove/" + D_ID, RemoveDestinationResponse.class)
+        client.delete("/destination/" + D_ID, RemoveDestinationResponse.class)
       );
 
       runAndIgnoreExceptions("reset wiremock", () -> {
@@ -120,7 +120,7 @@ public class E2ETest {
 
     @Test
     void it_cant_delete_unknown_destination() throws IOException, InterruptedException {
-      client.post("/destination/remove/" + UUID.randomUUID(), DESTINATION_DETAILS, ErrorResponse.class, 502);
+      client.delete("/destination/" + UUID.randomUUID(), ErrorResponse.class, 502);
     }
 
     @Test
@@ -148,7 +148,7 @@ public class E2ETest {
     private final Started started = new Started();
 
     @Override
-    public void cleanup() throws Exception {
+    public void cleanup() {
       started.cleanup();
     }
 
@@ -194,12 +194,7 @@ public class E2ETest {
 
     @Test
     void it_deletes_destination() throws IOException, InterruptedException {
-      final var response = client.post(
-        "/destination/remove/" + D_ID,
-        DESTINATION_DETAILS,
-        RemoveDestinationResponse.class,
-        200
-      );
+      final var response = client.delete("/destination/" + D_ID, RemoveDestinationResponse.class);
       assertThat(response.getOK()).isEqualTo(OK.ACKNOWLEDGED_AND_COMPLETED);
     }
 
@@ -220,7 +215,7 @@ public class E2ETest {
 
     @Test
     void it_fails_to_deactivate_unknown_task() throws IOException, InterruptedException {
-      client.post("/task/remove/" + UUID.randomUUID(), Map.of(), ErrorResponse.class, 502);
+      client.delete("/task/" + UUID.randomUUID(), ErrorResponse.class, 502);
     }
 
     @Test
@@ -317,7 +312,7 @@ public class E2ETest {
     @Test
     void it_deletes_task() throws IOException, InterruptedException {
       // WHEN
-      client.post("/task/remove/" + X_ID, Map.of(), DeactivateTaskResponse.class, 200);
+      client.delete("/task/" + X_ID, DeactivateTaskResponse.class);
 
       // THEN
       destinationAdded.it_fails_to_get_unknown_task();
@@ -325,7 +320,7 @@ public class E2ETest {
 
     @Test
     void it_fails_to_remove_destination_with_depending_task() throws IOException, InterruptedException {
-      client.post("/destination/remove/" + D_ID, Map.of(), ErrorResponse.class, 502);
+      client.delete("/destination/" + D_ID, ErrorResponse.class, 502);
     }
 
     @Test

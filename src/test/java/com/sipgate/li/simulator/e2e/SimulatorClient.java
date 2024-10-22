@@ -29,30 +29,11 @@ public class SimulatorClient {
 
   public <T> T get(final String path, final Class<T> responseType, final int expectedStatusCode)
     throws IOException, InterruptedException {
-    final var request = HttpRequest.newBuilder().uri(baseUri.resolve(path)).GET().build();
-
-    final var response = httpClient.send(request, BodyHandlers.ofString());
-    if (response.statusCode() != expectedStatusCode) {
-      final var cause = new RemoteCause(response.body());
-      throw new IOException("Unexpected response code: " + response.statusCode(), cause);
-    }
-
-    if (responseType.equals(String.class)) {
-      return responseType.cast(response.body());
-    }
-
-    final var responseBody = response.body();
-
-    return objectMapper.readValue(responseBody, responseType);
+    return exchange("GET", path, null, null, responseType, expectedStatusCode);
   }
 
-  <T> T post(final String path, final Class<T> responseType) throws IOException, InterruptedException {
+  public <T> T post(final String path, final Class<T> responseType) throws IOException, InterruptedException {
     return post(path, Map.of(), responseType, 200);
-  }
-
-  <T> T post(final String path, final Map<String, String> arguments, final Class<T> responseType)
-    throws IOException, InterruptedException {
-    return post(path, arguments, responseType, 200);
   }
 
   public <T> T post(
@@ -82,24 +63,50 @@ public class SimulatorClient {
     final Class<T> responseType,
     final int expectedStatusCode
   ) throws IOException, InterruptedException {
-    final var requestBuilder = HttpRequest.newBuilder().uri(baseUri.resolve(path)).POST(BodyPublishers.noBody());
+    return exchange("POST", path, contentType, content, responseType, expectedStatusCode);
+  }
 
-    if (!content.isEmpty()) {
+  public <T> T delete(final String path, final Class<T> responseType) throws IOException, InterruptedException {
+    return delete(path, responseType, 200);
+  }
+
+  public <T> T delete(final String path, final Class<T> responseType, final int expectedStatusCode)
+    throws IOException, InterruptedException {
+    return exchange("DELETE", path, null, null, responseType, expectedStatusCode);
+  }
+
+  private <T> T exchange(
+    final String method,
+    final String path,
+    final String contentType,
+    final String content,
+    final Class<T> responseType,
+    final int expectedStatusCode
+  ) throws IOException, InterruptedException {
+    final var requestBuilder = HttpRequest.newBuilder().uri(baseUri.resolve(path));
+    if (content == null || content.isEmpty()) {
+      requestBuilder.method(method, BodyPublishers.noBody());
+    } else {
       requestBuilder.header("Content-Type", contentType);
-      requestBuilder.POST(BodyPublishers.ofString(content));
+      requestBuilder.method(method, BodyPublishers.ofString(content));
     }
 
     final var request = requestBuilder.build();
-
     final var response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() != expectedStatusCode) {
-      final var cause = new RemoteCause(response.body());
-      throw new IOException("Unexpected response code: " + response.statusCode(), cause);
+      throw new IOException(
+        "Unexpected response code: " + response.statusCode() + " (expected: " + expectedStatusCode + ")",
+        new RemoteCause(response.body())
+      );
     }
 
     final var responseBody = response.body();
     if (responseBody.isEmpty()) {
       return null;
+    }
+
+    if (responseType.equals(String.class)) {
+      return responseType.cast(response.body());
     }
 
     return objectMapper.readValue(responseBody, responseType);

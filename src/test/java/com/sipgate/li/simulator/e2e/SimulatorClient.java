@@ -33,7 +33,8 @@ public class SimulatorClient {
 
     final var response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() != expectedStatusCode) {
-      throw new IOException("Unexpected response code: " + response.statusCode());
+      final var cause = new RemoteCause(response.body());
+      throw new IOException("Unexpected response code: " + response.statusCode(), cause);
     }
 
     if (responseType.equals(String.class)) {
@@ -92,7 +93,8 @@ public class SimulatorClient {
 
     final var response = httpClient.send(request, BodyHandlers.ofString());
     if (response.statusCode() != expectedStatusCode) {
-      throw new IOException("Unexpected response code: " + response.statusCode());
+      final var cause = new RemoteCause(response.body());
+      throw new IOException("Unexpected response code: " + response.statusCode(), cause);
     }
 
     final var responseBody = response.body();
@@ -119,5 +121,12 @@ public class SimulatorClient {
     }
 
     return formBodyBuilder.toString();
+  }
+
+  public static class RemoteCause extends Throwable {
+
+    public RemoteCause(final String message) {
+      super(message, null, true, false);
+    }
   }
 }

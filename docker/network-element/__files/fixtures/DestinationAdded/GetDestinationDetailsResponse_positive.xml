@@ -14,10 +14,10 @@
 				<ns1:deliveryAddress>
 					<ns1:ipAddressAndPort>
 						<ns2:address>
-							<ns2:IPv4Address>192.0.2.23</ns2:IPv4Address>
+							<ns2:IPv4Address>host.docker.internal</ns2:IPv4Address>
 						</ns2:address>
 						<ns2:port>
-							<ns2:TCPPort>12345</ns2:TCPPort>
+							<ns2:TCPPort>42069</ns2:TCPPort>
 						</ns2:port>
 					</ns1:ipAddressAndPort>
 				</ns1:deliveryAddress>

@@ -34,11 +34,11 @@ public class E2ETest {
     "friendlyName",
     FRIENDLY_NAME,
     "deliveryType",
-    X_2_ONLY.name(),
+    X_2_AND_X_3.name(),
     "tcpPort",
-    "12345",
+    "42069",
     "ipAddress",
-    "192.0.2.23"
+    "host.docker.internal"
   );
 
   private static final Map<String, String> MODIFIED_DESTINATION_DETAILS = Map.of(

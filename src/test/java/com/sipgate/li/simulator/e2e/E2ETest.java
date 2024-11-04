@@ -47,7 +47,7 @@ public class E2ETest {
     "friendlyName",
     FRIENDLY_NAME_MODIFIED,
     "deliveryType",
-    X_2_ONLY.name(),
+    X_2_AND_X_3.name(),
     "tcpPort",
     "12345",
     "ipAddress",
@@ -327,7 +327,7 @@ public class E2ETest {
     void it_modifies_a_task() throws IOException, InterruptedException {
       client.post(
         "/task/" + X_ID,
-        Map.of("e164number", E164NUMBER_MODIFIED, "destinationId", D_ID, "deliveryType", X_2_ONLY.name()),
+        Map.of("e164number", E164NUMBER_MODIFIED, "destinationId", D_ID, "deliveryType", X_2_AND_X_3.name()),
         ModifyTaskResponse.class,
         200
       );

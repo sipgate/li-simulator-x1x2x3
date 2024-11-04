@@ -97,7 +97,7 @@
         "bodyPatterns": [
           { "contains": "ActivateTaskRequest" },
           { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" },
-          { "contains": "X2Only" }
+          { "contains": "X2andX3" }
         ]
       },
       "response": {

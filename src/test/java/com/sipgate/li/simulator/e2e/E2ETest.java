@@ -222,7 +222,7 @@ public class E2ETest {
     void it_creates_task() throws IOException, InterruptedException {
       final var response = client.post(
         "/task",
-        Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.name()),
+        Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_AND_X_3.name()),
         TaskActivatedResponse.class,
         200
       );

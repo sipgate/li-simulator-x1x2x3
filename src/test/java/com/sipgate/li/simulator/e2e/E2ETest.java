@@ -237,6 +237,7 @@ public class E2ETest {
       //GIVEN: Modify Destination to mismatch new tasks delivery type
       final Map<String, String> DESTINATION_DETAILS_X2_ONLY = new HashMap<>(DESTINATION_DETAILS);
       DESTINATION_DETAILS_X2_ONLY.put("deliveryType", X_2_ONLY.name());
+      DESTINATION_DETAILS_X2_ONLY.put("friendlyName", "special snowflake"); //Used in wiremock for special cases
       client.post("/destination/" + D_ID, DESTINATION_DETAILS_X2_ONLY, ModifyDestinationResponse.class, 200);
       //WHEN
       final var mismatchingDeliveryType = X_3_ONLY;
@@ -345,6 +346,7 @@ public class E2ETest {
       //GIVEN: Modify Destination to mismatch new tasks delivery type
       final Map<String, String> DESTINATION_DETAILS_X2_ONLY = new HashMap<>(DESTINATION_DETAILS);
       DESTINATION_DETAILS_X2_ONLY.put("deliveryType", X_2_ONLY.name());
+      DESTINATION_DETAILS_X2_ONLY.put("friendlyName", "special snowflake"); //Used in wiremock for special matching
       client.post("/destination/" + D_ID, DESTINATION_DETAILS_X2_ONLY, ModifyDestinationResponse.class, 200);
       //WHEN
       final var mismatchingDeliveryType = X_3_ONLY;

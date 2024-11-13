@@ -93,6 +93,18 @@
       "response": {
         "bodyFileName": "fixtures/TaskAdded/ListAllDetailsResponse_positive.xml"
       }
+    },
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "TaskAdded",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ModifyDestinationRequest" }, { "contains": "special snowflake" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/DestinationAdded/ModifyDestinationResponse_positive.xml"
+      }
     }
   ]
 }

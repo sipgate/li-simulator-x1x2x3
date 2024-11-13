@@ -40,6 +40,18 @@
     {
       "scenarioName": "all",
       "requiredScenarioState": "DestinationAdded",
+      "request": {
+        "method": "POST",
+        "url": "/X1/NE",
+        "bodyPatterns": [{ "contains": "ModifyDestinationRequest" }, { "contains": "special snowflake" }]
+      },
+      "response": {
+        "bodyFileName": "fixtures/DestinationAdded/ModifyDestinationResponse_positive.xml"
+      }
+    },
+    {
+      "scenarioName": "all",
+      "requiredScenarioState": "DestinationAdded",
       "newScenarioState": "Started",
       "request": {
         "method": "POST",

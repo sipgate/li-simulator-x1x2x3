@@ -3,6 +3,8 @@ package com.sipgate.li.simulator.controller;
 import com.sipgate.li.lib.x2x3.protocol.PduObject;
 import com.sipgate.li.lib.x2x3.protocol.PduType;
 import com.sipgate.li.simulator.x2x3.X2X3Memory;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufOutputStream;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -10,12 +12,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -92,6 +98,31 @@ public class X2X3Controller {
   public ResponseEntity<List<String>> getAllX3() throws IOException {
     final var respList = getStorageAsList(pdu -> PduType.X3_PDU.equals(pdu.pduType()));
     return ResponseEntity.ok(respList);
+  }
+
+  // ================================
+
+  @GetMapping(value = "/all/rtp/{xid}", produces = "application/octet-stream")
+  public ResponseEntity<byte[]> getAllRtp(@PathVariable final UUID xid) throws IOException {
+    try (final var buf = new ByteArrayOutputStream()) {
+      x2X3Memory
+        .getStorage()
+        .stream()
+        .filter(pdu -> PduType.X3_PDU.equals(pdu.pduType()))
+        .filter(pdu -> pdu.xid().equals(xid))
+        .sorted(Comparator.comparingInt(pdu -> pdu.findSequenceNumber().orElse(-1)))
+        .map(PduObject::payload)
+        .forEach(payload -> writeToBuf(payload, buf));
+      return ResponseEntity.ok(buf.toByteArray());
+    }
+  }
+
+  private static void writeToBuf(final byte[] payload, final ByteArrayOutputStream buf) {
+    try {
+      buf.write(payload);
+    } catch (final IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   // ================================

@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -233,9 +234,15 @@ public class E2ETest {
 
     @Test
     void it_fails_to_activate_task_with_mismatching_delivery_type() throws IOException, InterruptedException {
+      //GIVEN: Modify Destination to mismatch new tasks delivery type
+      final Map<String, String> DESTINATION_DETAILS_X2_ONLY = new HashMap<>(DESTINATION_DETAILS);
+      DESTINATION_DETAILS_X2_ONLY.put("deliveryType", X_2_ONLY.name());
+      client.post("/destination/" + D_ID, DESTINATION_DETAILS_X2_ONLY, ModifyDestinationResponse.class, 200);
+      //WHEN
       final var mismatchingDeliveryType = X_3_ONLY;
       assertThat(DESTINATION_DETAILS.get("deliveryType")).isNotIn(X_2_AND_X_3, mismatchingDeliveryType);
 
+      //THEN
       client.post(
         "/task",
         Map.of(
@@ -335,9 +342,14 @@ public class E2ETest {
 
     @Test
     void it_fails_to_modify_task_with_mismatching_delivery_type() throws IOException, InterruptedException {
+      //GIVEN: Modify Destination to mismatch new tasks delivery type
+      final Map<String, String> DESTINATION_DETAILS_X2_ONLY = new HashMap<>(DESTINATION_DETAILS);
+      DESTINATION_DETAILS_X2_ONLY.put("deliveryType", X_2_ONLY.name());
+      client.post("/destination/" + D_ID, DESTINATION_DETAILS_X2_ONLY, ModifyDestinationResponse.class, 200);
+      //WHEN
       final var mismatchingDeliveryType = X_3_ONLY;
       assertThat(DESTINATION_DETAILS.get("deliveryType")).isNotIn(X_2_AND_X_3, mismatchingDeliveryType);
-
+      //THEN
       client.post(
         "/task/" + X_ID,
         Map.of(

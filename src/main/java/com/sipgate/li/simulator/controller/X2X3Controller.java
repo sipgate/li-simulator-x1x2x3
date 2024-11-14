@@ -3,8 +3,6 @@ package com.sipgate.li.simulator.controller;
 import com.sipgate.li.lib.x2x3.protocol.PduObject;
 import com.sipgate.li.lib.x2x3.protocol.PduType;
 import com.sipgate.li.simulator.x2x3.X2X3Memory;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufOutputStream;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,7 +14,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -27,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @RestController
 @RequestMapping("/x2x3")
@@ -104,8 +102,9 @@ public class X2X3Controller {
 
   // ================================
 
-  @GetMapping(value = "/all/rtp/{xid}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-  public @ResponseBody byte[] getAllRtp(@PathVariable final UUID xid) throws IOException {
+  @GetMapping(value = "/all/rtp/{xid}")
+  public ResponseEntity<byte[]> getAllRtp(@PathVariable final UUID xid) throws IOException {
+    final var liMediaExtractor = new LiMediaExtractor();
     try (final var buf = new ByteArrayOutputStream()) {
       x2X3Memory
         .getStorage()
@@ -114,17 +113,30 @@ public class X2X3Controller {
         .filter(pdu -> pdu.xid().equals(xid))
         .sorted(Comparator.comparingInt(pdu -> pdu.findSequenceNumber().orElse(-1)))
         .map(PduObject::payload)
-        .forEach(payload -> writeToBuf(payload, buf));
-      return buf.toByteArray();
+        .forEach(payload -> liMediaExtractor.extractMediaFromRtp(buf, payload));
+      LOGGER.info("Extracted types: {}", liMediaExtractor.getPayloadTypeNames());
+      return ResponseEntity.ok()
+        .contentType(MediaType.APPLICATION_OCTET_STREAM) // TODO: set the content type from getPayloadTypeNames()?
+        .body(buf.toByteArray());
     }
   }
 
-  private static void writeToBuf(final byte[] payload, final ByteArrayOutputStream buf) {
-    try {
-      buf.write(payload);
-    } catch (final IOException e) {
-      throw new RuntimeException(e);
-    }
+  @GetMapping(value = "/all/stream/{xid}")
+  public ResponseEntity<StreamingResponseBody> getAllStream(@PathVariable final UUID xid) {
+    final var liMediaExtractor = new LiMediaExtractor();
+    // might not work yet like streaming, but it's a start
+    // - sorting is skipped here, of course.
+    final StreamingResponseBody responseBody = buf ->
+      x2X3Memory
+        .getStorage()
+        .stream()
+        .filter(pdu -> PduType.X3_PDU.equals(pdu.pduType()))
+        .filter(pdu -> pdu.xid().equals(xid))
+        .map(PduObject::payload)
+        .forEach(payload -> liMediaExtractor.extractMediaFromRtp(buf, payload));
+    return ResponseEntity.ok()
+      .contentType(MediaType.APPLICATION_OCTET_STREAM) // TODO: set the content type from getPayloadTypeNames()?
+      .body(responseBody);
   }
 
   // ================================

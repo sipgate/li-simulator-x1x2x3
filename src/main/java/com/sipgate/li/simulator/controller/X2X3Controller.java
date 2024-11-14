@@ -19,11 +19,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -102,8 +104,8 @@ public class X2X3Controller {
 
   // ================================
 
-  @GetMapping(value = "/all/rtp/{xid}", produces = "application/octet-stream")
-  public ResponseEntity<byte[]> getAllRtp(@PathVariable final UUID xid) throws IOException {
+  @GetMapping(value = "/all/rtp/{xid}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+  public @ResponseBody byte[] getAllRtp(@PathVariable final UUID xid) throws IOException {
     try (final var buf = new ByteArrayOutputStream()) {
       x2X3Memory
         .getStorage()
@@ -113,7 +115,7 @@ public class X2X3Controller {
         .sorted(Comparator.comparingInt(pdu -> pdu.findSequenceNumber().orElse(-1)))
         .map(PduObject::payload)
         .forEach(payload -> writeToBuf(payload, buf));
-      return ResponseEntity.ok(buf.toByteArray());
+      return buf.toByteArray();
     }
   }
 

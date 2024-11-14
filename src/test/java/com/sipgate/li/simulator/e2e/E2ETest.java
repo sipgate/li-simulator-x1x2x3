@@ -54,9 +54,9 @@ public class E2ETest {
     "ipAddress",
     "192.0.2.23"
   );
-
-  public static final String E164NUMBER = "4915799912345";
-  public static final String E164NUMBER_MODIFIED = "4915799912346";
+  //These have to be non german tel. numbers, so litc acks them and doesn't fill up the dlq
+  public static final String E164NUMBER = "2125552368"; //GHOSTBUSTERS
+  public static final String E164NUMBER_MODIFIED = "2125552323"; //CALL GOD
   public static final Logger LOGGER = LoggerFactory.getLogger(E2ETest.class);
 
   final SimulatorClient client;

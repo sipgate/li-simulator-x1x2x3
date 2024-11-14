@@ -21,7 +21,7 @@ Content-Type: application/xml
       <ns1:xId>50b93d1e-1b53-4d63-aacb-e4d99811bc0b</ns1:xId>
       <ns1:targetIdentifiers>
         <ns1:targetIdentifier>
-          <ns1:e164Number>4915799912345</ns1:e164Number>
+          <ns1:e164Number>2125552368</ns1:e164Number>
         </ns1:targetIdentifier>
       </ns1:targetIdentifiers>
       <ns1:deliveryType>X2andX3</ns1:deliveryType>

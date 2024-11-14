@@ -1,7 +1,10 @@
 package com.sipgate.li.simulator.controller;
 
+import com.sipgate.li.lib.x2x3.protocol.PayloadDirection;
+import com.sipgate.li.lib.x2x3.protocol.PayloadFormat;
 import com.sipgate.li.lib.x2x3.protocol.PduObject;
 import com.sipgate.li.lib.x2x3.protocol.PduType;
+import com.sipgate.li.simulator.rtp.RtpMediaExtractor;
 import com.sipgate.li.simulator.x2x3.X2X3Memory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,11 +12,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -22,7 +28,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
@@ -102,41 +107,53 @@ public class X2X3Controller {
 
   // ================================
 
-  @GetMapping(value = "/all/rtp/{xid}")
-  public ResponseEntity<byte[]> getAllRtp(@PathVariable final UUID xid) throws IOException {
-    final var liMediaExtractor = new LiMediaExtractor();
+  @GetMapping(value = "/all/rtp/{xid}/{direction}")
+  public ResponseEntity<byte[]> getAllRtp(@PathVariable final UUID xid, @PathVariable final String direction)
+    throws IOException {
+    final var liMediaExtractor = new RtpMediaExtractor();
+    final var payloadDirection = "in".equals(direction)
+      ? PayloadDirection.SENT_TO_TARGET
+      : PayloadDirection.SENT_FROM_TARGET;
     try (final var buf = new ByteArrayOutputStream()) {
       x2X3Memory
         .getStorage()
         .stream()
         .filter(pdu -> PduType.X3_PDU.equals(pdu.pduType()))
-        .filter(pdu -> pdu.xid().equals(xid))
-        .sorted(Comparator.comparingInt(pdu -> pdu.findSequenceNumber().orElse(-1)))
+        .filter(pdu -> PayloadFormat.RTP.equals(pdu.payloadFormat()))
+        .filter(pdu -> xid.equals(pdu.xid()))
+        .filter(pdu -> payloadDirection.equals(pdu.payloadDirection()))
+        .sorted(Comparator.comparingInt(pdu -> findSequenceNumber(pdu).orElse(-1)))
         .map(PduObject::payload)
         .forEach(payload -> liMediaExtractor.extractMediaFromRtp(buf, payload));
-      LOGGER.info("Extracted types: {}", liMediaExtractor.getPayloadTypeNames());
+      final var payloadTypeNames = String.join(",", liMediaExtractor.getPayloadTypeNames());
+      LOGGER.info("Extracted types: {}", payloadTypeNames);
       return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_OCTET_STREAM) // TODO: set the content type from getPayloadTypeNames()?
+        .header("X-Payload-Types", payloadTypeNames)
         .body(buf.toByteArray());
     }
   }
 
-  @GetMapping(value = "/all/stream/{xid}")
-  public ResponseEntity<StreamingResponseBody> getAllStream(@PathVariable final UUID xid) {
-    final var liMediaExtractor = new LiMediaExtractor();
-    // might not work yet like streaming, but it's a start
-    // - sorting is skipped here, of course.
-    final StreamingResponseBody responseBody = buf ->
-      x2X3Memory
-        .getStorage()
-        .stream()
-        .filter(pdu -> PduType.X3_PDU.equals(pdu.pduType()))
-        .filter(pdu -> pdu.xid().equals(xid))
-        .map(PduObject::payload)
-        .forEach(payload -> liMediaExtractor.extractMediaFromRtp(buf, payload));
-    return ResponseEntity.ok()
-      .contentType(MediaType.APPLICATION_OCTET_STREAM) // TODO: set the content type from getPayloadTypeNames()?
-      .body(responseBody);
+  // ================================
+
+  public Optional<Integer> findSequenceNumber(final PduObject pdu) {
+    for (final var tlv : pdu.conditionalAttributeFields()) {
+      if (tlv.getType() == 8) {
+        final var baos = new ByteArrayOutputStream();
+        final var outputStream = new DataOutputStream(baos);
+        try {
+          tlv.writeValueTo(outputStream);
+          outputStream.flush();
+          final var byteArray = baos.toByteArray();
+          final int sequenceNumber = ByteBuffer.wrap(byteArray).getInt();
+          return Optional.of(sequenceNumber);
+        } catch (final Exception e) {
+          LOGGER.trace("Error while extracting sequence number", e);
+          return Optional.empty();
+        }
+      }
+    }
+    return Optional.empty();
   }
 
   // ================================

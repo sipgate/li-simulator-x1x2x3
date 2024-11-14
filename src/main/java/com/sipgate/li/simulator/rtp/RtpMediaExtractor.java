@@ -1,4 +1,4 @@
-package com.sipgate.li.simulator.controller;
+package com.sipgate.li.simulator.rtp;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-class LiMediaExtractor {
+public class RtpMediaExtractor {
 
   private static final int HEADER_SIZE = 12;
   private static final Map<Integer, String> PAYLOAD_TYPE_MAP = new HashMap<>();
@@ -45,7 +45,7 @@ class LiMediaExtractor {
     return payloadTypeNames;
   }
 
-  void extractMediaFromRtp(final OutputStream output, final byte[] bytes) {
+  public void extractMediaFromRtp(final OutputStream output, final byte[] bytes) {
     try {
       final var payloadTypeCode = bytes[1] & 0x7F;
       payloadTypeNames.add(PAYLOAD_TYPE_MAP.get(payloadTypeCode));

@@ -3,7 +3,7 @@ package com.sipgate.li.simulator.controller;
 import com.sipgate.li.lib.x1.client.X1Client;
 import com.sipgate.li.lib.x1.client.X1ClientException;
 import com.sipgate.li.lib.x1.client.X1RequestFactory;
-import com.sipgate.li.simulator.controller.response.ErrorResponse;
+import com.sipgate.li.simulator.controller.response.SimulatorErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,6 +40,11 @@ public class DestinationController {
       @ApiResponse(
         responseCode = "502",
         description = "The CreateDestination operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
@@ -54,13 +59,7 @@ public class DestinationController {
     ) @RequestParam final String ipAddress,
     @RequestParam final Integer tcpPort
   ) throws X1ClientException, InterruptedException {
-    final DestinationDetails destinationDetails = makeDestinationDetails(
-      dId,
-      friendlyName,
-      deliveryType,
-      ipAddress,
-      tcpPort
-    );
+    final var destinationDetails = makeDestinationDetails(dId, friendlyName, deliveryType, ipAddress, tcpPort);
 
     final var createDestinationRequest = x1RequestFactory.create(CreateDestinationRequest.class);
     createDestinationRequest.setDestinationDetails(destinationDetails);
@@ -80,6 +79,11 @@ public class DestinationController {
       @ApiResponse(
         responseCode = "502",
         description = "The GetDestinationDetails operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
@@ -105,6 +109,11 @@ public class DestinationController {
       @ApiResponse(
         responseCode = "502",
         description = "The DestinationModify operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
@@ -138,6 +147,11 @@ public class DestinationController {
       @ApiResponse(
         responseCode = "502",
         description = "The RemoveDestination operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }

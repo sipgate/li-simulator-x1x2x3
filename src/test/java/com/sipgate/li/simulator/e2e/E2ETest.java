@@ -1,12 +1,19 @@
 package com.sipgate.li.simulator.e2e;
 
+import static com.sipgate.li.lib.x1.protocol.error.X1ErrorException.DID_ALREADY_EXISTS;
+import static com.sipgate.li.lib.x1.protocol.error.X1ErrorException.DID_DOES_NOT_EXIST;
+import static com.sipgate.li.lib.x1.protocol.error.X1ErrorException.INVALID_COMBINATION_OF_DELIVERYTYPE_AND_DESTINATIONS;
+import static com.sipgate.li.lib.x1.protocol.error.X1ErrorException.XID_ALREADY_EXISTS;
+import static com.sipgate.li.lib.x1.protocol.error.X1ErrorException.XID_DOES_NOT_EXIST;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.etsi.uri._03221.x1._2017._10.DeliveryType.*;
+import static org.etsi.uri._03221.x1._2017._10.DeliveryType.X_2_AND_X_3;
+import static org.etsi.uri._03221.x1._2017._10.DeliveryType.X_2_ONLY;
+import static org.etsi.uri._03221.x1._2017._10.DeliveryType.X_3_ONLY;
 
 import com.sipgate.li.simulator.controller.IndexController;
-import com.sipgate.li.simulator.controller.response.ErrorResponse;
-import com.sipgate.li.simulator.controller.response.TaskActivatedResponse;
+import com.sipgate.li.simulator.controller.response.SimulatorErrorResponse;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -15,8 +22,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import org.etsi.uri._03221.x1._2017._10.*;
-import org.junit.jupiter.api.*;
+import org.etsi.uri._03221.x1._2017._10.ActivateTaskResponse;
+import org.etsi.uri._03221.x1._2017._10.CreateDestinationResponse;
+import org.etsi.uri._03221.x1._2017._10.DeactivateTaskResponse;
+import org.etsi.uri._03221.x1._2017._10.ErrorResponse;
+import org.etsi.uri._03221.x1._2017._10.GetDestinationDetailsResponse;
+import org.etsi.uri._03221.x1._2017._10.GetTaskDetailsResponse;
+import org.etsi.uri._03221.x1._2017._10.ModifyDestinationResponse;
+import org.etsi.uri._03221.x1._2017._10.ModifyTaskResponse;
+import org.etsi.uri._03221.x1._2017._10.OK;
+import org.etsi.uri._03221.x1._2017._10.RemoveDestinationResponse;
+import org.etsi.uri._03221.x1._2017._10.RequestMessageType;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,27 +130,52 @@ public class E2ETest {
 
     @Test
     void it_cant_find_unknown_destination() throws IOException, InterruptedException {
-      client.get("/destination/" + UUID.randomUUID(), ErrorResponse.class, 502);
+      // GIVEN
+      final var dID = UUID.randomUUID().toString();
+
+      // WHEN
+      final var response = client.get("/destination/" + dID, ErrorResponse.class, 400);
+
+      // THEN
+      assertErrorResponse(response, RequestMessageType.GET_DESTINATION_DETAILS, DID_DOES_NOT_EXIST, dID);
     }
 
     @Test
     void it_cant_update_unknown_destination() throws IOException, InterruptedException {
-      client.post("/destination/" + UUID.randomUUID(), DESTINATION_DETAILS, ErrorResponse.class, 502);
+      // GIVEN
+      final var dID = UUID.randomUUID().toString();
+
+      // WHEN
+      final var response = client.post("/destination/" + dID, DESTINATION_DETAILS, ErrorResponse.class, 400);
+
+      // THEN
+      assertErrorResponse(response, RequestMessageType.MODIFY_DESTINATION, DID_DOES_NOT_EXIST, dID);
     }
 
     @Test
     void it_cant_delete_unknown_destination() throws IOException, InterruptedException {
-      client.delete("/destination/" + UUID.randomUUID(), ErrorResponse.class, 502);
+      // GIVEN
+      final var dID = UUID.randomUUID().toString();
+
+      // WHEN
+      final var response = client.delete("/destination/" + dID, ErrorResponse.class, 400);
+
+      // THEN
+      assertErrorResponse(response, RequestMessageType.REMOVE_DESTINATION, DID_DOES_NOT_EXIST, dID);
     }
 
     @Test
     void it_cant_create_task_with_unknown_destination() throws IOException, InterruptedException {
-      client.post(
+      // WHEN
+      final var response = client.post(
         "/task",
         Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.name()),
         ErrorResponse.class,
-        502
+        400
       );
+
+      // THEN
+      assertErrorResponse(response, RequestMessageType.ACTIVATE_TASK, DID_DOES_NOT_EXIST, D_ID);
     }
 
     @Test
@@ -161,7 +205,11 @@ public class E2ETest {
 
     @Test
     void it_fails_when_destination_already_exists() throws IOException, InterruptedException {
-      client.post("/destination", DESTINATION_DETAILS, ErrorResponse.class, 502);
+      // WHEN
+      final var response = client.post("/destination", DESTINATION_DETAILS, ErrorResponse.class, 400);
+
+      // THEN
+      assertErrorResponse(response, RequestMessageType.CREATE_DESTINATION, DID_ALREADY_EXISTS, D_ID);
     }
 
     @Test
@@ -201,22 +249,43 @@ public class E2ETest {
 
     @Test
     void it_fails_to_get_unknown_task() throws IOException, InterruptedException {
-      client.get("/task/" + UUID.randomUUID(), ErrorResponse.class, 502);
+      // GIVEN
+      final var xID = UUID.randomUUID().toString();
+
+      // WHEN
+      final var response = client.get("/task/" + xID, ErrorResponse.class, 400);
+
+      // THEN
+      assertErrorResponse(response, RequestMessageType.GET_TASK_DETAILS, XID_DOES_NOT_EXIST, xID);
     }
 
     @Test
     void it_fails_to_modify_unknown_task() throws IOException, InterruptedException {
-      client.post(
-        "/task/" + UUID.randomUUID(),
-        Map.of("destinationId", "some-destination-id", "e164number", "some-e164", "deliveryType", X_2_ONLY.name()),
+      // GIVEN
+      final var xID = UUID.randomUUID().toString();
+
+      // WHEN
+      final var response = client.post(
+        "/task/" + xID,
+        Map.of("destinationId", D_ID, "e164number", "some-e164", "deliveryType", X_2_ONLY.name()),
         ErrorResponse.class,
-        502
+        400
       );
+
+      // THEN
+      assertErrorResponse(response, RequestMessageType.MODIFY_TASK, XID_DOES_NOT_EXIST, xID);
     }
 
     @Test
     void it_fails_to_deactivate_unknown_task() throws IOException, InterruptedException {
-      client.delete("/task/" + UUID.randomUUID(), ErrorResponse.class, 502);
+      // GIVEN
+      final var xID = UUID.randomUUID().toString();
+
+      // WHEN
+      final var response = client.delete("/task/" + xID, ErrorResponse.class, 400);
+
+      // THEN
+      assertErrorResponse(response, RequestMessageType.DEACTIVATE_TASK, XID_DOES_NOT_EXIST, xID);
     }
 
     @Test
@@ -224,12 +293,11 @@ public class E2ETest {
       final var response = client.post(
         "/task",
         Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_AND_X_3.name()),
-        TaskActivatedResponse.class,
+        ActivateTaskResponse.class,
         200
       );
 
-      assertThat(response.activateTaskResponse().getOK()).isEqualTo(OK.ACKNOWLEDGED_AND_COMPLETED);
-      assertThat(response.xId()).isEqualTo(X_ID);
+      assertThat(response.getOK()).isEqualTo(OK.ACKNOWLEDGED_AND_COMPLETED);
     }
 
     @Test
@@ -244,7 +312,7 @@ public class E2ETest {
       assertThat(DESTINATION_DETAILS.get("deliveryType")).isNotIn(X_2_AND_X_3, mismatchingDeliveryType);
 
       //THEN
-      client.post(
+      final var response = client.post(
         "/task",
         Map.of(
           "e164number",
@@ -257,7 +325,14 @@ public class E2ETest {
           mismatchingDeliveryType.name()
         ),
         ErrorResponse.class,
-        502
+        400
+      );
+
+      assertErrorResponse(
+        response,
+        RequestMessageType.ACTIVATE_TASK,
+        INVALID_COMBINATION_OF_DELIVERYTYPE_AND_DESTINATIONS,
+        null
       );
     }
   }
@@ -268,7 +343,7 @@ public class E2ETest {
     private final DestinationAdded destinationAdded = new DestinationAdded();
 
     @Override
-    public void cleanup() throws Exception {
+    public void cleanup() {
       destinationAdded.cleanup();
     }
 
@@ -309,12 +384,14 @@ public class E2ETest {
 
     @Test
     void it_fails_to_create_task_with_duplicate_xId() throws IOException, InterruptedException {
-      client.post(
+      final var response = client.post(
         "/task",
         Map.of("e164number", E164NUMBER, "destinationId", D_ID, "xId", X_ID, "deliveryType", X_2_ONLY.name()),
         ErrorResponse.class,
-        502
+        400
       );
+
+      assertErrorResponse(response, RequestMessageType.ACTIVATE_TASK, XID_ALREADY_EXISTS, X_ID);
     }
 
     @Test
@@ -323,12 +400,15 @@ public class E2ETest {
       client.delete("/task/" + X_ID, DeactivateTaskResponse.class);
 
       // THEN
-      destinationAdded.it_fails_to_get_unknown_task();
+      final var response = client.get("/task/" + X_ID, ErrorResponse.class, 400);
+
+      // THEN
+      assertErrorResponse(response, RequestMessageType.GET_TASK_DETAILS, XID_DOES_NOT_EXIST, X_ID);
     }
 
     @Test
     void it_fails_to_remove_destination_with_depending_task() throws IOException, InterruptedException {
-      client.delete("/destination/" + D_ID, ErrorResponse.class, 502);
+      client.delete("/destination/" + D_ID, ErrorResponse.class, 400);
     }
 
     @Test
@@ -352,7 +432,7 @@ public class E2ETest {
       final var mismatchingDeliveryType = X_3_ONLY;
       assertThat(DESTINATION_DETAILS.get("deliveryType")).isNotIn(X_2_AND_X_3, mismatchingDeliveryType);
       //THEN
-      client.post(
+      final var response = client.post(
         "/task/" + X_ID,
         Map.of(
           "e164number",
@@ -365,7 +445,14 @@ public class E2ETest {
           mismatchingDeliveryType.name()
         ),
         ErrorResponse.class,
-        502
+        400
+      );
+
+      assertErrorResponse(
+        response,
+        RequestMessageType.MODIFY_TASK,
+        INVALID_COMBINATION_OF_DELIVERYTYPE_AND_DESTINATIONS,
+        null
       );
     }
   }
@@ -426,5 +513,16 @@ public class E2ETest {
           .getE164Number()
       ).isEqualTo(E164NUMBER_MODIFIED);
     }
+  }
+
+  private static void assertErrorResponse(
+    final ErrorResponse response,
+    final RequestMessageType type,
+    final BigInteger code,
+    final String description
+  ) {
+    assertThat(response.getRequestMessageType()).isEqualTo(type);
+    assertThat(response.getErrorInformation().getErrorCode()).isEqualTo(code);
+    assertThat(response.getErrorInformation().getErrorDescription()).isEqualTo(description);
   }
 }

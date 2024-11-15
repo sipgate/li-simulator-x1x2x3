@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>com.sipgate.li</groupId>
 			<artifactId>lib</artifactId>
-			<version>0.6.1-SNAPSHOT</version>
+			<version>0.6.2-error-codes-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

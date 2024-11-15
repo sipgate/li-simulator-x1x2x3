@@ -1,14 +1,15 @@
 package com.sipgate.li.simulator.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sipgate.li.lib.x1.client.ErrorResponseException;
+import com.sipgate.li.lib.x1.client.TopLevelErrorException;
 import com.sipgate.li.lib.x1.client.X1ClientException;
-import com.sipgate.li.simulator.controller.response.ErrorResponse;
+import com.sipgate.li.simulator.controller.response.SimulatorErrorResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -23,20 +24,27 @@ public class X1ExceptionAdvice {
   }
 
   @ExceptionHandler(X1ClientException.class)
-  public void handleX1ClientException(final HttpServletResponse response, final X1ClientException e)
+  public void handleX1ClientException(final HttpServletResponse response, final X1ClientException exception)
     throws IOException {
-    LOGGER.error("X1ClientException: {}", e.getMessage());
-    response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
-    if (e.getTopLevelErrorResponse() == null) {
-      try (final var printStream = new PrintStream(response.getOutputStream())) {
-        e.printStackTrace(printStream); // stack trace includes message
+    LOGGER.error("X1ClientException: {}", exception.getMessage());
+    switch (exception) {
+      case final TopLevelErrorException e -> {
+        response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+        try (final var outputStream = response.getOutputStream()) {
+          objectMapper.writeValue(outputStream, new SimulatorErrorResponse(e.getTopLevelErrorResponse()));
+        }
       }
-
-      return;
-    }
-
-    try (final var outputStream = response.getOutputStream()) {
-      objectMapper.writeValue(outputStream, new ErrorResponse(e.getTopLevelErrorResponse()));
+      case final ErrorResponseException e -> {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        try (final var outputStream = response.getOutputStream()) {
+          objectMapper.writeValue(outputStream, e.getErrorResponse());
+        }
+      }
+      default -> {
+        try (final var printStream = new PrintStream(response.getOutputStream())) {
+          exception.printStackTrace(printStream); // stack trace includes message
+        }
+      }
     }
   }
 }

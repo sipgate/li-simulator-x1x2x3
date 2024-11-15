@@ -3,15 +3,32 @@ package com.sipgate.li.simulator.controller;
 import com.sipgate.li.lib.x1.client.X1Client;
 import com.sipgate.li.lib.x1.client.X1ClientException;
 import com.sipgate.li.lib.x1.client.X1RequestFactory;
-import com.sipgate.li.simulator.controller.response.ErrorResponse;
-import com.sipgate.li.simulator.controller.response.TaskActivatedResponse;
+import com.sipgate.li.simulator.controller.response.SimulatorErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.etsi.uri._03221.x1._2017._10.*;
-import org.springframework.web.bind.annotation.*;
+import org.etsi.uri._03221.x1._2017._10.ActivateTaskRequest;
+import org.etsi.uri._03221.x1._2017._10.ActivateTaskResponse;
+import org.etsi.uri._03221.x1._2017._10.DeactivateTaskRequest;
+import org.etsi.uri._03221.x1._2017._10.DeactivateTaskResponse;
+import org.etsi.uri._03221.x1._2017._10.DeliveryType;
+import org.etsi.uri._03221.x1._2017._10.ErrorResponse;
+import org.etsi.uri._03221.x1._2017._10.GetTaskDetailsRequest;
+import org.etsi.uri._03221.x1._2017._10.GetTaskDetailsResponse;
+import org.etsi.uri._03221.x1._2017._10.ListOfDids;
+import org.etsi.uri._03221.x1._2017._10.ListOfTargetIdentifiers;
+import org.etsi.uri._03221.x1._2017._10.ModifyTaskRequest;
+import org.etsi.uri._03221.x1._2017._10.ModifyTaskResponse;
+import org.etsi.uri._03221.x1._2017._10.TargetIdentifier;
+import org.etsi.uri._03221.x1._2017._10.TaskDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TaskController {
@@ -36,6 +53,11 @@ public class TaskController {
       @ApiResponse(
         responseCode = "502",
         description = "The GetTaskDetails operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
@@ -61,12 +83,17 @@ public class TaskController {
       @ApiResponse(
         responseCode = "502",
         description = "The TaskActivate operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
   )
   @PostMapping("/task")
-  public TaskActivatedResponse activateTask(
+  public ActivateTaskResponse activateTask(
     @RequestParam final String e164number,
     @RequestParam final String destinationId,
     @RequestParam final String xId,
@@ -77,8 +104,7 @@ public class TaskController {
     final var req = x1RequestFactory.create(ActivateTaskRequest.class);
     req.setTaskDetails(taskDetails);
 
-    final var resp = x1Client.request(req, ActivateTaskResponse.class);
-    return new TaskActivatedResponse(resp, xId);
+    return x1Client.request(req, ActivateTaskResponse.class);
   }
 
   private static TaskDetails makeTaskDetails(
@@ -117,6 +143,11 @@ public class TaskController {
       @ApiResponse(
         responseCode = "502",
         description = "The TaskModify operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
@@ -147,6 +178,11 @@ public class TaskController {
       @ApiResponse(
         responseCode = "502",
         description = "The TaskDeactivate operation was not handled properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }

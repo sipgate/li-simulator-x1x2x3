@@ -3,13 +3,14 @@ package com.sipgate.li.simulator.controller;
 import com.sipgate.li.lib.x1.client.X1Client;
 import com.sipgate.li.lib.x1.client.X1ClientException;
 import com.sipgate.li.lib.x1.client.X1RequestFactory;
-import com.sipgate.li.simulator.controller.response.ErrorResponse;
+import com.sipgate.li.simulator.controller.response.SimulatorErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
+import org.etsi.uri._03221.x1._2017._10.ErrorResponse;
 import org.etsi.uri._03221.x1._2017._10.ListAllDetailsRequest;
 import org.etsi.uri._03221.x1._2017._10.ListAllDetailsResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +39,11 @@ public class IndexController {
       @ApiResponse(
         responseCode = "502",
         description = "The list was not returned properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }

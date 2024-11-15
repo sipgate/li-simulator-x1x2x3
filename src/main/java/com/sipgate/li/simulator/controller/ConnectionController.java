@@ -3,12 +3,13 @@ package com.sipgate.li.simulator.controller;
 import com.sipgate.li.lib.x1.client.X1Client;
 import com.sipgate.li.lib.x1.client.X1ClientException;
 import com.sipgate.li.lib.x1.client.X1RequestFactory;
-import com.sipgate.li.simulator.controller.response.ErrorResponse;
+import com.sipgate.li.simulator.controller.response.SimulatorErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.etsi.uri._03221.x1._2017._10.ErrorResponse;
 import org.etsi.uri._03221.x1._2017._10.KeepaliveRequest;
 import org.etsi.uri._03221.x1._2017._10.KeepaliveResponse;
 import org.etsi.uri._03221.x1._2017._10.PingRequest;
@@ -37,6 +38,11 @@ public class ConnectionController {
       @ApiResponse(
         responseCode = "502",
         description = "The PingRequest was not returned properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }
@@ -62,6 +68,11 @@ public class ConnectionController {
       @ApiResponse(
         responseCode = "502",
         description = "The KeepaliveRequest was not returned properly.",
+        content = @Content(schema = @Schema(implementation = SimulatorErrorResponse.class))
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "ErrorResponse was returned by the X1 server",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
       ),
     }

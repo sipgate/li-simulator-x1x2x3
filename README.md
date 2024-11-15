@@ -31,6 +31,28 @@ docker compose exec -i simulator \
     -key /mutual-tls-stores/keys/network-element.key"
 ```
 
+## Retrieving X3 RTP Audio
+
+The simulator can be used to actually dump all RTP audio packets and create an MP3. To do this, send your RTP-Stream via X3 to the simulator on port 42069.
+It is out of scope how you do this - use your NE for example.
+
+After you have sent the RTP-Stream, you can retrieve the audio by using the following commands:
+
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -r scripts/requirements.txt
+python3 scripts/download-x3rtp-and-convert.py http://localhost:8080 [XID] [in|out]
+```
+
+Replace `[XID]` with the XID of the call you want to retrieve and `[in|out]` with the direction of the call. The script will download the RTP packets and convert them to an MP3 file called `[XID]-[DIRECTION].mp3`.
+
+Be sure to reset the X2X3 in-memory receiver after you have downloaded the audio.
+
+```shell
+curl -X POST "http://localhost:8080/x2x3/reset"
+```
+
 ## Further information
 
 - EVE Explains: ETSI TS 103 221 - X1/X2/X3 https://www.lawfulinterception.com/explains/etsi-ts-103-221/

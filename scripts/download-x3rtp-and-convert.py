@@ -34,7 +34,7 @@ PAYLOAD_TYPE_TO_ACODEC = {
 
 def main(sim_url, xid, direction):
     # GET from simurl with request path
-    resp = requests.get(f"{sim_url}/x2x3/all/rtp/{xid}/{direction}")
+    resp = requests.get(f"{sim_url}/x2x3/{xid}/rtp/{direction}")
     # get body of response as byte string
     data = resp.content
     # get header "X-Payload-Types"

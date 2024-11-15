@@ -38,3 +38,7 @@ build/
 .vscode/
 
 .DS_Store
+
+### Downloaded audio files
+*.mp3
+*.raw

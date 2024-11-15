@@ -109,7 +109,11 @@ public class SimulatorClient {
       return responseType.cast(response.body());
     }
 
-    return objectMapper.readValue(responseBody, responseType);
+    try {
+      return objectMapper.readValue(responseBody, responseType);
+    } catch (final IOException | RuntimeException e) {
+      throw new IOException(e.getMessage() + "\n\nResponse Body:\n" + responseBody, e);
+    }
   }
 
   private static String mapFormDataToString(final Map<String, String> formData) {

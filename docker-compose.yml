@@ -5,6 +5,7 @@ services:
     environment:
       WIREMOCK_OPTIONS: |
         --https-port 443
+        --verbose
 
         --keystore-type PKCS12
         --https-keystore /mutual-tls-stores/network-element-keystore.p12

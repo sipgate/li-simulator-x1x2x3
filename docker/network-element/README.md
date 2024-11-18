@@ -1,6 +1,6 @@
 # State Machines for Scenarios
 
-To restart a scenario, send an empty POST to /\_\_admin/scenarios/reset.
+To restart a scenario, send an empty POST to `/__admin/scenarios/reset`.
 
 ## Check Destination Details and Task
 

@@ -267,14 +267,11 @@ public class E2ETest {
 
     @Test
     void it_fails_to_get_unknown_task() throws IOException, InterruptedException {
-      // GIVEN
-      final var xID = UUID.fromString("00000000-0000-1337-0001-000000000271").toString();
-
       // WHEN
-      final var response = client.get("/task/" + xID, ErrorResponse.class, 400);
+      final var response = client.get("/task/" + X_ID, ErrorResponse.class, 400);
 
       // THEN
-      assertErrorResponse(response, RequestMessageType.GET_TASK_DETAILS, XID_DOES_NOT_EXIST, xID);
+      assertErrorResponse(response, RequestMessageType.GET_TASK_DETAILS, XID_DOES_NOT_EXIST, X_ID);
     }
 
     @Test
@@ -413,7 +410,7 @@ public class E2ETest {
     }
 
     @Test
-    void it_deletes_task() throws IOException, InterruptedException {
+    void it_deletes_task_with_extra_check() throws IOException, InterruptedException {
       // WHEN
       client.delete("/task/" + X_ID, DeactivateTaskResponse.class);
 
@@ -430,7 +427,7 @@ public class E2ETest {
       final var response = client.delete("/destination/" + D_ID, ErrorResponse.class, 400);
 
       // THEN
-      assertErrorResponse(response, RequestMessageType.GET_TASK_DETAILS, DESTINATION_IN_USE, X_ID);
+      assertErrorResponse(response, RequestMessageType.REMOVE_DESTINATION, DESTINATION_IN_USE, X_ID);
     }
 
     @Test

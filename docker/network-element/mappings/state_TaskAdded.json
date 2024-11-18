@@ -21,7 +21,7 @@
         "bodyPatterns": [{ "contains": "ActivateTaskRequest" }, { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/TaskAdded/ActivateTask_XidAlreadyExists.xml"
       }
     },
     {
@@ -46,7 +46,7 @@
         "bodyPatterns": [{ "contains": "RemoveDestinationRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/TaskAdded/RemoveDestination_DestinationInUse.xml"
       }
     },
     {
@@ -79,7 +79,7 @@
         ]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/TaskAdded/ModifyTask_InvalidCombinationOfDeliveryTypeAndDestinations.xml"
       }
     },
     {

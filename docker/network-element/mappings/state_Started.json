@@ -46,7 +46,7 @@
         "bodyPatterns": [{ "contains": "RemoveDestinationRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/Started/RemoveDestination_DidDoesNotExist.xml"
       }
     },
     {

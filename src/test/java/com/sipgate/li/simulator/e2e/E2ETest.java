@@ -12,7 +12,6 @@ import static org.etsi.uri._03221.x1._2017._10.DeliveryType.X_2_ONLY;
 import static org.etsi.uri._03221.x1._2017._10.DeliveryType.X_3_ONLY;
 
 import com.sipgate.li.simulator.controller.IndexController;
-import com.sipgate.li.simulator.controller.response.SimulatorErrorResponse;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URI;
@@ -174,7 +173,7 @@ public class E2ETest {
     @Test
     void it_cant_delete_unknown_destination() throws IOException, InterruptedException {
       // GIVEN
-      final var dID = UUID.randomUUID().toString();
+      final var dID = UUID.fromString("00000000-0000-1337-0000-000000000001").toString();
 
       // WHEN
       final var response = client.delete("/destination/" + dID, ErrorResponse.class, 400);

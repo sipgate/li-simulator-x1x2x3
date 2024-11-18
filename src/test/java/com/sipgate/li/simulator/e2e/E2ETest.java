@@ -1,10 +1,11 @@
 package com.sipgate.li.simulator.e2e;
 
-import static com.sipgate.li.lib.x1.protocol.error.X1ErrorException.DID_ALREADY_EXISTS;
-import static com.sipgate.li.lib.x1.protocol.error.X1ErrorException.DID_DOES_NOT_EXIST;
-import static com.sipgate.li.lib.x1.protocol.error.X1ErrorException.INVALID_COMBINATION_OF_DELIVERYTYPE_AND_DESTINATIONS;
-import static com.sipgate.li.lib.x1.protocol.error.X1ErrorException.XID_ALREADY_EXISTS;
-import static com.sipgate.li.lib.x1.protocol.error.X1ErrorException.XID_DOES_NOT_EXIST;
+import static com.sipgate.li.lib.x1.protocol.error.ErrorResponseException.DESTINATION_IN_USE;
+import static com.sipgate.li.lib.x1.protocol.error.ErrorResponseException.DID_ALREADY_EXISTS;
+import static com.sipgate.li.lib.x1.protocol.error.ErrorResponseException.DID_DOES_NOT_EXIST;
+import static com.sipgate.li.lib.x1.protocol.error.ErrorResponseException.INVALID_COMBINATION_OF_DELIVERYTYPE_AND_DESTINATIONS;
+import static com.sipgate.li.lib.x1.protocol.error.ErrorResponseException.XID_ALREADY_EXISTS;
+import static com.sipgate.li.lib.x1.protocol.error.ErrorResponseException.XID_DOES_NOT_EXIST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.etsi.uri._03221.x1._2017._10.DeliveryType.X_2_AND_X_3;
 import static org.etsi.uri._03221.x1._2017._10.DeliveryType.X_2_ONLY;
@@ -408,7 +409,11 @@ public class E2ETest {
 
     @Test
     void it_fails_to_remove_destination_with_depending_task() throws IOException, InterruptedException {
-      client.delete("/destination/" + D_ID, ErrorResponse.class, 400);
+      // WHEN
+      final var response = client.delete("/destination/" + D_ID, ErrorResponse.class, 400);
+
+      // THEN
+      assertErrorResponse(response, RequestMessageType.GET_TASK_DETAILS, DESTINATION_IN_USE, X_ID);
     }
 
     @Test

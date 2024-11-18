@@ -1,8 +1,8 @@
 package com.sipgate.li.simulator.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sipgate.li.lib.x1.client.ErrorResponseException;
-import com.sipgate.li.lib.x1.client.TopLevelErrorException;
+import com.sipgate.li.lib.x1.client.ErrorResponseClientException;
+import com.sipgate.li.lib.x1.client.TopLevelErrorClientException;
 import com.sipgate.li.lib.x1.client.X1ClientException;
 import com.sipgate.li.simulator.controller.response.SimulatorErrorResponse;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,13 +28,13 @@ public class X1ExceptionAdvice {
     throws IOException {
     LOGGER.error("X1ClientException: {}", exception.getMessage());
     switch (exception) {
-      case final TopLevelErrorException e -> {
+      case final TopLevelErrorClientException e -> {
         response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
         try (final var outputStream = response.getOutputStream()) {
           objectMapper.writeValue(outputStream, new SimulatorErrorResponse(e.getTopLevelErrorResponse()));
         }
       }
-      case final ErrorResponseException e -> {
+      case final ErrorResponseClientException e -> {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         try (final var outputStream = response.getOutputStream()) {
           objectMapper.writeValue(outputStream, e.getErrorResponse());

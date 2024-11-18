@@ -22,7 +22,7 @@
         "bodyPatterns": [{ "contains": "GetDestinationDetailsRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/Started/DestinationDetails_DidDoesNotExist.xml"
       }
     },
     {
@@ -34,7 +34,7 @@
         "bodyPatterns": [{ "contains": "ModifyDestinationRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/Started/ModifyDestination_DidDoesNotExist.xml"
       }
     },
     {
@@ -58,7 +58,7 @@
         "bodyPatterns": [{ "contains": "ActivateTaskRequest" }, { "contains": "55b848ea-b4c2-4d80-a4c9-46592792e5b7" }]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/Started/ActivateTask_DidDoesNotExist.xml"
       }
     },
     {

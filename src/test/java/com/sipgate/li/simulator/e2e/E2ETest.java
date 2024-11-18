@@ -149,7 +149,7 @@ public class E2ETest {
     @Test
     void it_cant_find_unknown_destination() throws IOException, InterruptedException {
       // GIVEN
-      final var dID = UUID.randomUUID().toString();
+      final var dID = UUID.fromString("00000000-0000-1337-0000-000000000152").toString();
 
       // WHEN
       final var response = client.get("/destination/" + dID, ErrorResponse.class, 400);
@@ -161,7 +161,7 @@ public class E2ETest {
     @Test
     void it_cant_update_unknown_destination() throws IOException, InterruptedException {
       // GIVEN
-      final var dID = UUID.randomUUID().toString();
+      final var dID = UUID.fromString("00000000-0000-1337-0000-000000000164").toString();
 
       // WHEN
       final var response = client.post("/destination/" + dID, DESTINATION_DETAILS, ErrorResponse.class, 400);

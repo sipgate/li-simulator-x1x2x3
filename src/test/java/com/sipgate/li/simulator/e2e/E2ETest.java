@@ -268,7 +268,7 @@ public class E2ETest {
     @Test
     void it_fails_to_get_unknown_task() throws IOException, InterruptedException {
       // GIVEN
-      final var xID = UUID.randomUUID().toString();
+      final var xID = UUID.fromString("00000000-0000-1337-0001-000000000271").toString();
 
       // WHEN
       final var response = client.get("/task/" + xID, ErrorResponse.class, 400);
@@ -280,7 +280,7 @@ public class E2ETest {
     @Test
     void it_fails_to_modify_unknown_task() throws IOException, InterruptedException {
       // GIVEN
-      final var xID = UUID.randomUUID().toString();
+      final var xID = UUID.fromString("00000000-0000-1337-0001-000000000283").toString();
 
       // WHEN
       final var response = client.post(
@@ -297,7 +297,7 @@ public class E2ETest {
     @Test
     void it_fails_to_deactivate_unknown_task() throws IOException, InterruptedException {
       // GIVEN
-      final var xID = UUID.randomUUID().toString();
+      final var xID = UUID.fromString("00000000-0000-1337-0001-000000000300").toString();
 
       // WHEN
       final var response = client.delete("/task/" + xID, ErrorResponse.class, 400);

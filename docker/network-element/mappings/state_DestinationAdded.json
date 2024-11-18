@@ -9,7 +9,7 @@
         "bodyPatterns": [{ "contains": "CreateDestinationRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/DestinationAdded/CreateDestination_DidAlreadyExists.xml"
       }
     },
     {
@@ -72,7 +72,7 @@
         "bodyPatterns": [{ "contains": "GetTaskDetailsRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/DestinationAdded/GetTaskDetails_XidDoesNotExist.xml"
       }
     },
     {
@@ -84,7 +84,7 @@
         "bodyPatterns": [{ "contains": "ModifyTaskRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/DestinationAdded/ModifyTask_XidDoesNotExist.xml"
       }
     },
     {
@@ -96,7 +96,7 @@
         "bodyPatterns": [{ "contains": "DeactivateTaskRequest" }]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/DestinationAdded/DeactivateTask_XidDoesNotExist.xml"
       }
     },
     {
@@ -129,7 +129,7 @@
         ]
       },
       "response": {
-        "bodyFileName": "fixtures/TopLevelErrorResponse_example.xml"
+        "bodyFileName": "fixtures/DestinationAdded/ActivateTask_InvalidCombinationOfDeliveryTypeAndDestinations.xml"
       }
     },
     {

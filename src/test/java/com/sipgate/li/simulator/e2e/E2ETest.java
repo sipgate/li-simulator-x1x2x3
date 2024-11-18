@@ -34,6 +34,7 @@ import org.etsi.uri._03221.x1._2017._10.ModifyTaskResponse;
 import org.etsi.uri._03221.x1._2017._10.OK;
 import org.etsi.uri._03221.x1._2017._10.RemoveDestinationResponse;
 import org.etsi.uri._03221.x1._2017._10.RequestMessageType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -93,6 +94,23 @@ public class E2ETest {
     this.client = client;
   }
 
+  @BeforeAll
+  static void beforeAll() {
+    runAndIgnoreExceptions("reload wiremock mappings", () -> {
+      final var wiremockHost = System.getProperty("wiremockHost", "localhost");
+      final var wiremockPort = Integer.parseInt(System.getProperty("wiremockPort", "8082"));
+      try (final var wireMock = HttpClient.newHttpClient()) {
+        return wireMock.send(
+          HttpRequest.newBuilder()
+            .uri(URI.create(String.format("http://%s:%d/__admin/mappings/reset", wiremockHost, wiremockPort)))
+            .POST(HttpRequest.BodyPublishers.noBody())
+            .build(),
+          HttpResponse.BodyHandlers.discarding()
+        );
+      }
+    });
+  }
+
   @Nested
   class Started implements StatefulTest {
 
@@ -104,7 +122,7 @@ public class E2ETest {
         client.delete("/destination/" + D_ID, RemoveDestinationResponse.class)
       );
 
-      runAndIgnoreExceptions("reset wiremock", () -> {
+      runAndIgnoreExceptions("reset wiremock scenarios", () -> {
         final var wiremockHost = System.getProperty("wiremockHost", "localhost");
         final var wiremockPort = Integer.parseInt(System.getProperty("wiremockPort", "8082"));
         try (final var wireMock = HttpClient.newHttpClient()) {

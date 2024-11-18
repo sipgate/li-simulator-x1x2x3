@@ -5,6 +5,12 @@ Content-Type: application/json
 Accept: application/json
 
 #####
+# reload wiremock state
+POST localhost:8082/__admin/mappings/reset
+Content-Type: application/json
+Accept: application/json
+
+#####
 # Activate Task
 POST localhost:8082/X1/NE
 Content-Type: application/xml

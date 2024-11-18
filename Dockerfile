@@ -7,7 +7,7 @@ COPY pom.xml /usr/src/build
 COPY maven_settings.xml /usr/src/build
 WORKDIR /usr/src/build
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B \
+    mvn -U -B \
     -P spring-boot-application \
     -s maven_settings.xml \
     de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/root/.m2 \
 COPY src /usr/src/build/src
 ARG MVN_ADDITIONAL_ARGS
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B \
+    mvn -U -B \
     -P spring-boot-application \
     -s maven_settings.xml \
     clean package $MVN_ADDITIONAL_ARGS

@@ -28,6 +28,11 @@ services:
     depends_on:
       init-wiremock-certs:
         condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/__admin/health"]
+      timeout: 1s
+      start_period: 8s
+      interval: 1s
 
   init-wiremock-certs:
     image: registry.sipgate.net/docker/sipgate/runtime/zre-21:debian-bookworm

@@ -29,7 +29,11 @@ services:
       init-wiremock-certs:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/__admin/health"]
+      test:
+        [
+          "CMD-SHELL",
+          "echo -e 'GET /__admin/health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' | nc localhost 8080 | grep 'HTTP/1.1 200 OK'",
+        ]
       timeout: 1s
       start_period: 8s
       interval: 1s

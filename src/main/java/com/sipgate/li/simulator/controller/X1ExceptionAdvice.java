@@ -41,6 +41,7 @@ public class X1ExceptionAdvice {
         }
       }
       default -> {
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         try (final var printStream = new PrintStream(response.getOutputStream())) {
           exception.printStackTrace(printStream); // stack trace includes message
         }

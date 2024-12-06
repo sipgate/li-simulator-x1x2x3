@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.sipgate.li</groupId>
 	<artifactId>simulator</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<name>simulator</name>
 	<description>X1/X2/X3 Simulator to simplify interactions with a peer that communicates in ETSI TS 103 221</description>
 

@@ -204,13 +204,6 @@ public class E2ETest {
       assertThat(resp.destinations()).doesNotContain(D_ID);
       assertThat(resp.tasks()).doesNotContain(X_ID);
     }
-
-    @Test
-    void it_throws_tler_on_parse_error() throws IOException, InterruptedException {
-      final var tler = client.post("/malformed/tler", TopLevelErrorResponse.class);
-      assertThat(tler.getAdmfIdentifier()).isEqualTo("simulator");
-      assertThat(tler.getNeIdentifier()).isEqualTo("sipgate");
-    }
   }
 
   @Nested

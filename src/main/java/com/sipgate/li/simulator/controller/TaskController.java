@@ -65,8 +65,7 @@ public class TaskController {
   @GetMapping("/task/{xId}")
   public GetTaskDetailsResponse getTaskDetails(@PathVariable final String xId)
     throws X1ClientException, InterruptedException {
-    final var req = x1RequestFactory.create(GetTaskDetailsRequest.class);
-    req.setXId(xId);
+    final var req = x1RequestFactory.builder(GetTaskDetailsRequest.builder()).withXId(xId).build();
 
     return x1Client.request(req, GetTaskDetailsResponse.class);
   }
@@ -101,8 +100,7 @@ public class TaskController {
   ) throws X1ClientException, InterruptedException {
     final var taskDetails = makeTaskDetails(e164number, destinationId, xId, deliveryType);
 
-    final var req = x1RequestFactory.create(ActivateTaskRequest.class);
-    req.setTaskDetails(taskDetails);
+    final var req = x1RequestFactory.builder(ActivateTaskRequest.builder()).withTaskDetails(taskDetails).build();
 
     return x1Client.request(req, ActivateTaskResponse.class);
   }
@@ -113,22 +111,16 @@ public class TaskController {
     final String xId,
     final DeliveryType deliveryType
   ) {
-    final var targetIdentifier = new TargetIdentifier();
-    targetIdentifier.setE164Number(e164number);
-
-    final var targetIdentifiers = new ListOfTargetIdentifiers();
-    targetIdentifiers.getTargetIdentifier().add(targetIdentifier);
-
-    final var dids = new ListOfDids();
-    dids.getDId().add(destinationId);
-
-    final var taskDetails = new TaskDetails();
-    taskDetails.setXId(xId);
-    taskDetails.setTargetIdentifiers(targetIdentifiers);
-
-    taskDetails.setDeliveryType(deliveryType);
-    taskDetails.setListOfDIDs(dids);
-    return taskDetails;
+    return TaskDetails.builder()
+      .withXId(xId)
+      .withTargetIdentifiers(
+        ListOfTargetIdentifiers.builder()
+          .addTargetIdentifier(TargetIdentifier.builder().withE164Number(e164number).build())
+          .build()
+      )
+      .withDeliveryType(deliveryType)
+      .withListOfDIDs(ListOfDids.builder().addDId(destinationId).build())
+      .build();
   }
 
   @Operation(
@@ -160,8 +152,7 @@ public class TaskController {
     @RequestParam final DeliveryType deliveryType
   ) throws X1ClientException, InterruptedException {
     final var taskDetails = makeTaskDetails(e164number, destinationId, xId, deliveryType);
-    final var req = x1RequestFactory.create(ModifyTaskRequest.class);
-    req.setTaskDetails(taskDetails);
+    final var req = x1RequestFactory.builder(ModifyTaskRequest.builder()).withTaskDetails(taskDetails).build();
 
     return x1Client.request(req, ModifyTaskResponse.class);
   }
@@ -190,8 +181,7 @@ public class TaskController {
   @DeleteMapping("/task/{xId}")
   public DeactivateTaskResponse deactivateTask(@PathVariable final String xId)
     throws X1ClientException, InterruptedException {
-    final var req = x1RequestFactory.create(DeactivateTaskRequest.class);
-    req.setXId(xId);
+    final var req = x1RequestFactory.builder(DeactivateTaskRequest.builder()).withXId(xId).build();
 
     return x1Client.request(req, DeactivateTaskResponse.class);
   }

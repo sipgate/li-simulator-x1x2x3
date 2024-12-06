@@ -11,11 +11,27 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.UUID;
-import org.etsi.uri._03221.x1._2017._10.*;
+import org.etsi.uri._03221.x1._2017._10.CreateDestinationRequest;
+import org.etsi.uri._03221.x1._2017._10.CreateDestinationResponse;
+import org.etsi.uri._03221.x1._2017._10.DeliveryAddress;
+import org.etsi.uri._03221.x1._2017._10.DeliveryType;
+import org.etsi.uri._03221.x1._2017._10.DestinationDetails;
+import org.etsi.uri._03221.x1._2017._10.ErrorResponse;
+import org.etsi.uri._03221.x1._2017._10.GetDestinationDetailsRequest;
+import org.etsi.uri._03221.x1._2017._10.GetDestinationDetailsResponse;
+import org.etsi.uri._03221.x1._2017._10.ModifyDestinationRequest;
+import org.etsi.uri._03221.x1._2017._10.ModifyDestinationResponse;
+import org.etsi.uri._03221.x1._2017._10.RemoveDestinationRequest;
+import org.etsi.uri._03221.x1._2017._10.RemoveDestinationResponse;
 import org.etsi.uri._03280.common._2017._07.IPAddress;
 import org.etsi.uri._03280.common._2017._07.IPAddressPort;
 import org.etsi.uri._03280.common._2017._07.Port;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DestinationController {
@@ -57,12 +73,14 @@ public class DestinationController {
     @Parameter(
       description = "will be treated as ipv6 if there is a colon (:) in the ip address"
     ) @RequestParam final String ipAddress,
-    @RequestParam final Integer tcpPort
+    @RequestParam final Long tcpPort
   ) throws X1ClientException, InterruptedException {
     final var destinationDetails = makeDestinationDetails(dId, friendlyName, deliveryType, ipAddress, tcpPort);
 
-    final var createDestinationRequest = x1RequestFactory.create(CreateDestinationRequest.class);
-    createDestinationRequest.setDestinationDetails(destinationDetails);
+    final var createDestinationRequest = x1RequestFactory
+      .builder(CreateDestinationRequest.builder())
+      .withDestinationDetails(destinationDetails)
+      .build();
 
     return x1Client.request(createDestinationRequest, CreateDestinationResponse.class);
   }
@@ -91,8 +109,7 @@ public class DestinationController {
   @GetMapping("/destination/{dId}")
   public GetDestinationDetailsResponse getDestination(@PathVariable final UUID dId)
     throws X1ClientException, InterruptedException {
-    final var req = x1RequestFactory.create(GetDestinationDetailsRequest.class);
-    req.setDId(dId.toString());
+    final var req = x1RequestFactory.builder(GetDestinationDetailsRequest.builder()).withDId(dId.toString()).build();
 
     return x1Client.request(req, GetDestinationDetailsResponse.class);
   }
@@ -126,11 +143,13 @@ public class DestinationController {
     @Parameter(
       description = "will be treated as ipv6 if there is a colon (:) in the ip address"
     ) @RequestParam final String ipAddress,
-    @RequestParam final Integer tcpPort
+    @RequestParam final Long tcpPort
   ) throws X1ClientException, InterruptedException {
     final var destinationDetails = makeDestinationDetails(dId, friendlyName, deliveryType, ipAddress, tcpPort);
-    final var req = x1RequestFactory.create(ModifyDestinationRequest.class);
-    req.setDestinationDetails(destinationDetails);
+    final var req = x1RequestFactory
+      .builder(ModifyDestinationRequest.builder())
+      .withDestinationDetails(destinationDetails)
+      .build();
 
     return x1Client.request(req, ModifyDestinationResponse.class);
   }
@@ -159,8 +178,7 @@ public class DestinationController {
   @DeleteMapping("/destination/{did}")
   public RemoveDestinationResponse removeDestination(@PathVariable final UUID did)
     throws X1ClientException, InterruptedException {
-    final var req = x1RequestFactory.create(RemoveDestinationRequest.class);
-    req.setDId(did.toString());
+    final var req = x1RequestFactory.builder(RemoveDestinationRequest.builder()).withDId(did.toString()).build();
 
     return x1Client.request(req, RemoveDestinationResponse.class);
   }
@@ -170,30 +188,30 @@ public class DestinationController {
     final String friendlyName,
     final DeliveryType deliveryType,
     final String ip,
-    final Integer tcpPort
+    final Long tcpPort
   ) {
-    final var destinationDetails = new DestinationDetails();
-    destinationDetails.setFriendlyName(friendlyName);
-    destinationDetails.setDeliveryType(deliveryType);
-    destinationDetails.setDId(dId.toString());
-
-    final var port = new Port();
-    port.setTCPPort(tcpPort);
-    final var ipAddress = new IPAddress();
-
+    final var ipAddressBuilder = IPAddress.builder();
     if (ip.contains(":")) {
-      ipAddress.setIPv6Address(ip);
+      ipAddressBuilder.withIPv6Address(ip);
     } else {
-      ipAddress.setIPv4Address(ip);
+      ipAddressBuilder.withIPv4Address(ip);
     }
 
-    final IPAddressPort ipAndPort = new IPAddressPort();
-    ipAndPort.setPort(port);
-    ipAndPort.setAddress(ipAddress);
-
-    final DeliveryAddress address = new DeliveryAddress();
-    address.setIpAddressAndPort(ipAndPort);
-    destinationDetails.setDeliveryAddress(address);
+    final var destinationDetails = DestinationDetails.builder()
+      .withFriendlyName(friendlyName)
+      .withDeliveryType(deliveryType)
+      .withDId(dId.toString())
+      .withDeliveryAddress(
+        DeliveryAddress.builder()
+          .withIpAddressAndPort(
+            IPAddressPort.builder()
+              .withPort(Port.builder().withTCPPort(tcpPort).build())
+              .withAddress(ipAddressBuilder.build())
+              .build()
+          )
+          .build()
+      )
+      .build();
 
     return destinationDetails;
   }

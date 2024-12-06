@@ -50,7 +50,7 @@ public class IndexController {
   )
   @GetMapping("/index")
   public IndexResponse index() throws X1ClientException, InterruptedException {
-    final var req = x1RequestFactory.create(ListAllDetailsRequest.class);
+    final var req = x1RequestFactory.builder(ListAllDetailsRequest.builder()).build();
     final var resp = x1Client.request(req, ListAllDetailsResponse.class);
     return new IndexResponse(resp.getListOfXIDs().getXId(), resp.getListOfDIDs().getDId());
   }

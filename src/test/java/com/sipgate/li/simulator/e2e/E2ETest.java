@@ -545,7 +545,7 @@ public class E2ETest {
   private static void assertErrorResponse(
     final ErrorResponse response,
     final RequestMessageType type,
-    final BigInteger code,
+    final long code,
     final String description
   ) {
     assertThat(response.getRequestMessageType()).isEqualTo(type);

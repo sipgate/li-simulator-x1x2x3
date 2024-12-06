@@ -49,7 +49,7 @@ public class ConnectionController {
   )
   @PostMapping("/connection/ping")
   public PingResponse ping() throws X1ClientException, InterruptedException {
-    final var req = x1RequestFactory.create(PingRequest.class);
+    final var req = x1RequestFactory.builder(PingRequest.builder()).build();
     return x1Client.request(req, PingResponse.class);
   }
 
@@ -79,7 +79,7 @@ public class ConnectionController {
   )
   @PostMapping("/connection/keepalive")
   public KeepaliveResponse keepalive() throws X1ClientException, InterruptedException {
-    final var req = x1RequestFactory.create(KeepaliveRequest.class);
+    final var req = x1RequestFactory.builder(KeepaliveRequest.builder()).build();
     return x1Client.request(req, KeepaliveResponse.class);
   }
 }

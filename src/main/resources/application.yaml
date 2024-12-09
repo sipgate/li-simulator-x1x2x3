@@ -16,6 +16,7 @@ sipgate:
         maxHeaderLength: 320 # currently quite arbitrary
         maxPayloadLength: 8192 # currently quite arbitrary
         port: 42069
+        sslEnabled: true
     networkElement:
       clientCertKeyStore:
         path: "/mutual-tls-stores/network-element-keystore.p12"

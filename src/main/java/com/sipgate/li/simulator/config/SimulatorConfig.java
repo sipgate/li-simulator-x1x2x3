@@ -75,7 +75,7 @@ public class SimulatorConfig {
   @Bean
   public X2X3Server x2X3Server(final SSLContext simulatorSslContext, final X2X3Memory x2X3Memory) {
     return new X2X3Server(
-      simulatorSslContext,
+      x2X3ServerConfig.sslEnabled ? simulatorSslContext : null,
       new X2X3Decoder(x2X3ServerConfig.maxHeaderLength, x2X3ServerConfig.maxPayloadLength)
     ).addConsumer(x2X3Memory);
   }
@@ -89,5 +89,5 @@ public class SimulatorConfig {
       .build();
   }
 
-  public record X2X3ServerConfig(int maxHeaderLength, int maxPayloadLength, int port) {}
+  public record X2X3ServerConfig(int maxHeaderLength, int maxPayloadLength, int port, boolean sslEnabled) {}
 }

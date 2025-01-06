@@ -1,5 +1,5 @@
 ---
-name: Build, docker push, mvn deploy
+name: Build and deploy
 concurrency: build-and-push
 on:
   workflow_dispatch:
@@ -10,15 +10,16 @@ on:
       - main
 
 jobs:
+  # service
   docker:
-    uses: sipgate/workflows/.github/workflows/pipeline-docker-image.yaml@main
+    uses: sipgate/workflows/.github/workflows/pipeline-docker-classic.yaml@main
     with:
-      docker_image: ${{ github.event.repository.name }}
-      test_command: ./scripts/run-e2e-tests.sh
+      service_name: ${{ github.event.repository.name }}
+      test_command: true
       skip_analysis: true
-      test_image: sipgate/buildjava_21:bullseye
     secrets: inherit
 
+  # library for other projects (mostly used for tests)
   maven:
     needs: docker
     uses: sipgate/workflows/.github/workflows/maven-package.yaml@main

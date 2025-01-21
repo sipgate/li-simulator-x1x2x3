@@ -1,3 +1,6 @@
+/*
+ * SPDX-License-Identifier: MIT
+ */
 package com.sipgate.li.simulator.x2x3;
 
 import com.sipgate.li.lib.x2x3.protocol.PduObject;

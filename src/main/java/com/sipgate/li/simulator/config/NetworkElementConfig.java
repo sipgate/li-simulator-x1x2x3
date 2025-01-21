@@ -1,3 +1,6 @@
+/*
+ * SPDX-License-Identifier: MIT
+ */
 package com.sipgate.li.simulator.config;
 
 import com.sipgate.util.SSLContextBuilder;

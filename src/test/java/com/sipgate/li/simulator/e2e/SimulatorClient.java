@@ -1,3 +1,6 @@
+/*
+ * SPDX-License-Identifier: MIT
+ */
 package com.sipgate.li.simulator.e2e;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

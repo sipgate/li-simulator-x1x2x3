@@ -1,3 +1,6 @@
+/*
+ * SPDX-License-Identifier: MIT
+ */
 package com.sipgate.li.simulator.e2e;
 
 import org.junit.jupiter.api.BeforeEach;

@@ -1,3 +1,6 @@
+/*
+ * SPDX-License-Identifier: MIT
+ */
 package com.sipgate.li.simulator.controller;
 
 import com.sipgate.li.lib.x2x3.client.X2X3Client;

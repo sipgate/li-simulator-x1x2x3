@@ -1,3 +1,6 @@
+/*
+ * SPDX-License-Identifier: MIT
+ */
 package com.sipgate.li.simulator.e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;

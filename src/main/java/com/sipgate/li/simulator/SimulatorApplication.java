@@ -1,3 +1,6 @@
+/*
+ * SPDX-License-Identifier: MIT
+ */
 package com.sipgate.li.simulator;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;

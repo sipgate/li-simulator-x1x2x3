@@ -2,12 +2,18 @@
 
 ![Alles Wird Besser](https://img.shields.io/badge/ansprechpartner-alleswirdbesser-blue.svg)
 
-Human-friendlier interface to interact with a X1/X2/X3 node. Intended to test the ETSI TS 103 221 implementations of Network Elements.
+Human-friendlier interface to interact with a X1/X2/X3 node. Intended to test the ETSI TS 103 221 implementations of
+Network Elements.
+
+This repository contains tests that validate the behaviour of Simulator against a stable network element (which is
+provided by a Wiremock instance with Stubs). These tests can then also be used to validate a moving/in-development
+implementation of X1/X2/X3.
 
 ## Local development
 
 1. `git clone` the repository
 2. Run `npm install` for git hooks and prettier (code formatting)
+3. For TLS setup and running the simulator, run `docker compose up --build`
 
 The API documentation is available at `http://localhost:8080/swagger-ui.html`.
 
@@ -16,7 +22,7 @@ The API documentation is available at `http://localhost:8080/swagger-ui.html`.
 We're using the [Maven release plugin](https://maven.apache.org/maven-release/maven-release-plugin/index.html).
 When ready, run `./mvnw release:prepare` and follow the instructions. This will create, tag and push a new release.
 
-## Run end-to-tend tests
+## Run end-to-end tests
 
 Run e2e-tests via `./scripts/run-e2e-tests.sh`
 
@@ -24,7 +30,8 @@ For details about test scenarios within wiremock, see [Network Element README](.
 
 ## Send x2/x3 packet to simulator
 
-Start the simulator environment using docker. There is a binary x2 file in `src/test/misc/x2-demo-01.bin` that you can copy into the container and then send to the server:
+Start the simulator environment using docker. There is a binary x2 file in `src/test/misc/x2-demo-01.bin` that you can
+copy into the container and then send to the server:
 
 ```shell
 docker compose cp src/test/misc/x2-demo-01.bin simulator:/tmp/x2-demo-01.bin
@@ -38,10 +45,12 @@ docker compose exec -i simulator \
 
 ## Retrieving X3 RTP Audio
 
-The simulator can be used to actually dump all RTP audio packets and create an MP3. To do this, send your RTP-Stream via X3 to the simulator on port 42069.
+The simulator can be used to dump all received RTP audio packets and create an MP3. To do this, send your RTP stream via
+X3 to the simulator on port 42069.
 It is out of scope how you do this - use your NE for example.
 
-After you have sent the RTP-Stream, you can retrieve the audio by using the following commands:
+Given `ffmpeg` in PATH, and after you have sent the RTP stream, you can retrieve the audio by using the following
+commands:
 
 ```shell
 python3 -m venv .venv
@@ -50,7 +59,8 @@ pip3 install -r scripts/requirements.txt
 python3 scripts/download-x3rtp-and-convert.py http://localhost:8080 [XID] [in|out]
 ```
 
-Replace `[XID]` with the XID of the call you want to retrieve and `[in|out]` with the direction of the call. The script will download the RTP packets and convert them to an MP3 file called `[XID]-[DIRECTION].mp3`.
+Replace `[XID]` with the XID of the call you want to retrieve and `[in|out]` with the direction of the call. The script
+will download the RTP packets and convert them to an MP3 file called `[XID]-[DIRECTION].mp3`.
 
 Be sure to reset the X2X3 in-memory receiver after you have downloaded the audio.
 
@@ -61,3 +71,8 @@ curl -X POST "http://localhost:8080/x2x3/reset"
 ## Further information
 
 - EVE Explains: ETSI TS 103 221 - X1/X2/X3 https://www.lawfulinterception.com/explains/etsi-ts-103-221/
+
+## Security Disclosure
+
+If you find any vulnerabilities in our software, please refer to [sipgate's security team](https://www.sipgate.de/.well-known/security.txt)
+who will coordinate a disclosure with you. Thanks for reporting any issues.

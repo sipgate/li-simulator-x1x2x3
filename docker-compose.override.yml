@@ -1,14 +1,14 @@
 services:
   simulator:
     container_name: "simulator"
-    image: registry.sipgate.net/docker/sipgate/service/li-simulator-x1x2x3:development
-    env_file: ./docker/simulator/.env
-    volumes:
-      - "mutual-tls-stores:/mutual-tls-stores"
+    image: sipgategmbh/li-simulator-x1x2x3:latest
     build:
       context: .
       args:
         MVN_ADDITIONAL_ARGS: "-DskipTests"
+    env_file: ./docker/simulator/.env
+    volumes:
+      - "mutual-tls-stores:/mutual-tls-stores"
     ports:
       - "127.0.0.1:8080:8080" # REST API
       - "127.0.0.1:42069:42069" # X2X3

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -eu
 
@@ -37,4 +37,4 @@ openssl pkcs12 \
   -name simulator \
   -passout pass:changeit
 
-exec java -jar /usr/src/build/target/simulator.jar
+exec java -jar /app/simulator.jar

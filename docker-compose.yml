@@ -39,7 +39,7 @@ services:
       interval: 1s
 
   init-wiremock-certs:
-    image: registry.sipgate.net/docker/sipgate/runtime/zre-21:debian-bookworm
+    image: eclipse-temurin:21-alpine
     volumes:
       - "./docker/init-mutual-tls:/init-mtls"
       - "mutual-tls-stores:/mutual-tls-stores"
@@ -52,7 +52,7 @@ services:
         condition: service_completed_successfully
 
   init-admf-x1-stores:
-    image: registry.sipgate.net/docker/sipgate/runtime/zre-21:debian-bookworm
+    image: eclipse-temurin:21-alpine
     volumes:
       - "./docker/init-mutual-tls:/init-mtls"
       - "mutual-tls-stores:/mutual-tls-stores"
@@ -63,7 +63,7 @@ services:
       - "/init-mtls/create-certificates.sh"
 
   init-ne-x1-stores:
-    image: registry.sipgate.net/docker/sipgate/runtime/zre-21:debian-bookworm
+    image: eclipse-temurin:21-alpine
     volumes:
       - "./docker/init-mutual-tls:/init-mtls"
       - "mutual-tls-stores:/mutual-tls-stores"

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 echo "Cleaning up old truststore..."
 if [ -f /mutual-tls-stores/network-element-truststore.jks ]; then

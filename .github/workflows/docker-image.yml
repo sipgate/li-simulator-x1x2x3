@@ -31,3 +31,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: "sipgategmbh/li-simulator-x1x2x3:latest,sipgategmbh/li-simulator-x1x2x3:${{ steps.version.outputs.tag }}"
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          short-description: ${{ github.event.repository.description }}

@@ -42,3 +42,7 @@ build/
 ### Downloaded audio files
 *.mp3
 *.raw
+
+### Maven releae plugin
+pom.xml.releaseBackup
+release.properties

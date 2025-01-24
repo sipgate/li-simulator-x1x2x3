@@ -22,6 +22,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags:
-            - sipgategmbh/li-simulator-x1x2x3:latest
-            - sipgategmbh/li-simulator-x1x2x3:${{ vars.GITHUB_RUN_NUMBER }}-${{ vars.GITHUB_SHA }}
+          tags: "sipgategmbh/li-simulator-x1x2x3:latest,sipgategmbh/li-simulator-x1x2x3:${{ github.run_number }}-${{ github.sha }}"

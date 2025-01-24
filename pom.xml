@@ -13,6 +13,9 @@
 	<version>1.0.1-SNAPSHOT</version>
 	<name>simulator</name>
 	<description>X1/X2/X3 Simulator to simplify interactions with a peer that communicates in ETSI TS 103 221</description>
+	<scm>
+		<developerConnection>scm:git:git@github.com:sipgate/li-simulator-x1x2x3.git</developerConnection>
+	</scm>
 
 	<properties>
 		<java.version>21</java.version>
@@ -65,6 +68,12 @@
 				<configuration>
 					<excludedGroups>Integration,E2E</excludedGroups>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>3.1.1</version>
 			</plugin>
 
 

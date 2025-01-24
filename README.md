@@ -11,6 +11,11 @@ Human-friendlier interface to interact with a X1/X2/X3 node. Intended to test th
 
 The API documentation is available at `http://localhost:8080/swagger-ui.html`.
 
+## Preparing a new release
+
+We're using the [Maven release plugin](https://maven.apache.org/maven-release/maven-release-plugin/index.html).
+When ready, run `./mvnw release:prepare` and follow the instructions. This will create, tag and push a new release.
+
 ## Run end-to-tend tests
 
 Run e2e-tests via `./scripts/run-e2e-tests.sh`

@@ -25,7 +25,7 @@ docker run ${DOCKER_NETWORK_ARG} \
   -e MAVEN_CONFIG=/tmp/maven/.m2 \
   -v "$(pwd)":/usr/src/build \
   -w /usr/src/build \
-  registry.sipgate.net/docker/maven:3.9-eclipse-temurin-21-alpine \
+  maven:3.9-eclipse-temurin-21-alpine \
   mvn -B -s maven_settings.xml test -Pe2e-tests \
   -Duser.home=/tmp/maven \
   -DserviceHost="${SERVICE_HOST}" \

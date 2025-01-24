@@ -37,3 +37,4 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           short-description: ${{ github.event.repository.description }}
+          repository: sipgategmbh/li-simulator-x1x2x3

@@ -54,6 +54,23 @@ The simulator can be configured by environment if needed (e.g. to talk to a "rea
 - **SIPGATE_LI_NETWORKELEMENT_SERVERCERTTRUSTSTORE_PASSWORD**: The password for the above-mentioned file.
   (default: `changeit`)
 
+```mermaid
+---
+title: Reference for SSL configuration
+---
+flowchart LR
+simulator-admf[Simulator acting as ADMF]
+simulator-ne[Simulator acting as NE]
+ne[Network element]
+mdf[Mediation Delivery Function]
+
+simulator-admf--X1: send certificate from\nsimulator.clientCertKeyStore-->ne
+ne--X1: reply with certificate matching\nsimulator.serverCertTrustStore-->simulator-admf
+
+simulator-ne--X2 or X3: send certificate from\nnetworkElement.clientCertKeyStore-->mdf
+mdf--X2 or X3: reply with certificate matching\nnetworkElement.serverCertTrustStore-->simulator-ne
+```
+
 ## Preparing a new release
 
 We're using the [Maven release plugin](https://maven.apache.org/maven-release/maven-release-plugin/index.html).

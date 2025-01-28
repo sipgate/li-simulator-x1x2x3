@@ -166,11 +166,19 @@ flowchart LR
 
 ```
 
-The dependency above will provide the JUnit tests. You will also need a running instance of the Simulator. See
-[Configuring the simulator](#configuring-the-simulator) for more details on how to configure the simulator backend
+The dependency above will provide the JUnit tests and those will talk to the REST api of the LI ADMF simulator. The
+simulator will then talk to your NE via X1. Thus, you will also need a running instance of the Simulator.
+See [Configuring the simulator](#configuring-the-simulator) for more details on how to configure the simulator backend
 to talk to your Network Element instead.
 
-## Send x2/x3 packet to simulator
+### Mutual TLS for your own NE
+
+The simulator fully supports using mTLS authentication and encryption. If you need to generate certificates for local
+tesing, have a look at the provided docker-compose setup in this Github repo. We're using init-containers to create
+self-signed client and server certs, key stores and trust stores for our Mock setup to use. You can adapt this for your
+own testing purposes.
+
+## Send X2/X3 packet to the simulator MDF
 
 Start the simulator environment using docker. There is a binary x2 file in `src/test/misc/x2-demo-01.bin` that you can
 copy into the container and then send to the server:

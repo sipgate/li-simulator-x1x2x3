@@ -16,7 +16,7 @@ FROM eclipse-temurin:21-alpine AS runtime
 RUN mkdir /app
 WORKDIR /app
 
-COPY --from=build-simulator /usr/src/build/target/simulator.jar /app
+COPY --from=build-simulator /usr/src/build/target/li-simulator.jar /app
 COPY --chmod=0775 docker/simulator/start.sh /app/start.sh
 
 EXPOSE 8080

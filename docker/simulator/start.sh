@@ -37,4 +37,4 @@ openssl pkcs12 \
   -name simulator \
   -passout pass:changeit
 
-exec java -jar /app/simulator.jar
+exec java -jar /app/li-simulator.jar

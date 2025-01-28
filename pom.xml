@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>com.sipgate</groupId>
 			<artifactId>li-lib-x1x2x3</artifactId>
-			<version>1.0.0-RELEASE</version>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
@@ -125,5 +125,19 @@
 			</build>
 		</profile>
 	</profiles>
+
+	<repositories>
+		<repository>
+			<name>Central Portal Snapshots</name>
+			<id>central-portal-snapshots</id>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 </project>

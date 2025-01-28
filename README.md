@@ -28,7 +28,7 @@ Wiremock network element to test against.
 The simulator can be configured by environment if needed (e.g. to talk to a "real" network element):
 
 | Environment Variable                                        | Description                                                                                                                                                                                                                                      | Default Value                                       |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+|-------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|
 | **SIPGATE_LI_SIMULATOR_TARGETURI**                          | The URL of the Network Element                                                                                                                                                                                                                   | `https://localhost/X1/NE`                           |
 | **SIPGATE_LI_SIMULATOR_ADMFIDENTIFIER**                     | The ID of the simulated ADMF                                                                                                                                                                                                                     | `admf-id`                                           |
 | **SIPGATE_LI_SIMULATOR_CLIENTCERTKEYSTORE_PATH**            | The Path to the keystore holding the client TLS cert of the ADMF. This certificate is presented to the NE.                                                                                                                                       | `/tmp/keystore.p12`                                 |
@@ -49,16 +49,14 @@ The simulator can be configured by environment if needed (e.g. to talk to a "rea
 title: Reference for SSL configuration
 ---
 flowchart LR
-simulator-admf[Simulator acting as ADMF]
-simulator-ne[Simulator acting as NE]
-ne[Network element]
-mdf[Mediation Delivery Function]
-
-simulator-admf--X1: send certificate from\nsimulator.clientCertKeyStore-->ne
-ne--X1: reply with certificate matching\nsimulator.serverCertTrustStore-->simulator-admf
-
-simulator-ne--X2 or X3: send certificate from\nnetworkElement.clientCertKeyStore-->mdf
-mdf--X2 or X3: reply with certificate matching\nnetworkElement.serverCertTrustStore-->simulator-ne
+  simulator-admf[Simulator acting as ADMF]
+  simulator-ne[Simulator acting as NE]
+  ne[Network element]
+  mdf[Mediation Delivery Function]
+  simulator-admf -- X1: send certificate from\nsimulator . clientCertKeyStore --> ne
+  ne -- X1: reply with certificate matching\nsimulator . serverCertTrustStore --> simulator-admf
+  simulator-ne -- X2 or X3: send certificate from\nnetworkElement . clientCertKeyStore --> mdf
+  mdf -- X2 or X3: reply with certificate matching\nnetworkElement . serverCertTrustStore --> simulator-ne
 ```
 
 ## Preparing a new release

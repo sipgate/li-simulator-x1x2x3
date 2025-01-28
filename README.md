@@ -27,32 +27,22 @@ Wiremock network element to test against.
 
 The simulator can be configured by environment if needed (e.g. to talk to a "real" network element):
 
-- **SIPGATE_LI_SIMULATOR_TARGETURI**: The URL of the Network Element (default: https://localhost/X1/NE)
-- **SIPGATE_LI_SIMULATOR_ADMFIDENTIFIER**: The ID of the simulated ADMF (default: `admf-id`)
-- **SIPGATE_LI_SIMULATOR_CLIENTCERTKEYSTORE_PATH**: The Path to the keystore holding the client TLS cert of the ADMF.
-  This certificate is presented to the NE. (default "/tmp/keystore.p12").
-- **SIPGATE_LI_SIMULATOR_CLIENTCERTKEYSTORE_PASSWORD**: The password for the above-mentioned file (default: `changeit`).
-- **SIPGATE_LI_SIMULATOR_SERVERCERTTRUSTSTORE_PATH**: The Path to the truststore. Must contain a valid cert of the
-  network element. (default "/tmp/truststore.jks").
-- **SIPGATE_LI_SIMULATOR_SERVERCERTTRUSTSTORE_PASSWORD**: The password for the above-mentioned file (default:
-  `changeit`).
-- **SIPGATE_LI_SIMULATOR_X2X3SERVER_SSLENABLED**: Use this to enable or disable SSL for the X2X3 part of the MDF.
-  (default: `true`)
-- **SIPGATE_LI_SIMULATOR_X2X3SERVER_PORT**: The TCP port to listen to for X2/X3 streams (default: `42069`)
-- **SIPGATE_LI_SIMULATOR_X2X3SERVER_MAXHEADERLENGTH**: The maximum length in bytes of the X2/X3 packet header
-  (default:`320` - this number is arbitrary and "works for us")
-- **SIPGATE_LI_SIMULATOR_X2X3SERVER_MAXPAYLOADLENGTH**: The maximum length in bytes of the X2/X3 packet payload
-  (default: `8192` - this number is arbitrary and "works for us")
-- **SIPGATE_LI_NETWORKELEMENT_CLIENTCERTKEYSTORE_PATH**: The path of the client keystore of the simulated network
-  element. This is used for the route `POST /sip`. This triggers the simulator to connect to itself and deliver an
-  X2 PDU. We used that to validate our own li-lib encoders and decoders.
-  (default: `/mutual-tls-stores/network-element-keystore.p12`)
-- **SIPGATE_LI_NETWORKELEMENT_CLIENTCERTKEYSTORE_PASSWORD**: The password for the above-mentioned file.
-  (default: `changeit`)
-- **SIPGATE_LI_NETWORKELEMENT_SERVERCERTTRUSTSTORE_PATH**: The truststore containing the MDF server public cert
-  (default: `/mutual-tls-stores/network-element-truststore.jks`)
-- **SIPGATE_LI_NETWORKELEMENT_SERVERCERTTRUSTSTORE_PASSWORD**: The password for the above-mentioned file.
-  (default: `changeit`)
+| Environment Variable                                        | Description                                                                                                                                                                                                                                      | Default Value                                       |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| **SIPGATE_LI_SIMULATOR_TARGETURI**                          | The URL of the Network Element                                                                                                                                                                                                                   | `https://localhost/X1/NE`                           |
+| **SIPGATE_LI_SIMULATOR_ADMFIDENTIFIER**                     | The ID of the simulated ADMF                                                                                                                                                                                                                     | `admf-id`                                           |
+| **SIPGATE_LI_SIMULATOR_CLIENTCERTKEYSTORE_PATH**            | The Path to the keystore holding the client TLS cert of the ADMF. This certificate is presented to the NE.                                                                                                                                       | `/tmp/keystore.p12`                                 |
+| **SIPGATE_LI_SIMULATOR_CLIENTCERTKEYSTORE_PASSWORD**        | The password for the above-mentioned file                                                                                                                                                                                                        | `changeit`                                          |
+| **SIPGATE_LI_SIMULATOR_SERVERCERTTRUSTSTORE_PATH**          | The Path to the truststore. Must contain a valid cert of the network element.                                                                                                                                                                    | `/tmp/truststore.jks`                               |
+| **SIPGATE_LI_SIMULATOR_SERVERCERTTRUSTSTORE_PASSWORD**      | The password for the above-mentioned file                                                                                                                                                                                                        | `changeit`                                          |
+| **SIPGATE_LI_SIMULATOR_X2X3SERVER_SSLENABLED**              | Use this to enable or disable SSL for the X2X3 part of the MDF.                                                                                                                                                                                  | `true`                                              |
+| **SIPGATE_LI_SIMULATOR_X2X3SERVER_PORT**                    | The TCP port to listen to for X2/X3 streams                                                                                                                                                                                                      | `42069`                                             |
+| **SIPGATE_LI_SIMULATOR_X2X3SERVER_MAXHEADERLENGTH**         | The maximum length in bytes of the X2/X3 packet header                                                                                                                                                                                           | `320`                                               |
+| **SIPGATE_LI_SIMULATOR_X2X3SERVER_MAXPAYLOADLENGTH**        | The maximum length in bytes of the X2/X3 packet payload                                                                                                                                                                                          | `8192`                                              |
+| **SIPGATE_LI_NETWORKELEMENT_CLIENTCERTKEYSTORE_PATH**       | The path of the client keystore of the simulated network element. This is used for the route `POST /sip`. This triggers the simulator to connect to itself and deliver an X2 PDU. We used that to validate our own li-lib encoders and decoders. | `/mutual-tls-stores/network-element-keystore.p12`   |
+| **SIPGATE_LI_NETWORKELEMENT_CLIENTCERTKEYSTORE_PASSWORD**   | The password for the above-mentioned file                                                                                                                                                                                                        | `changeit`                                          |
+| **SIPGATE_LI_NETWORKELEMENT_SERVERCERTTRUSTSTORE_PATH**     | The truststore containing the MDF server public cert                                                                                                                                                                                             | `/mutual-tls-stores/network-element-truststore.jks` |
+| **SIPGATE_LI_NETWORKELEMENT_SERVERCERTTRUSTSTORE_PASSWORD** | The password for the above-mentioned file                                                                                                                                                                                                        | `changeit`                                          |
 
 ```mermaid
 ---

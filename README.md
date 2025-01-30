@@ -118,7 +118,7 @@ flowchart LR
 ## Preparing a new release
 
 We're using the [Maven release plugin](https://maven.apache.org/maven-release/maven-release-plugin/index.html).
-When ready, run `./mvnw release:prepare` and follow the instructions. This will create, tag and push a new release.
+When ready, run `./mvnw release:prepare -Dresume=false` and follow the instructions. This will create, tag and push a new release.
 
 ## Run end-to-end tests
 

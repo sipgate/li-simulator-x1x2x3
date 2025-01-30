@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.sipgate</groupId>
 	<artifactId>li-simulator</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<name>li-simulator</name>
 	<description>X1/X2/X3 Simulator to simplify interactions with a peer that communicates in ETSI TS 103 221
 	</description>
@@ -17,7 +17,7 @@
 	<scm>
 		<developerConnection>scm:git:git@github.com:sipgate/li-simulator-x1x2x3.git</developerConnection>
 		<url>https://github.com/sipgate/li-simulator-x1x2x3</url>
-		<tag>1.0.4</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<developers>
 		<developer>

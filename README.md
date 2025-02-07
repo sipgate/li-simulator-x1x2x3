@@ -20,6 +20,17 @@ our [li-library for X1/X2/X3](https://github.com/sipgate/li-lib-x1x2x3/)
 
 The API documentation is available at `http://localhost:8080/swagger-ui.html`.
 
+## Docker tags
+
+In general, there are two kinds of docker images:
+
+1. The runtime of the simulator. They are called like `latest`, `1.0.0`, `1.0.0-SNAPSHOT`.
+2. The tests for the simulator. They are suffixed with `-tests`, e.g. `latest-tests` or `1.0.0-tests`
+
+You probably only want to use the runtime.
+
+For running tests, see [Validating your own NE](#validating-your-own-network-element).
+
 ## Configuring the simulator
 
 The docker-compose files in the [Github repository](https://github.com/sipgate/li-simulator) provide sane defaults and a
@@ -118,7 +129,8 @@ flowchart LR
 ## Preparing a new release
 
 We're using the [Maven release plugin](https://maven.apache.org/maven-release/maven-release-plugin/index.html).
-When ready, run `./mvnw release:prepare -Dresume=false` and follow the instructions. This will create, tag and push a new release.
+When ready, run `./mvnw release:prepare -Dresume=false` and follow the instructions. This will create, tag and push a
+new release.
 
 ## Run end-to-end tests
 
@@ -129,8 +141,19 @@ For details about test scenarios within wiremock, see
 
 ### Validating your own network element
 
-To validate your own network element, you can use the tests in this repository. The tests are written in Java and
-are published to Maven Central. You can include them in your project by adding the following dependencies:
+To validate your own network element, you can use the tests in this repository with maven, or you can use the `tests`
+docker images.
+
+When running the tests, you must have a running simulator instance,
+see [Configuring the simulator](#configuring-the-simulator) how to connect the simulator to your network element.
+
+For the tests, you have to set the system properties `serviceHost` and `servicePort` to connect to your local simulator
+instance.
+
+#### Using maven
+
+The tests are written in Java and are published to Maven Central. You can include them in your project by adding the
+following dependencies:
 
 ```xml
 
@@ -153,6 +176,16 @@ are published to Maven Central. You can include them in your project by adding t
 </dependencies>
 ```
 
+#### Using docker
+
+```shell
+docker run \
+  --rm \
+  sipgategmbh/li-simulator-x1x2x3:latest-tests \
+  -DserviceHost=simulator.example.org  \
+  -DservicePort=8080
+```
+
 ### Test setup
 
 ```mermaid
@@ -166,7 +199,7 @@ flowchart LR
 
 ```
 
-The dependency above will provide the JUnit tests and those will talk to the REST api of the LI ADMF simulator. The
+The dependency above will provide the JUnit tests and those will talk to the REST API of the LI ADMF simulator. The
 simulator will then talk to your NE via X1. Thus, you will also need a running instance of the Simulator.
 See [Configuring the simulator](#configuring-the-simulator) for more details on how to configure the simulator backend
 to talk to your Network Element instead.

@@ -26,7 +26,7 @@ docker run ${DOCKER_NETWORK_ARG} \
   -v "$(pwd)":/usr/src/build \
   -w /usr/src/build \
   maven:3.9-eclipse-temurin-21-alpine \
-  mvn -B -s maven_settings.xml test -Pe2e-tests \
+  mvn -B test -Pe2e-tests \
   -Duser.home=/tmp/maven \
   -DserviceHost="${SERVICE_HOST}" \
   -DservicePort="${SERVICE_PORT}" \
@@ -38,6 +38,6 @@ docker run ${DOCKER_NETWORK_ARG} \
 TEST_RESULT=$?
 set -e
 
-docker compose down
+docker compose down -v
 
 exit $TEST_RESULT

@@ -4,6 +4,7 @@ services:
     image: sipgategmbh/li-simulator-x1x2x3:latest
     build:
       context: .
+      target: runtime
       args:
         MVN_ADDITIONAL_ARGS: "-DskipTests"
     env_file: ./docker/simulator/.env

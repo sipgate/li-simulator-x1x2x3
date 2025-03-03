@@ -3,6 +3,10 @@ name: "Docker: Build and push to Docker Hub"
 on:
   push:
     branches: ["main"]
+    paths:
+      - "src/**"
+      - "pom.xml"
+      - "Dockerfile"
   workflow_dispatch:
 
 jobs:

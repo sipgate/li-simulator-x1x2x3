@@ -3,6 +3,9 @@ name: "Maven: Build, test and publish"
 on:
   push:
     branches: ["main"]
+    paths:
+      - "src/**"
+      - "pom.xml"
   workflow_dispatch:
 
 jobs:

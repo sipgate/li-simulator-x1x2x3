@@ -1,6 +1,6 @@
 services:
   network-element:
-    image: wiremock/wiremock:3.12.0-alpine@sha256:94497b08cecaa272623615b0d5225192c01e64a3e26983c0d22576f86763d40b
+    image: wiremock/wiremock:3.12.1-alpine@sha256:2aba7d3db307962fa3177a1e4f2d988f1742130f254081d7eb2ae1c2c87a64d8
     platform: linux/amd64
     environment:
       WIREMOCK_OPTIONS: |

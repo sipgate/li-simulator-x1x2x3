@@ -161,14 +161,14 @@ following dependencies:
   <dependency>
     <groupId>com.sipgate</groupId>
     <artifactId>li-simulator</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.8</version>
     <scope>test</scope>
   </dependency>
 
   <dependency>
     <groupId>com.sipgate</groupId>
     <artifactId>li-simulator</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.8</version>
     <scope>test</scope>
     <classifier>tests</classifier>
     <type>test-jar</type>

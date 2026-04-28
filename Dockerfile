@@ -10,7 +10,7 @@ RUN mvn -B \
     -P spring-boot-application \
     clean package $MVN_ADDITIONAL_ARGS
 
-FROM eclipse-temurin:21-alpine AS runtime
+FROM eclipse-temurin:25-alpine AS runtime
 RUN mkdir /app
 WORKDIR /app
 

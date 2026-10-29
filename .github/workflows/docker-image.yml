@@ -44,7 +44,7 @@ jobs:
           target: testtime
           tags: "sipgategmbh/li-simulator-x1x2x3:latest-tests,sipgategmbh/li-simulator-x1x2x3:${{ steps.version.outputs.tag }}-tests"
       - name: Docker Hub Description
-        uses: peter-evans/dockerhub-description@v4
+        uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}

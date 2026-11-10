@@ -21,5 +21,7 @@ services:
         condition: service_completed_successfully
       init-ne-x1-stores:
         condition: service_completed_successfully
+      init-simulator-stores:
+        condition: service_completed_successfully
       network-element:
         condition: service_healthy

@@ -20,6 +20,7 @@ services:
     ports:
       - "443:443"
       - "8082:8080"
+    user: "65532:65532"
     networks:
       - li-network
     volumes:
@@ -72,6 +73,21 @@ services:
       COMMON_NAME: "network-element"
     command:
       - "/init-mtls/create-certificates.sh"
+
+  init-simulator-stores:
+    image: eclipse-temurin:21-alpine
+    volumes:
+      - "./docker/init-mutual-tls:/init-mtls"
+      - "mutual-tls-stores:/mutual-tls-stores"
+    environment:
+      ROLE: "simulator"
+    command:
+      - "/init-mtls/create-keystores.sh"
+    depends_on:
+      init-admf-x1-stores:
+        condition: service_completed_successfully
+      init-ne-x1-stores:
+        condition: service_completed_successfully
 
 volumes:
   mutual-tls-stores:

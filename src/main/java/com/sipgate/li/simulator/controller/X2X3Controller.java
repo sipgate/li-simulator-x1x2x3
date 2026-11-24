@@ -3,7 +3,8 @@
  */
 package com.sipgate.li.simulator.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.sipgate.li.lib.x2x3.protocol.PayloadDirection;
 import com.sipgate.li.lib.x2x3.protocol.PayloadFormat;
 import com.sipgate.li.lib.x2x3.protocol.PduObject;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.core.JacksonException;
 
 @RestController
 @RequestMapping("/x2x3")
@@ -192,10 +194,10 @@ public class X2X3Controller {
         return pdu.toString();
       }
       case "json" -> {
-        final var objectMapper = new ObjectMapper();
+        final var objectMapper = new JsonMapper();
         try {
           return objectMapper.writeValueAsString(pdu);
-        } catch (final IOException e) {
+        } catch (final JacksonException e) {
           throw new RuntimeException(e);
         }
       }

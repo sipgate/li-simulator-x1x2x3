@@ -3,7 +3,8 @@
  */
 package com.sipgate.li.simulator.e2e;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -33,6 +34,6 @@ public class SimulatorClientExtension extends TypeBasedParameterResolver<Simulat
 
     final var baseUri = URI.create(String.format("http://%s:%d", serviceHost, servicePort));
 
-    return (simulatorClient = new SimulatorClient(HttpClient.newHttpClient(), baseUri, new ObjectMapper()));
+    return (simulatorClient = new SimulatorClient(HttpClient.newHttpClient(), baseUri, new JsonMapper()));
   }
 }

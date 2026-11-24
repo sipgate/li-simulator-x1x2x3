@@ -3,7 +3,7 @@
  */
 package com.sipgate.li.simulator.e2e;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -13,6 +13,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import tools.jackson.core.JacksonException;
 
 public class SimulatorClient {
 
@@ -114,8 +115,8 @@ public class SimulatorClient {
 
     try {
       return objectMapper.readValue(responseBody, responseType);
-    } catch (final IOException | RuntimeException e) {
-      throw new IOException(e.getMessage() + "\n\nResponse Body:\n" + responseBody, e);
+    } catch (final RuntimeException e) {
+      throw new JacksonException(e.getMessage() + "\n\nResponse Body:\n" + responseBody, e);
     }
   }
 

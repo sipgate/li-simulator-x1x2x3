@@ -3,7 +3,7 @@
  */
 package com.sipgate.li.simulator.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.sipgate.li.lib.x1.client.ErrorResponseClientException;
 import com.sipgate.li.lib.x1.client.TopLevelErrorClientException;
 import com.sipgate.li.lib.x1.client.X1ClientException;
